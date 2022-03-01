@@ -1,0 +1,290 @@
+$margen-contenedor: 1em
+$radio-borde: 10px
+$vidrio-color: rgba(0, 0, 25, 0.5)
+$vidrio-blur: 10px
+$vidrio-saturacion: 180%
+$vidrio-borde-color: rgba(255,255,255,0.75)
+$vidrio-sombra-color: rgba(0,0,0,0.5)
+
+$barra_altura: 50px
+$barra_menu_letra: 40px
+
+$contenido-margen: 15px
+$contenido-radio-borde: 0 0 $contenido-margen $contenido-margen
+    
+$letras_titulo: 1.5em
+$letras_cuerpo: 1em
+$margen_inferior: 1.25em
+
+*
+    box-sizing: 0
+
+html body
+    margin: 0
+    padding: 0
+    font-size: 14pt
+
+.dist_horizontal_expand
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+    align-items: center
+
+.dist_vertical_expand
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+    align-items: center
+
+// button
+//     margin: 5px 10px
+
+.btn-13 
+    background-color: #89d8d3
+    background-image: linear-gradient(315deg, #89d8d3 0%, #03c8a8 74%)
+    border: none
+    z-index: 1
+    // font-size: 12px
+
+    &:after 
+        position: absolute
+        content: ""
+        width: 100%
+        height: 0
+        bottom: 0
+        left: 0
+        z-index: -1
+        border-radius: 3px
+        background-color: #b6fffb28
+        background-image: linear-gradient(315deg, #aaf7f328 0%, #2a333228 74%)
+        box-shadow: -2px -2px 7px 0px #ffffff69, -1px -1px 3px 0px #3a474b93, 7px 7px 10px 0px #0002, 4px 4px 5px 0px #0001
+        transition: all 0.3s ease
+
+    &:hover 
+        color: #fff
+        font-weight: bold
+
+    &:hover:after 
+        top: 0
+        height: 100%
+
+    &:active 
+        top: 2px
+
+.custom-btn 
+    width: 75px
+    height: 32px
+    color: #fff
+    // background-color: #4dccc677
+    border-radius: 5px
+    padding: 5px 5px
+    margin: 5px 10px
+    font-family: 'Lato', sans-serif
+    font-weight: 500
+    font-size: 12px
+    background: transparent
+    cursor: pointer
+    transition: all 0.3s ease
+    position: relative
+    display: inline-block
+    box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5), 7px 7px 210px 0px rgba(0,0,0,.1), 4px 4px 5px 0px rgba(0,0,0,.1)
+    outline: none
+
+.accordion-button
+    padding: 7px 7px
+
+.accordion-body
+    padding: 10px 5px
+
+.accordion-collapse
+    color: black
+
+.dataTables_length
+    display: none
+
+.contenedor
+    position: absolute
+    top: 0
+    left: 0
+    width: 100vw
+    height: 100vh
+    background-image: url('../imagenes/fondos/fondo08.jpg')
+    background-position: center center
+    background-repeat: no-repeat
+    background-size: cover
+    overflow: hidden
+    .app
+        position: absolute
+        top: $margen-contenedor
+        right: $margen-contenedor
+        bottom: $margen-contenedor
+        left: $margen-contenedor
+        color: white
+        gap: 20px
+        border-radius: $radio-borde
+        backdrop-filter: blur($vidrio-blur) saturate($vidrio-saturacion)
+        background-color: $vidrio-color
+        box-shadow: $vidrio-sombra-color 2px 8px 8px
+        border: 1px $vidrio-borde-color solid
+        border-bottom: 1px rgba(40,40,40,0.35) solid
+        border-right: 1px rgba(40,40,40,0.35) solid
+
+        &_horizontal
+            &_barra
+                position: absolute
+                top: 0
+                left: 0
+                width: 100%
+                height: $barra_altura
+                background-color: $vidrio-color
+                border-radius: $radio-borde $radio-borde 0 0
+                @extend .dist_horizontal_expand
+                &_logo
+                    position: relative
+                    height: 100%
+                    padding: 0 75px
+                    text-align: center
+                    @extend .dist_horizontal_expand
+                    // background-color: green
+                    div
+                        &:first-child
+                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+                            font-weight: bolder
+                            font-size: $barra_menu_letra
+                            letter-spacing: -2px
+                            margin-right: -3px 
+                            color: #164c5c
+                            filter: drop-shadow( 0 0 2px cyan ) drop-shadow( 0 0 10px white )
+                        &:last-child
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+                            font-weight: bold
+                            font-size: $barra_menu_letra + 12px
+                            font-variant: small-caps
+                            letter-spacing: -5px
+                            color: #591966
+                            filter: drop-shadow( 0 0 2px cyan ) drop-shadow( 0 0 10px white )
+                        
+                &_menu
+                    @extend .dist_horizontal_expand
+                    width: content
+                    padding: 0 10px 0 0
+                    ul
+                        display: inline-flex
+                        align-items: center
+                        margin: 0
+                        padding: 0
+                        li
+                            font-size: 14px
+                            list-style-type: none
+                            padding: 0
+                            margin: 7px
+
+            &_contenido
+                position: absolute
+                top: $barra-altura + $contenido-margen
+                right: $contenido-margen
+                bottom: $contenido-margen
+                left: $contenido-margen
+                padding: $contenido-margen
+                background-color: $vidrio-color
+                border-radius: $contenido-radio-borde
+        
+        &_contenido
+            display: flex
+            flex-direction: column
+            justify-content: flex-start
+            align-items: flex-start
+            &_formulario
+                display: relative
+                font-size: 13px
+                width: 100%
+                height: 48%
+                background-color: #b5cfff3f
+                overflow-x: hidden
+                overflow-y: auto
+                // background-color: #005588
+            &_tabla
+                display: relative
+                font-size: 11px
+                font-weight: 600
+                color: black
+                width: 100%
+                height: 52%
+                // margin-bottom: 1em !important
+                border-top: 1px solid #e6e6e6da
+                border-radius: 0 0 .5em .5em
+                background-color: #b5cfff3f
+                overflow-x: hidden
+                overflow-y: auto
+                // background-color: #6b8697
+                .title
+                    // text-align: center
+                    font-size: 2em
+                    color: white
+
+        &_vertical
+            &_barra
+                &_logo
+                &_menu
+                    &_item
+            &_contenido
+
+
+.pagina
+    position: relative
+    margin: 10px !important
+    padding: calc(150px / 2)
+    width: calc(1275px / 2)
+    height: calc(1650px / 2)
+    // background-color: lightgrey
+    border: 1px solid lightgrey
+
+    .area_impresion
+        position: relative
+        width: 100%
+        height: 100%
+        // background-color: white
+
+        .titulo
+            text-transform: uppercase
+            font-size: $letras_titulo
+            font-weight: bold
+            width: 100%
+            text-align: center
+            margin-bottom: $margen_inferior
+
+        .cuerpo
+            &_a
+                text-transform: uppercase
+                text-align: justify
+                line-height: 2em
+                text-indent: 4em
+                font-size: $letras_cuerpo
+                margin-bottom: $margen_inferior
+            &_b
+                text-transform: uppercase
+                text-align: justify
+                line-height: 2em
+                text-indent: 4em
+                font-size: $letras_cuerpo
+                margin-bottom: $margen_inferior
+            &_c
+                text-transform: uppercase
+                text-align: justify
+                line-height: 2em
+                text-indent: 4em
+                font-size: $letras_cuerpo
+                margin-bottom: $margen_inferior
+            &_d
+                text-transform: uppercase
+                text-align: end
+                line-height: 2em
+                text-indent: 4em
+                font-size: $letras_cuerpo
+
+.divisor
+    &_h
+        width: 100%
+        height: 1px
+        margin: 0 !important
+        padding: 0 !important

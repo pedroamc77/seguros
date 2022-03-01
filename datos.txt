@@ -1,0 +1,3 @@
+SELECT t.* FROM vempresasanios AS t JOIN (SELECT ROUND(RAND() * (SELECT MAX(id) FROM vempresasanios)) AS id) AS x WHERE t.id >= x.id AND `f_inic_act` >= '1995-6-24' LIMIT 3
+
+SELECT * FROM `vempresasanios` WHERE `f_inic_act` >= '1995-6-24' LIMIT 3
