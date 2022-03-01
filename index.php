@@ -8,8 +8,10 @@ require_once('./_db/funciones.php');
 //     cargar_csv_bd($_FILES['archivo'], $_POST['encabezado'], $_POST['separador']);
 // }
 
-if ( isset($_POST['fecleglab']) ) {
-  $empresas = empresas_cotizadas($_POST['fecleglab']);
+if ( isset($_POST['fnacimiento']) && $_POST['fnacimiento'] != '' ) {
+  // var_dump($_POST);
+  // exit;
+  $empresas = empresas_cotizadas($_POST['fnacimiento']);
 }
 
 ?>
@@ -71,9 +73,10 @@ if ( isset($_POST['fecleglab']) ) {
                           <div class="row mb-1">
                               <label for="nacimiento" class="col-sm-3 col-form-label">Nacimiento:</label>
                               <div class="col-sm-9">
-                                <input type="date" id="nacimiento" name="nacimiento" class="form-control form-control-sm" onchange="calcularEdad()">
+                                <input type="date" id="fnacimiento" name="fnacimiento" class="form-control form-control-sm" onchange="calcularEdad()">
                                 <input type="hidden" id="edad" name="edad" value="" >
                                 <input type="hidden" id="fecleglab" name="fecleglab" value="" >
+                                <input type="hidden" id="nacimiento" name="nacimiento" value="" >
                               </div>
                           </div>
                           <div class="row mb-1">
@@ -328,13 +331,16 @@ if ( isset($_POST['fecleglab']) ) {
 
         const calcularEdad = () => {
           const fechaAct = moment()
-          const fechaNac = moment($('#nacimiento').val())
+          const fechaNac = moment($('#fnacimiento').val())
+          $('#nacimiento').val($('#fnacimiento').val())
+          console.info('Fecha de Nacimiento: ', fechaNac.format('Y/M/D'))
+
           const edad = fechaAct.diff(fechaNac, 'years')
-          const fecleglab = fechaNac.add(18, 'years').format('Y/M/D')
           $('#edad').val(edad)
-          $('#fecleglab').val(fecleglab)
-          console.info('Fecha de Nacimiento: ', $('#nacimiento').val())
           console.info('Edad: ', edad)
+
+          const fecleglab = fechaNac.add(18, 'years').format('Y/M/D')
+          $('#fecleglab').val(fecleglab)
           console.info('Fecha de edad legal para laborar: ', fecleglab)
         }
     </script>

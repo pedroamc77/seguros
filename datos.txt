@@ -1,3 +1,36 @@
 SELECT t.* FROM vempresasanios AS t JOIN (SELECT ROUND(RAND() * (SELECT MAX(id) FROM vempresasanios)) AS id) AS x WHERE t.id >= x.id AND `f_inic_act` >= '1995-6-24' LIMIT 3
 
 SELECT * FROM `vempresasanios` WHERE `f_inic_act` >= '1995-6-24' LIMIT 3
+
+select `ibritek1_sispen`.`empresas`.`id` AS `id`,`ibritek1_sispen`.`empresas`.`ind` AS `ind`,`ibritek1_sispen`.`empresas`.`ruc` AS `ruc`,`ibritek1_sispen`.`empresas`.`empleador` AS `empleador`,`ibritek1_sispen`.`empresas`.`direccion` AS `direccion`,`ibritek1_sispen`.`empresas`.`dpto` AS `dpto`,`ibritek1_sispen`.`empresas`.`prov` AS `prov`,`ibritek1_sispen`.`empresas`.`dist` AS `dist`,`ibritek1_sispen`.`empresas`.`f_inic_act` AS `f_inic_act`,if((`ibritek1_sispen`.`empresas`.`f_baja_act` = '0000-00-00'),cast(now() as date),`ibritek1_sispen`.`empresas`.`f_baja_act`) AS `f_baja_act`,`ibritek1_sispen`.`empresas`.`rep_legal` AS `rep_legal`,`ibritek1_sispen`.`empresas`.`dni_a` AS `dni_a`,`ibritek1_sispen`.`empresas`.`f_inicio_a` AS `f_inicio_a`,`ibritek1_sispen`.`empresas`.`otro_representante` AS `otro_representante`,`ibritek1_sispen`.`empresas`.`dni_b` AS `dni_b`,`ibritek1_sispen`.`empresas`.`f_inicio_b` AS `f_inicio_b`,`ibritek1_sispen`.`empresas`.`imprimir` AS `imprimir`,timestampdiff(YEAR,`ibritek1_sispen`.`empresas`.`f_inic_act`,`ibritek1_sispen`.`empresas`.`f_baja_act`) AS `anios_transcurridos` from `ibritek1_sispen`.`empresas` 
+where 
+    (
+        (timestampdiff(YEAR,`ibritek1_sispen`.`empresas`.`f_inic_act`,`ibritek1_sispen`.`empresas`.`f_baja_act`) is not null) and 
+        (timestampdiff(YEAR,`ibritek1_sispen`.`empresas`.`f_inic_act`,`ibritek1_sispen`.`empresas`.`f_baja_act`) >= 10)
+    )
+
+
+// TODOSQL: consulta modificada por solicitud de Royers 01-03-2022 //
+select 
+    `id` AS `id`,
+    `ind` AS `ind`,
+    `ruc` AS `ruc`,
+    `empleador` AS `empleador`,
+    `direccion` AS `direccion`,
+    `dpto` AS `dpto`,
+    `prov` AS `prov`,
+    `dist` AS `dist`,
+    `f_inic_act` AS `f_inic_act`,
+    if((date(`f_baja_act`) = '0000-00-00'), date(now()), `f_baja_act`) AS `f_baja_act`,
+    `rep_legal` AS `rep_legal`,
+    `dni_a` AS `dni_a`,
+    `f_inicio_a` AS `f_inicio_a`,
+    `otro_representante` AS `otro_representante`,
+    `dni_b` AS `dni_b`,
+    `f_inicio_b` AS `f_inicio_b`,
+    `imprimir` AS `imprimir`,
+    timestampdiff(YEAR,`f_inic_act`,if((date(`f_baja_act`) = '0000-00-00'), date(now()), `f_baja_act`)) AS `anios_transcurridos` 
+from `empresas` 
+where 
+    `f_inic_act` <> '0000-00-00' and 
+    timestampdiff(YEAR,`f_inic_act`,if((date(`f_baja_act`) = '0000-00-00'), date(now()), `f_baja_act`)) >= 10
