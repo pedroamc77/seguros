@@ -34,3 +34,6 @@ from `empresas`
 where 
     `f_inic_act` <> '0000-00-00' and 
     timestampdiff(YEAR,`f_inic_act`,if((date(`f_baja_act`) = '0000-00-00'), date(now()), `f_baja_act`)) >= 10
+
+
+Agregando modificación
