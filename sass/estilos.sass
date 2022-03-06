@@ -1,7 +1,7 @@
 $margen-contenedor: 1em
-$radio-borde: 10px
+$radio-borde: 1em
 $vidrio-color: rgba(0, 0, 25, 0.5)
-$vidrio-blur: 10px
+$vidrio-blur: 1em
 $vidrio-saturacion: 180%
 $vidrio-borde-color: rgba(255,255,255,0.75)
 $vidrio-sombra-color: rgba(0,0,0,0.5)
@@ -12,9 +12,15 @@ $barra_menu_letra: 40px
 $contenido-margen: 15px
 $contenido-radio-borde: 0 0 $contenido-margen $contenido-margen
     
+$letras_empresa: 1.2em
 $letras_titulo: 1.5em
 $letras_cuerpo: 1em
-$margen_inferior: 1.25em
+
+$margen_inferior_a: 1.25em
+$margen_inferior_b: 1.5em
+$margen_inferior_c: 2em
+$margen_inferior_d: 2.5em
+$margen_inferior_e: 3em
 
 *
     box-sizing: 0
@@ -23,6 +29,36 @@ html body
     margin: 0
     padding: 0
     font-size: 14pt
+
+[data-title]
+    &:hover
+        &:after 
+            opacity: 1
+            transition: all 0.1s ease 0.5s
+            visibility: visible
+
+[data-title]
+    &:after 
+        content: attr(data-title)
+        background-color: #0b097e88
+        color: #fff
+        font-size: 14px
+        // font-family: Raleway
+        position: absolute
+        padding: 2px 20px
+        bottom: -1.9em
+        top: 110%
+        left: -100%
+        white-space: nowrap
+        box-shadow: 1px 1px 3px #f7f7f752
+        opacity: 0
+        // border: 1px solid #111111
+        z-index: 99999
+        visibility: hidden
+        border-radius: 6px
+    
+[data-title]
+    position: relative
 
 .dist_horizontal_expand
     display: flex
@@ -229,6 +265,18 @@ html body
                     &_item
             &_contenido
 
+.margen
+    &_a
+        margin-bottom: $margen_inferior_a
+    &_b
+        margin-bottom: $margen_inferior_b
+    &_c
+        margin-bottom: $margen_inferior_c
+    &_d
+        margin-bottom: $margen_inferior_d
+    &_e
+        margin-bottom: $margen_inferior_e
+
 
 .pagina
     position: relative
@@ -245,36 +293,44 @@ html body
         height: 100%
         // background-color: white
 
-        .titulo
+        &_empresa
+            text-transform: uppercase
+            font-size: $letras_empresa
+            font-weight: bold
+            width: 100%
+            // text-align: right
+            &_a
+                text-align: end
+
+            &_b
+                text-align: start
+
+        &_titulo
             text-transform: uppercase
             font-size: $letras_titulo
             font-weight: bold
             width: 100%
             text-align: center
-            margin-bottom: $margen_inferior
 
-        .cuerpo
+        &_cuerpo
             &_a
                 text-transform: uppercase
                 text-align: justify
                 line-height: 2em
                 text-indent: 4em
                 font-size: $letras_cuerpo
-                margin-bottom: $margen_inferior
             &_b
                 text-transform: uppercase
                 text-align: justify
                 line-height: 2em
                 text-indent: 4em
                 font-size: $letras_cuerpo
-                margin-bottom: $margen_inferior
             &_c
                 text-transform: uppercase
                 text-align: justify
                 line-height: 2em
                 text-indent: 4em
                 font-size: $letras_cuerpo
-                margin-bottom: $margen_inferior
             &_d
                 text-transform: uppercase
                 text-align: end

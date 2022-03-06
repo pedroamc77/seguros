@@ -78,7 +78,12 @@ function consultar_seguros( $idempresa ) {
 }
 
 function empresas_cotizadas( $fecha ) {
-    $sql = "SELECT * FROM `vtresempresas` WHERE `f_inic_act` >= '$fecha' LIMIT 3";
+    $sql  = "(SELECT DISTINCT id, ruc, empleador, dpto, f_inic_act, f_baja_act FROM vempresasfiltradas WHERE f_inic_act <= (DATE_ADD('".$fecha."',INTERVAL 17 YEAR)) and f_baja_act >= (DATE_ADD('".$fecha."',INTERVAL 28 YEAR)) ORDER BY rand() LIMIT 1)";
+    $sql .= "UNION";
+    $sql .= "(SELECT DISTINCT id, ruc, empleador, dpto, f_inic_act, f_baja_act FROM vempresasfiltradas WHERE f_inic_act <= (DATE_ADD('".$fecha."',INTERVAL 27 YEAR)) and f_baja_act >= (DATE_ADD('".$fecha."',INTERVAL 38 YEAR)) ORDER BY rand() LIMIT 1)";
+    // $sql .= "ORDER BY f_inic_act";
+    // echo $sql;
+    // exit;
     try {
         $db = new db();
         $db = $db->connectionDB();
@@ -86,19 +91,10 @@ function empresas_cotizadas( $fecha ) {
         if ($resultado->rowCount() > 0) {
             $datos = $resultado->fetchAll();
             return $datos;
-            // return $res->withStatus(200)
-            //     ->withHeader('Content-Type', 'application/json')
-            //     ->write(json_encode($datos));
         } else {
-            // echo json_encode("No existen registros");
             return "No existen registros";
         }
     } catch (\Throwable $th) {
         return "Error al consultar información.";
-        // $datos = array([ "Error" => 401, "mensaje" => "Error al obtener registros."]);
-        // return $datos;
-        // return $res->withStatus(401)
-        //     ->withHeader('Content-Type', 'application/json')
-        //     ->write(json_encode($datos[0]));
     }
 }

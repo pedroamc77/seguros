@@ -25,11 +25,11 @@ $informacion = consultar_seguros(164);
 ?>
     <div class="pagina" >
         <div class="area_impresion">
-            <div class="titulo">constancia de trabajo</div>
-            <div class="cuerpo_a">Se deja constancia que la sra.<strong><?php echo $_POST['nombre']." ".$_POST['apellidos'] ?></strong>, ha laborado para nuestra empresa como <strong><?php echo "ELCARGO"; ?></strong> a partir del <strong><?php echo $informacion[0]['f_inic_act'] ?></strong> al <strong><?php echo $informacion[0]['f_baja_act'] ?></strong>. </div>
-            <div class="cuerpo_b">Durante su tiempo de servicios la mencionada señora, demostro en todo momento un alto grado de responsabilidad en las tareas encomendadas por la empresa.</div>
-            <div class="cuerpo_c">A solucitud de la interesada, se extiende la constancia para el uso que le pueda dar.</div>
-            <div class="cuerpo_d">Lima <?php echo date("d.m.Y") ?> </div>
+            <div class="area_impresion_titulo">constancia de trabajo</div>
+            <div class="area_impresion_cuerpo_a">Se deja constancia que la sra.<strong><?php echo $_POST['nombre']." ".$_POST['apellidos'] ?></strong>, ha laborado para nuestra empresa como <strong><?php echo "ELCARGO"; ?></strong> a partir del <strong><?php echo $informacion[0]['f_inic_act'] ?></strong> al <strong><?php echo $informacion[0]['f_baja_act'] ?></strong>. </div>
+            <div class="area_impresion_cuerpo_b">Durante su tiempo de servicios la mencionada señora, demostro en todo momento un alto grado de responsabilidad en las tareas encomendadas por la empresa.</div>
+            <div class="area_impresion_cuerpo_c">A solucitud de la interesada, se extiende la constancia para el uso que le pueda dar.</div>
+            <div class="area_impresion_cuerpo_d">Lima <?php echo date("d.m.Y") ?> </div>
         </div>
     </div>
 <?php
