@@ -1,2 +1,110 @@
-*{-webkit-box-sizing:0;box-sizing:0}html body{margin:0;padding:0;font-size:14pt}.margen_a{margin-bottom:2.5em}.margen_b{margin-bottom:3em}.margen_c{margin-bottom:4em}.margen_d{margin-bottom:5em}.margen_e{margin-bottom:6em}.pagina{position:relative;margin:auto 0;padding:150px;width:1275px;height:1650px;background-color:lightgrey}.pagina .area_impresion{position:relative;width:100%;height:100%;background-color:white;border:1px solid black}.pagina .area_impresion_empresa{text-transform:uppercase;font-size:2.4em;font-weight:bold;width:100%}.pagina .area_impresion_empresa_a{text-align:end}.pagina .area_impresion_empresa_b{text-align:start}.pagina .area_impresion_titulo{text-transform:uppercase;font-size:3em;font-weight:bold;width:100%;text-align:center;margin-bottom:2.5em}.pagina .area_impresion_cuerpo_a{text-transform:uppercase;text-align:justify;line-height:2em;text-indent:4em;font-size:2em}.pagina .area_impresion_cuerpo_b{text-transform:uppercase;text-align:justify;line-height:2em;text-indent:4em;font-size:2em}.pagina .area_impresion_cuerpo_c{text-transform:uppercase;text-align:justify;line-height:2em;text-indent:4em;font-size:2em}.pagina .area_impresion_cuerpo_d{text-transform:uppercase;text-align:end;line-height:2em;text-indent:4em;font-size:2em}
+* {
+  -webkit-box-sizing: 0;
+          box-sizing: 0;
+}
+
+html body {
+  margin: 0;
+  padding: 0;
+  font-size: 14pt;
+}
+
+.margen_a {
+  margin-bottom: 2.5em;
+}
+
+.margen_b {
+  margin-bottom: 3em;
+}
+
+.margen_c {
+  margin-bottom: 4em;
+}
+
+.margen_d {
+  margin-bottom: 5em;
+}
+
+.margen_e {
+  margin-bottom: 6em;
+}
+
+.pagina {
+  position: relative;
+  margin: auto 0 !important;
+  max-width: 21cm;
+  width: 21cm;
+  max-height: 29.7cm;
+  height: 29.7cm;
+  padding: 3cm 5cm;
+}
+
+.rep6272 {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.rep6272_empresa {
+  text-transform: uppercase;
+  font-size: 1.2em;
+  font-weight: bolder;
+  width: 100%;
+  color: red !important;
+}
+
+.rep6272_empresa_a {
+  text-align: end;
+}
+
+.rep6272_empresa_b {
+  text-align: start;
+}
+
+.rep6272_titulo {
+  text-transform: uppercase;
+  font-size: 1.5em;
+  font-weight: bold;
+  width: 100%;
+  text-align: center;
+}
+
+.rep6272_cuerpo_a {
+  text-align: justify;
+  line-height: 2em;
+  font-size: 1em;
+  margin: 0 100px !important;
+  padding-top: 20px;
+}
+
+.rep6272_cuerpo_a_titulo {
+  font-size: 1em;
+  margin: 0 100px !important;
+}
+
+.rep6272_cuerpo_b {
+  margin: 0 100px !important;
+  text-align: justify;
+  line-height: 2em;
+  font-size: 1em;
+  padding-top: 50px;
+}
+
+.rep6272_cuerpo_c {
+  text-transform: uppercase;
+  text-align: justify;
+  line-height: 2em;
+  text-indent: 4em;
+  font-size: 1em;
+}
+
+.rep6272_cuerpo_d {
+  padding-top: 30px;
+  margin: 0 25px !important;
+  text-transform: uppercase;
+  color: red;
+  line-height: 2em;
+  text-indent: 4em;
+  font-size: 1em;
+}
 /*# sourceMappingURL=impresion.min.css.map */

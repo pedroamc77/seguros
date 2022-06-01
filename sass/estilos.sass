@@ -108,7 +108,8 @@ html body
         top: 2px
 
 .custom-btn 
-    width: 75px
+    display: inline-flex
+    min-width: 100px
     height: 32px
     color: #fff
     // background-color: #4dccc677
@@ -168,6 +169,10 @@ html body
         &_horizontal
             &_barra
                 position: absolute
+                display: flex
+                flex-direction: row
+                justify-content: space-between
+                align-items: center
                 top: 0
                 left: 0
                 width: 100%
@@ -177,6 +182,7 @@ html body
                 @extend .dist_horizontal_expand
                 &_logo
                     position: relative
+                    display: inline-flex
                     height: 100%
                     padding: 0 75px
                     text-align: center
@@ -202,7 +208,8 @@ html body
                         
                 &_menu
                     @extend .dist_horizontal_expand
-                    width: content
+                    // width: content
+                    display: inline-flex
                     padding: 0 10px 0 0
                     ul
                         display: inline-flex
@@ -234,7 +241,7 @@ html body
                 display: relative
                 font-size: 13px
                 width: 100%
-                height: 48%
+                height: 100%
                 background-color: #b5cfff3f
                 overflow-x: hidden
                 overflow-y: auto
@@ -245,7 +252,7 @@ html body
                 font-weight: 600
                 color: black
                 width: 100%
-                height: 52%
+                height: 30%
                 // margin-bottom: 1em !important
                 border-top: 1px solid #e6e6e6da
                 border-radius: 0 0 .5em .5em
@@ -277,66 +284,24 @@ html body
     &_e
         margin-bottom: $margen_inferior_e
 
+.enunciado
+    display: inline-flex
+    width: 250px !important
+    text-align: left
+    
+.titulo
+    &_a
+        text-align: left
+    &_b
+        width: 50%
+    &_c
+        width: 50%
+        text-align: end
 
-.pagina
-    position: relative
-    margin: 10px !important
-    padding: calc(150px / 2)
-    width: calc(1275px / 2)
-    height: calc(1650px / 2)
-    // background-color: lightgrey
-    border: 1px solid lightgrey
-
-    .area_impresion
-        position: relative
-        width: 100%
-        height: 100%
-        // background-color: white
-
-        &_empresa
-            text-transform: uppercase
-            font-size: $letras_empresa
-            font-weight: bold
-            width: 100%
-            // text-align: right
-            &_a
-                text-align: end
-
-            &_b
-                text-align: start
-
-        &_titulo
-            text-transform: uppercase
-            font-size: $letras_titulo
-            font-weight: bold
-            width: 100%
-            text-align: center
-
-        &_cuerpo
-            &_a
-                text-transform: uppercase
-                text-align: justify
-                line-height: 2em
-                text-indent: 4em
-                font-size: $letras_cuerpo
-            &_b
-                text-transform: uppercase
-                text-align: justify
-                line-height: 2em
-                text-indent: 4em
-                font-size: $letras_cuerpo
-            &_c
-                text-transform: uppercase
-                text-align: justify
-                line-height: 2em
-                text-indent: 4em
-                font-size: $letras_cuerpo
-            &_d
-                text-transform: uppercase
-                text-align: end
-                line-height: 2em
-                text-indent: 4em
-                font-size: $letras_cuerpo
+.valores
+    display: -webkit-inline-box
+    width: 300px !important
+    // text-align: left
 
 .divisor
     &_h
@@ -344,3 +309,1373 @@ html body
         height: 1px
         margin: 0 !important
         padding: 0 !important
+                
+.resaltar
+    color: red
+    font-weight: bolder
+
+.mayusculas
+    text-transform: uppercase !important
+
+.capitalizar
+    text-transform: capitalize !important
+
+.truncar
+    white-space: nowrap
+    overflow: hidden
+    text-overflow: ellipsis
+
+.column-reverse
+    display: flex
+    flex-direction: column-reverse
+
+.divLinea
+    border-bottom: solid 1px black
+    height: 24px
+    text-indent: 10px
+    align-items: end
+
+.fijarCancelar
+    position: absolute
+    bottom: 0
+    left: 0
+
+.pagina
+    position: relative
+    max-width: 21cm 
+    width: 21cm 
+    max-height: 29.7cm
+    height: 29.7cm
+    margin: 0 auto
+    border: 1px solid lightgrey
+    font-family: 'Roboto', sans-serif
+    font-size: 14px
+
+    .certificado7262
+        font-size: $letras_empresa
+        font-weight: bolder
+        margin: 3cm 2cm
+
+    .cer6272
+        &_empresa
+            font-size: $letras_empresa
+            font-weight: bold
+            color: red
+            margin: 0 0 4em 0
+
+        &_titulo
+            font-size: $letras_titulo
+            font-weight: bolder
+            text-transform: uppercase
+            text-decoration: underline
+            text-align: center
+            margin: 0 0 1em 0
+
+        &_enunciado
+            font-size: $letras_cuerpo
+            font-weight: bolder
+            text-transform: uppercase
+            text-decoration: underline
+            margin: 100px 100px -10px 100px
+
+        &_cuerpo
+            text-align: justify
+            line-height: 2em
+            font-size: $letras_cuerpo
+            margin: 0 100px !important
+            padding-top: 30px
+
+        &_fecha
+            text-align: justify
+            line-height: 2em
+            font-size: $letras_cuerpo
+            margin: 0 100px !important
+            padding-top: 20px
+            color: red 
+
+    .certificado7375
+        font-size: $letras_empresa
+        font-weight: bolder
+        margin: 3cm 1cm
+
+    .cer7375
+        &_empresa
+            font-size: $letras_empresa
+            font-weight: bold
+            margin: 0 0 12em 0
+            text-align: end
+
+        &_titulo
+            font-size: $letras_cuerpo
+            font-weight: bolder
+            text-align: center
+            text-transform: uppercase
+            text-decoration: underline
+            margin: 0 0 3em 0
+
+        &_cuerpo
+            text-align: justify
+            line-height: 2em
+            font-size: $letras_cuerpo
+            margin: 0 100px !important
+            padding-top: 40px
+
+        &_fecha
+            text-align: justify
+            line-height: 2em
+            font-size: $letras_cuerpo
+            margin: 0 100px !important
+            padding-top: 5em
+            color: red 
+            text-align: end
+
+    .certificado7683
+        font-size: $letras_empresa
+        font-weight: bolder
+        margin: 3cm 1cm
+
+    .cer7683
+        &_empresa
+            font-size: $letras_empresa
+            font-weight: bold
+            margin: 0 0 7em 0
+            text-align: center
+
+        &_titulo
+            font-size: $letras_cuerpo
+            font-weight: bolder
+            text-transform: uppercase
+            text-decoration: underline
+            margin: 0 0 3em 100px
+
+        &_cuerpo
+            text-align: justify
+            text-transform: uppercase
+            line-height: 2em
+            font-size: $letras_cuerpo
+            margin: 0 100px !important
+            padding-top: 40px
+
+        &_fecha
+            text-align: justify
+            line-height: 2em
+            font-size: $letras_cuerpo
+            margin: 0 100px !important
+            padding-top: 5em
+            color: red 
+            text-align: center
+
+    .certificado8494
+        font-size: $letras_empresa
+        font-weight: bolder
+        margin: 3cm 1cm
+
+    .cer8494
+        &_empresa
+            font-size: 14px
+            font-weight: bold
+            margin: 0 0 3em 100px
+
+        &_titulo
+            font-size: $letras_cuerpo
+            font-weight: bolder
+            text-align: center
+            text-transform: uppercase
+            text-decoration: underline
+            margin: 0 0 3em 0
+
+        &_cuerpo
+            text-align: justify
+            text-transform: uppercase
+            line-height: 2em
+            font-size: $letras_cuerpo
+            margin: 0 100px !important
+            padding-top: 40px
+
+        &_fecha
+            line-height: 2em
+            font-size: $letras_cuerpo
+            margin: 0 100px 3em 0 !important
+            padding-top: 5em
+            color: red 
+            text-align: end
+
+    .certificado9500
+        font-size: $letras_empresa
+        font-weight: bolder
+        margin: 3cm 0
+
+    .cer9500
+        &_empresa
+            font-size: $letras_empresa
+            font-weight: bold
+            margin: 0 0 7em 100px
+
+        &_titulo
+            font-size: $letras_empresa
+            font-weight: bolder
+            text-align: center
+            text-transform: uppercase
+            text-decoration: underline
+            margin: 0 0 5em 0
+
+        &_cuerpo
+            text-align: justify
+            text-transform: uppercase
+            line-height: 2em
+            font-size: $letras_cuerpo
+            margin: 0 100px !important
+            padding-top: 40px
+
+        &_fecha
+            line-height: 2em
+            font-size: $letras_cuerpo
+            margin: 0 100px 3em 0 !important
+            padding-top: 4em
+            color: red 
+            text-align: end
+
+.pagina_liq
+    position: relative
+    max-width: 21cm 
+    width: 21cm 
+    max-height: 29.7cm
+    height: 29.7cm
+    margin: 0 auto
+    border: 1px solid lightgrey
+    font-family: 'Roboto', sans-serif
+    font-size: 14px
+
+    .liquidacion6272
+        font-size: $letras_empresa
+        font-weight: bolder
+        margin: 3cm 2cm
+    
+    .liq6272
+        &_empresa
+            font-size: $letras_empresa
+            font-weight: bolder
+            color: red
+            margin: 0 0 1em 0
+
+        &_titulo
+            font-size: $letras_titulo
+            font-weight: bolder
+            text-transform: uppercase
+            text-decoration: underline
+            text-align: center
+            margin: 0 0 1em 0
+
+        &_desglose
+            display: flex
+            flex-direction: row
+            justify-content: start
+            align-items: start
+            margin: 0 0 .3em 0
+            
+            >div:nth-child(1)
+                width: 12em
+            
+            >div:nth-child(2)
+                font-weight: bolder
+
+        &_tcalculo
+            margin: 1em 0 0 0
+            // margin-top: 1.5em
+            // margin-bottom: .5em
+
+        &_calculo
+            display: flex
+            flex-direction: row
+            margin: 0 0 0 3em
+
+        &_numerosletras
+            // margin: 0 0 1em 0
+            margin: 1.5em 0 0 0
+            text-transform: capitalize
+
+        &_declaracion
+            margin: 1em 0 0 0
+            text-align: justify
+
+        &_fecha
+            margin: 1em 0 0 0
+            color: red
+
+        &_recibiconforme
+            margin: 3em 2em 0 0
+            text-transform: uppercase
+            text-align: end
+
+        &_firma
+            margin: 5em auto 0 auto
+            padding-top: 1em
+            width: 40%
+            text-align: center
+            border-top: dotted 2px black
+            color: red
+            // background-color: rgba(0,0,255,.1)
+
+    .liquidacion7375
+        font-size: $letras_empresa
+        font-weight: bolder
+        margin: 3cm 2cm
+    
+    .liq7375
+        &_empresa
+            font-size: $letras_empresa
+            font-weight: bolder
+            text-align: end
+            margin: 0 0 2em 0
+
+        &_titulo
+            font-size: 18px
+            font-weight: bolder
+            text-align: center
+            text-transform: uppercase
+            text-decoration: underline
+            margin: 0 0 2em 0
+
+        &_desglose
+            display: flex
+            flex-direction: row
+            justify-content: start
+            align-items: start
+            margin: 0 0 1em 0
+            text-transform: uppercase
+            
+            >div:nth-child(1)
+                width: 12em
+            
+            >div:nth-child(2)
+                font-weight: bolder
+
+        &_tcalculo
+            margin: 1.5em 0 1em 0
+            text-decoration: underline
+            // margin-top: 1.5em
+            // margin-bottom: .5em
+
+        &_calculo
+            display: flex
+            flex-direction: row
+            margin: 0 0 1em 0
+
+        &_numerosletras
+            // margin: 0 0 1em 0
+            margin: 1.5em 0 0 0
+            text-transform: capitalize
+
+        &_declaracion
+            margin: 3em 0 0 0
+            text-align: justify
+            text-indent: 12em
+
+        &_fecha
+            margin: 1em 0 0 0
+            color: red
+            text-align: end
+            padding-top: 1em
+
+        &_recibiconforme
+            margin: 3em 2em 0 0
+            text-transform: uppercase
+            text-align: end
+
+        &_firmas
+            display: flex
+            flex-direction: row
+            padding-top: 7em
+            font-size: 12px
+            &_bloques
+                width: 50%
+                margin: 0 auto
+                &_titulo
+                    padding-top: 15px
+                    text-align: center
+                    text-transform: capitalize
+                    width: 70%
+                    margin: 0 auto
+                    border-top: dotted 2px black
+
+    .liquidacion7683
+        font-size: $letras_empresa
+        font-weight: bolder
+        margin: 3cm 2cm
+    
+    .liq7683
+        &_empresa
+            font-size: $letras_empresa
+            font-weight: bolder
+            text-align: center
+            margin: 0 0 4em 0
+
+        &_titulo
+            font-size: $letras_cuerpo
+            font-weight: bolder
+            text-transform: uppercase
+            text-decoration: underline
+            margin: 0 0 1em 0
+
+        &_desglose
+            display: flex
+            flex-direction: row
+            justify-content: start
+            align-items: start
+            margin: 0 0 .5em 0
+            text-transform: uppercase
+            
+            >div:nth-child(1)
+                width: 12em
+            
+            >div:nth-child(2)
+                font-weight: bolder
+
+        &_calculo
+            display: flex
+            flex-direction: row
+            margin: 0 0 .5em 0
+
+        &_numerosletras
+            // margin: 0 0 1em 0
+            margin: 1.5em 0 0 0
+            text-transform: capitalize
+
+        &_declaracion
+            margin: 1em 0 0 0
+            text-align: justify
+
+        &_fecha
+            margin: 1em 0 0 0
+            color: red
+            text-align: center
+            padding-top: 2em
+
+        &_recibiconforme
+            margin: 3em 2em 0 0
+            text-transform: uppercase
+            text-align: end
+
+        &_firmas
+            display: flex
+            flex-direction: row
+            padding-top: 7em
+            &_bloques
+                width: 50%
+                margin: 0 auto
+                &_titulo
+                    text-align: center
+                    width: 50%
+                    margin: 0 auto
+                    border-top: dotted 2px black
+
+    .liquidacion8494
+        font-size: $letras_cuerpo
+        font-weight: bolder
+        margin: 3cm 2cm
+    
+    .liq8494
+        &_empresa
+            font-size: $letras_empresa
+            font-weight: bolder
+            margin: 0 0 3em 0
+
+        &_titulo
+            font-size: $letras_cuerpo
+            font-weight: bolder
+            text-align: center
+            text-transform: uppercase
+            text-decoration: underline
+            margin: 0 100px 1em 100px
+
+        &_desglose
+            display: flex
+            flex-direction: row
+            justify-content: start
+            align-items: start
+            margin: 0 0 1em 0
+            text-transform: uppercase
+            
+            >div:nth-child(1)
+                width: 18em
+            
+            >div:nth-child(2)
+                font-weight: bolder
+
+        &_calculo
+            display: flex
+            flex-direction: row
+            margin: 0 0 1em 0
+            
+        &_calculo_c8494
+            position: relative
+            display: flex
+            flex-direction: row
+            justify-content: start
+            align-items: start
+            text-align: center
+            >div:nth-child(1)
+                width: 15%
+            >div:nth-child(2)
+                width: 15%
+            >div:nth-child(3)
+                width: 15%
+            >div:nth-child(4)
+                width: 25%
+                text-align: right
+            >div:nth-child(5)
+                width: 30%
+                text-align: right !important
+            
+        &_calculo_descuento
+            position: relative
+            display: flex
+            flex-direction: row
+            justify-content: start
+            align-items: start
+            margin-bottom: 3em
+            >div:nth-child(1)
+                text-align: start
+                width: 100%
+            >div:nth-child(2)
+                width: 30%
+                text-align: end
+            >div:nth-child(3)
+                width: 78%
+                text-align: end
+
+        &_calculo_total
+            position: relative
+            display: flex
+            flex-direction: row
+            justify-content: start
+            align-items: start
+            >div:nth-child(1)
+                width: 100%
+            >div:nth-child(2)
+                width: min-content
+                margin-left: 3px
+                text-align: end
+
+        &_numerosletras
+            // margin: 0 0 1em 0
+            margin: 1.5em 0 0 0
+            text-transform: capitalize
+
+        &_declaracion
+            margin: 1em 0 0 0
+            text-align: justify
+
+        &_fecha
+            margin: 0 0 2em 0 
+            color: red
+            text-align: end
+            // padding-top: 2e'm
+
+        &_recibiconforme
+            margin: 3em 2em 0 0
+            text-transform: uppercase
+            text-align: end
+
+        &_firmas
+            display: flex
+            flex-direction: row
+            padding-top: 7em
+            &_bloques
+                width: 50%
+                margin: 0 auto
+                &_titulo
+                    text-align: center
+                    width: 50%
+                    margin: 0 auto
+                    border-top: dotted 2px black
+                    padding-top: 15px
+
+    .liquidacion9500
+        font-size: $letras_cuerpo
+        font-weight: bolder
+        margin: 3cm 2cm
+    
+    .liq9500
+        &_empresa
+            font-size: $letras_empresa
+            font-weight: bolder
+            margin: 0 0 3em 0
+            color: red
+
+        &_titulo
+            font-size: $letras_cuerpo
+            font-weight: bolder
+            text-align: center
+            text-transform: uppercase
+            text-decoration: underline
+            margin: 0 100px 1em 100px
+
+        &_desglose
+            display: flex
+            flex-direction: row
+            justify-content: start
+            align-items: start
+            margin: 0 0 1em 0
+            text-transform: uppercase
+            
+            >div:nth-child(1)
+                width: 23em
+            
+            >div:nth-child(2)
+                font-weight: bolder
+
+        &_calculo
+            display: flex
+            flex-direction: row
+            margin: 0 0 1em 0
+            
+        &_calculo_c8494
+            position: relative
+            display: flex
+            flex-direction: row
+            justify-content: start
+            align-items: start
+            text-align: center
+            >div:nth-child(1)
+                width: 15%
+            >div:nth-child(2)
+                width: 15%
+            >div:nth-child(3)
+                width: 15%
+            >div:nth-child(4)
+                width: 20%
+            >div:nth-child(5)
+                width: 20%
+            
+        &_calculo_descuento
+            position: relative
+            display: flex
+            flex-direction: row
+            justify-content: start
+            align-items: start
+            margin-bottom: 3em
+            >div:nth-child(1)
+                text-align: start
+                width: 100%
+            >div:nth-child(2)
+                width: 30%
+                text-align: end
+            >div:nth-child(3)
+                width: 78%
+                text-align: end
+
+        &_calculo_total
+            position: relative
+            display: flex
+            flex-direction: row
+            justify-content: start
+            align-items: start
+            >div:nth-child(1)
+                width: 100%
+            >div:nth-child(2)
+                width: min-content
+                margin-left: 3px
+                text-align: end
+
+        &_numerosletras
+            // margin: 0 0 1em 0
+            margin: 1.5em 0 0 0
+            text-transform: capitalize
+
+        &_declaracion
+            margin: 4em 0 0 0
+            text-align: justify
+
+        &_fecha
+            margin: 4em 0 2em 0 
+            color: red
+            text-align: end
+            // padding-top: 2e'm
+
+        &_recibiconforme
+            margin: 3em 2em 0 0
+            text-transform: uppercase
+            text-align: end
+
+        &_firma
+            margin: 10em auto 0 auto
+            padding-top: 1em
+            width: 40%
+            text-align: center
+            border-top: dotted 2px black
+            color: red
+
+.pagina_bol
+    position: relative
+    max-width: 21cm 
+    width: 21cm 
+    max-height: 29.7cm
+    height: 29.7cm
+    margin: 0 auto
+    border: 1px solid lightgrey
+    font-family: 'Roboto', sans-serif
+    font-size: 14px
+    
+    .boleta
+        font-size: $letras_cuerpo
+        font-weight: bolder
+        margin: 3cm 2cm
+    
+    .boleta
+        &_empresa
+            position: relative
+            font-size: $letras_empresa
+            font-weight: bolder
+            margin: 0 0 1em 0
+            height: 24px
+
+            >div:nth-child(1)
+                font-size: $letras_cuerpo
+                position: absolute
+                top: 0
+                left: 0
+                width: max-content
+                float: left
+
+            >div:nth-child(2)
+                width: 100%
+                float: left
+                text-align: center
+
+        &_titulo
+            position: relative
+            font-size: $letras_titulo
+            font-weight: bolder
+            text-align: center
+            text-transform: uppercase
+            text-decoration: underline
+            margin: 0 0 1em 0
+
+        &_desglose
+            display: flex
+            flex-direction: row
+            justify-content: start
+            align-items: start
+            // margin: 0 0 1em 0
+            text-transform: uppercase
+            
+            >div:nth-child(1)
+                width: 12em
+            
+            >div:nth-child(2)
+                font-weight: bolder
+
+        &_calculo
+            display: flex
+            flex-direction: row
+            justify-content: start
+            align-items: start
+            // margin: 0 0 1em 0
+            text-transform: uppercase
+            
+            >div:nth-child(1)
+                width: 12em
+                // background-color: #0000ff33
+            
+            >div:nth-child(2)
+                width: 20em !important
+                font-weight: bolder
+                text-align: center
+                margin-right: 1em
+                // background-color: #00ff0033
+            
+            >div:last-child
+                width: 15em !important
+                font-weight: bolder
+                text-align: end
+                // background-color: #33ff5533
+
+        &_numerosletras
+            // margin: 0 0 1em 0
+            margin: 1.5em 0 0 0
+            text-transform: capitalize
+
+        &_declaracion
+            margin: 4em 0 0 0
+            text-align: justify
+
+        &_fecha
+            margin: 0 0 1em 0 
+            text-align: end
+
+        &_recibiconforme
+            margin: 3em 2em 0 0
+            text-transform: uppercase
+            text-align: end
+
+        &_firmas
+            display: flex
+            flex-direction: row
+            padding-top: 12em
+            font-size: 1em
+            &_bloques
+                width: 50%
+                margin: 0 auto
+                &_titulo
+                    padding-top: 15px
+                    text-align: center
+                    text-transform: capitalize
+                    width: 70%
+                    margin: 0 auto
+                    border-top: dotted 2px black
+
+    .boleta7880
+        font-size: $letras_cuerpo
+        font-weight: bolder
+        margin: 3cm 2cm
+        font-size: 12px
+
+        .marco
+            &_linea1
+                display: flex
+                flex-direction: row
+                text-transform: capitalize
+                margin: 0 0 .5em 0
+                >div
+                    &:first-child
+                        width: 20%
+                    &:nth-child(2)
+                        width: 80%
+                        border-bottom: 1px solid black
+                        // background-color: cyan
+            &_linea2
+                display: flex
+                flex-direction: row
+                text-transform: capitalize
+                margin: 0 0 .5em 0
+                >div
+                    &:first-child
+                        width: 20%
+                    &:nth-child(2)
+                        width: 30%
+                        border-bottom: 1px solid black
+                        // background-color: cyan
+                    &:nth-child(3)
+                        width: 17%
+                        text-align: end
+                    &:last-child
+                        width: 33%
+                        border-bottom: 1px solid black
+                        // background-color: cyan
+            &_linea3
+                display: flex
+                flex-direction: row
+                text-transform: capitalize
+                margin: 0 0 .5em 0
+                >div
+                    &:first-child
+                        width: 20%
+                    &:nth-child(2)
+                        width: 80%
+                        // border-bottom: 1px solid black
+                        // background-color: cyan
+            &_linea4
+                display: flex
+                flex-direction: row
+                text-transform: capitalize
+                margin: 0 0 .5em 0
+                >div
+                    &:first-child
+                        width: 25%
+                    &:nth-child(2)
+                        width: 75%
+                        // border-bottom: 1px solid black
+                        // background-color: cyan
+            
+            &_linea5
+                display: flex
+                flex-direction: row
+                text-transform: capitalize
+                margin: 0 0 .5em 0
+                >div
+                    &:first-child
+                        padding-left: 5px
+                        width: 20%
+                    &:nth-child(2)
+                        width: 30%
+                        // border-bottom: 1px solid black
+                        // background-color: cyan
+                    &:nth-child(3)
+                        width: 17%
+                    &:last-child
+                        width: 33%
+                        // border-bottom: 1px solid black
+                        // background-color: cyan
+            
+            &_linea6
+                display: flex
+                flex-direction: row
+                text-transform: capitalize
+                margin: 2em 0 0 0
+                font-size: 14px
+                font-weight: bolder
+                >div
+                    &:first-child
+                        padding: 3px 0
+                        width: 80%
+                        text-align: center
+                        border-right: dashed 2px black
+                        border-top: solid 1px black
+                        border-bottom: dashed 1px black
+                    &:last-child
+                        width: 20%
+                        border-top: dashed 1px black
+                        border-bottom: solid 1px black
+            
+            &_linea7
+                display: flex
+                flex-direction: row
+                text-transform: capitalize
+                font-size: 14px
+                >div
+                    &:first-child
+                        padding: 3px 0 3px 5px
+                        border-right: dashed 2px black
+                        width: calc( 80% - 5px )
+                    &:last-child
+                        width: 20%
+            
+            &_linea8
+                display: flex
+                flex-direction: row
+                text-transform: capitalize
+                font-size: 14px
+                font-weight: bolder
+                >div
+                    &:first-child
+                        padding: 3px 0 1.5em 0
+                        width: 80%
+                        text-align: end
+                        border-right: dashed 2px black
+                        border-top: dashed 1px black
+                        border-bottom: solid 1px black
+                    &:last-child
+                        width: 20%
+                        border-top: solid 1px black
+                        border-bottom: solid 1px black
+            
+            &_linea9
+                display: flex
+                flex-direction: row
+                text-transform: capitalize
+                font-size: 14px
+                font-weight: bolder
+                >div
+                    &:first-child
+                        padding: 3px
+                        width: calc( 30% - 6px )
+                        border-right: dashed 2px black
+                    &:nth-child(2)
+                        width: 20%
+                    &:nth-child(3)
+                        padding: 3px
+                        width: calc( 30% - 9px )
+                        border-right: dashed 2px black
+                        border-left: dashed 2px black
+                    &:last-child
+                        width: 20%
+            
+            &_linea10
+                display: flex
+                flex-direction: row
+                text-transform: capitalize
+                font-size: 14px
+                font-weight: bolder
+                border-top: solid 1px black
+                border-bottom: solid 1px black
+
+                >div
+                    &:first-child
+                        padding: 3px 3px 1.5em 3px
+                        width: calc( 30% - 6px )
+                        // text-align: end
+                        border-right: dashed 2px black
+                    &:nth-child(2)
+                        width: 20%
+                    &:nth-child(3)
+                        padding: 3px
+                        width: calc( 30% - 9px )
+                        border-right: dashed 2px black
+                        // text-align: end
+                        border-left: dashed 2px black
+                    &:last-child
+                        width: 20%
+            
+            $altoTitulo: 25px
+            &_cuadro
+                width: 100%
+                border: solid 1px black
+                font-size: 11px
+                &_linea1
+                    height: $altoTitulo
+                    text-transform: uppercase
+                    text-align: center
+                    display: flex
+                    flex-direction: row
+                    align-items: center
+                    border-bottom: solid 1px black
+                    >div
+                        &:first-child
+                            width: 50%
+                            height: $altoTitulo
+                            border-right: solid 1px black
+                        &:last-child
+                            width: 50%
+                &_linea2
+                    height: $altoTitulo
+                    text-transform: capitalize
+                    text-align: center
+                    display: flex
+                    flex-direction: row
+                    align-items: center
+                    
+                    &_secciona
+                        width: calc( 50% - 5px )
+                        display: flex
+                        flex-direction: row
+                        justify-content: space-between
+                        align-items: center
+                        padding-left: 5px
+                        height: $altoTitulo
+                        border-right: solid 1px grey
+                        >div
+                            &:first-child
+                                text-align: start
+                                width: 70%
+                                    
+                    &_seccionb
+                        width: 50%
+                        display: flex
+                        flex-direction: row
+                        >div
+                            &:first-child
+                                width: 40% !important
+                                padding-left: 5px
+                            &:nth-child(2)
+                                width: 20% !important
+                            &:nth-child(3)
+                                width: 20% !important
+                            &:last-child
+                                width: 20% !important
+                        
+                &_linea3
+                    height: $altoTitulo
+                    text-transform: uppercase
+                    text-align: center
+                    display: flex
+                    flex-direction: row
+                    align-items: center
+                    border-top: solid 1px black
+                    >div
+                        &:first-child
+                            width: 50%
+                            height: $altoTitulo
+                            border-right: solid 1px black
+                            display: flex
+                            flex-direction: row
+                            align-items: center
+                            justify-content: space-between
+                            padding-left: 5px 
+                            >div
+                                &:first-child
+                                    text-align: start
+                                    width: 65%
+                        &:last-child
+                            width: 50%
+                            display: flex
+                            flex-direction: row
+                            align-items: center
+                            justify-content: space-between
+                            padding-left: 5px 
+                            >div
+                                &:first-child
+                                    text-align: start
+                                    width: 65%
+
+            &_cuadro2
+                width: 100%
+                font-size: 11px
+                &_linea1
+                    height: 2px
+                    align-items: center
+                    border-top: dashed 1px black
+                    border-bottom: dashed 1px black
+                    margin-bottom: 5px
+                &_linea2
+                    height: $altoTitulo
+                    text-transform: uppercase
+                    text-align: center
+                    display: flex
+                    flex-direction: row
+                    align-items: center
+                    margin-top: -5px
+                    >div
+                        &:first-child
+                            width: 20%
+                            border-right: solid 1px black
+                            // background-color: lightcyan
+                        &:nth-child(2)
+                            width: 20%
+                            border-right: solid 1px black
+                            // background-color: lightgrey
+                        &:nth-child(3)
+                            width: 20%
+                            border-right: solid 1px black
+                            // background-color: lightblue
+                        &:nth-child(4)
+                            width: 20%
+                            border-right: solid 1px black
+                            // background-color: lightgreen
+                        &:last-child
+                            width: 20%
+                            // background-color: lightpink
+                &_linea3
+                    display: flex
+                    flex-direction: row
+                    align-items: center
+                    height: $altoTitulo
+                    text-transform: uppercase
+                    text-align: center
+                    >div
+                        &:first-child
+                            width: calc( 20% - 5px )
+                            height: $altoTitulo
+                            border-right: solid 1px black
+                            display: flex
+                            align-items: center
+                            margin-left: 5px
+                            // background-color: lightblue
+                        &:nth-child(2)
+                            width: 20%
+                            height: $altoTitulo
+                            border-right: solid 1px black
+                            display: flex
+                            justify-content: center
+                            align-items: center
+                            // background-color: lightgrey
+                        &:nth-child(3)
+                            width: calc( 20% - 5px )
+                            height: $altoTitulo
+                            border-right: solid 1px black
+                            display: flex
+                            align-items: center
+                            margin-left: 5px
+                            // background-color: lightcyan
+                        &:nth-child(4)
+                            width: 20%
+                            height: $altoTitulo
+                            border-right: solid 1px black
+                            display: flex
+                            justify-content: center
+                            align-items: center
+                            // background-color: lightgreen
+                        &:last-child
+                            width: 20%
+                            height: $altoTitulo
+                            display: flex
+                            justify-content: center
+                            align-items: center
+                            // background-color: lightpink
+                $altoseparador: 12px
+                &_linea-separador
+                    display: flex
+                    flex-direction: row
+                    align-items: center
+                    height: $altoseparador
+                    text-transform: uppercase
+                    text-align: center
+                    >div
+                        &:first-child
+                            width: calc( 20% - 5px )
+                            height: $altoseparador
+                            border-right: solid 1px black
+                            display: flex
+                            align-items: center
+                            margin-left: 5px
+                            // background-color: lightblue
+                        &:nth-child(2)
+                            width: 20%
+                            height: $altoseparador
+                            border-right: solid 1px black
+                            display: flex
+                            justify-content: center
+                            align-items: center
+                            // background-color: lightgrey
+                        &:nth-child(3)
+                            width: calc( 20% - 5px )
+                            height: $altoseparador
+                            border-right: solid 1px black
+                            display: flex
+                            align-items: center
+                            margin-left: 5px
+                            // background-color: lightcyan
+                        &:nth-child(4)
+                            width: 20%
+                            height: $altoseparador
+                            border-right: solid 1px black
+                            display: flex
+                            justify-content: center
+                            align-items: center
+                            // background-color: lightgreen
+                        &:last-child
+                            width: 20%
+                            height: $altoseparador
+                            display: flex
+                            justify-content: center
+                            align-items: center
+                            // background-color: lightpink
+
+            &_pie
+                margin-top: 1em
+                text-align: end
+                text-transform: capitalize
+
+            &_fecha
+                margin-top: 1em
+                text-align: center
+                font-weight: bolder
+                text-transform: capitalize
+                margin: 5em 0 0 0
+
+            &_firmas
+                display: flex
+                flex-direction: row
+                padding-top: 12em
+                font-size: 12px
+                &_bloques
+                    width: 50%
+                    margin: 0 auto
+                    &_titulo
+                        padding-top: 15px
+                        text-align: center
+                        text-transform: capitalize
+                        width: 70%
+                        margin: 0 auto
+                        border-top: solid 2px black
+
+            &_firmasb
+                display: flex
+                flex-direction: row
+                justify-content: start
+                align-items: start
+                padding-top: 7em
+                font-size: 12px
+
+                &_titulo
+                    width: content
+                
+                >div
+                    &:nth-child(2)
+                        width: 35%
+                        height: 14px
+                        border-bottom: solid 1px black
+                    &:nth-child(4)
+                        width: 35%
+                        height: 14px
+                        border-bottom: solid 1px black
+            
+            &_firmasc
+                display: flex
+                flex-direction: row
+                justify-content: space-between
+                padding-top: 12em
+                font-size: 12px
+                font-weight: bolder
+                &_bloques
+                    width: 35%
+                    // margin: 0 auto
+                    &_titulo
+                        padding-top: 15px
+                        text-align: center
+                        text-transform: capitalize
+                        // width: 70%
+                        // margin: 0 auto
+                        border-top: dotted 2px black
+            
+            &_titulo
+                font-size: $letras_empresa
+                text-transform: uppercase
+                text-align: center
+                padding-bottom: 2.5em
+                border-bottom: solid 1px black
+                margin-bottom: 1em
+            &_titulob
+                font-size: $letras_empresa
+                text-transform: uppercase
+                text-align: center
+                padding-bottom: 1.5em
+                margin-bottom: 1em
+            
+            &_cubre
+                border: dashed 1px black
+                padding: 3em 0 0 0
+
+.pagina_decl
+    position: relative
+    max-width: 21cm 
+    width: 21cm 
+    max-height: 29.7cm
+    height: 29.7cm
+    margin: 0 auto
+    border: 1px solid lightgrey
+    font-family: 'Roboto', sans-serif
+    font-size: 13px
+    .declaracion
+        font-size: $letras_cuerpo
+        font-weight: bolder
+        margin: 2cm 1cm
+
+        .tituloa
+            text-align: center
+            font-size: $letras_titulo
+        .titulob
+            text-align: center
+        p
+            text-align: justify
+            line-height: 2.5em
+        .decreto
+            margin: 0 auto
+            width: 70%
+            display: flex
+            flex-direction: row
+            align-items: center
+
+            div
+                margin-right: 10px
+                width: 70px
+                height: 17px
+                border: solid 1px black
+                margin-bottom: 5px
+        .cuadrados
+            display: flex
+            flex-direction: row
+            justify-content: space-between
+            margin-top: 1em
+            &_cuadro
+                width: 46%
+
+                div
+                    padding-left: 10px
+        .firmaa
+            width: 40%
+            border-top: solid 1px black
+            float: right
+            text-align: center
+            margin-top: 5em
+        .decl
+            display: flex
+            flex-direction: row
+            justify-content: start
+            align-items: end
+            flex-wrap: wrap
+
+            >div
+                display: inline-flex !important
+                width: content
+            

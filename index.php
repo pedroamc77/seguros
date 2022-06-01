@@ -1,19 +1,12 @@
 <?php 
 
-
-
-require_once('./_db/funciones.php');
-
-// $informacion = consultar_bd();
-// if ( isset($_FILES['archivo']) ) {
-//     cargar_csv_bd($_FILES['archivo'], $_POST['encabezado'], $_POST['separador']);
-// }
+require_once('./_db/nomina.php');
 
 if ( isset($_POST['fnacimiento']) && $_POST['fnacimiento'] !== "" ) {
-    // echo "Fecha de Nacimiento: ".$_POST['nacimiento'];
-    // exit;
     $empresas = empresas_cotizadas($_POST['fnacimiento']);
 }
+
+$bonoactivo = isset($_POST['bono']) ? $_POST['bono'] : false;
 
 $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
 
@@ -29,7 +22,7 @@ $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link rel="stylesheet" href="css/estilos.min.css" media="all">
-    <link rel="stylesheet" href="css/impresion.min.css" media="print">
+    <!-- <link rel="stylesheet" href="css/impresion.min.css" media="print"> -->
     <link rel="stylesheet" href="./datatables/datatables.min.css">
     <link href="fa5130/css/all.min.css" rel="stylesheet" >
 
@@ -40,356 +33,667 @@ $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "
       <div class="app_horizontal_barra">
           <div class="app_horizontal_barra_logo"><div>Sis</div><div>Pen</div></div>
           <div class="app_horizontal_barra_menu">
-            <button href="#" class="custom-btn btn-13">Tablero</button>
-            <button href="#" class="custom-btn btn-13">Empleados</button>
-            <button href="#" class="custom-btn btn-13">Reportes</button>
-            <button href="#" class="custom-btn btn-13">Empresas</button>
+            <a href="index.php" class="custom-btn btn-13 text-center">Pensiones</a>
+            <a href="bono.php"  class="custom-btn btn-13 text-center">Bono</a>
+            <a href="manual.php"  class="custom-btn btn-13  text-center">Pensiones Manual</a>
+            <a href="manual_bono.php"  class="custom-btn btn-13  text-center">Bono Manual</a>
           </div>
       </div>
       <div class="app_horizontal_contenido">
         <div class="app_contenido_formulario p-2" >
           <div class="container-fluid">
-            <div class="row justify-content-center">
-              <div class="col-xl-7 col-lg-9 col-md-12 col-sm-12">
+            <!-- <div class="row justify-content-center"> -->
+            <div class="row justify-content-between">
+              <!-- <div class="col-xl-7 col-lg-9 col-md-12 col-sm-12"> -->
+              <div class="col-3">
                 <form action="index.php" id="frmPersona" method="POST" >
                   <fieldset>
                       <div class="row">
-                        <div class="col-6">
-                          <div class="row mb-1">
+                        <div class="col-12">
+                          <div class="row align-items-center mb-1">
                               <label for="nombre" class="col-sm-3 col-form-label">Nombre:</label>
                               <div class="col-sm-9">
-                                <input type="text" id="nombres" name="nombres" class="form-control form-control-sm" placeholder="Nombres" value="<?php echo $_POST['nombres'] ?>">
+                                <input required type="text" id="nombres" name="nombres" class="form-control form-control-sm" placeholder="Nombres" value="<?php echo isset($_POST['nombres']) ?  $_POST['nombres'] : '' ?>">
                               </div>
                           </div>
-                          <div class="row mr-1">
+                          <div class="row align-items-center mr-1">
                               <label for="apellidos" class="col-sm-3 col-form-label">Apellidos:</label>
                               <div class="col-sm-9">
-                                <input type="text" id="apellidos" name="apellidos" class=" form-control form-control-sm" placeholder="Apellidos" value="<?php echo $_POST['apellidos'] ?>">
+                                <input required type="text" id="apellidos" name="apellidos" class=" form-control form-control-sm" placeholder="Apellidos" value="<?php echo isset($_POST['apellidos']) ? $_POST['apellidos'] : '' ?>">
                               </div>
                           </div>
-                          <div class="row mb-1">
+                          <div class="row align-items-center mb-1">
                               <label for="dni" class="col-sm-3 col-form-label">DNI:</label>
                               <div class="col-sm-9">
-                                <input type="text" id="dni" name="dni" class="form-control form-control-sm" placeholder="DNI">
+                                <input required type="text" id="dni" name="dni" class="form-control form-control-sm" placeholder="DNI" value="<?php echo isset($_POST['dni']) ? $_POST['dni'] : '' ?>">
                               </div>
                           </div>
-                          <div class="row mb-1">
+                          <div class="row align-items-center mb-1">
                               <label for="fnacimiento" class="col-sm-3 col-form-label">Nacimiento:</label>
                               <div class="col-sm-9">
-                               <!--onchange="calcularEdad()"-->
-                                <input type="date" id="fnacimiento" name="fnacimiento" value="<?php echo $_POST['fnacimiento'] ?>" class="form-control form-control-sm" onchange="calcularEdad()">
-                                <input type="hidden" id="edad" name="edad" value="<?php echo $_POST['edad'] ?>" >
-                                <input type="hidden" id="fecleglab" name="fecleglab" value="<?php echo $_POST['iniactlab'] ?>" >
+                                <input required type="date"   id="fnacimiento" name="fnacimiento"  value="<?php echo isset($_POST['fnacimiento']) ? $_POST['fnacimiento']  : '' ?>" class="form-control form-control-sm" >
+                                <input type="hidden" id="edad"        name="edad"         value="<?php echo isset($_POST['edad'])        ? $_POST['edad']         : '' ?>" >
+                                <input type="hidden" id="fecleglab"   name="fecleglab"    value="<?php echo isset($_POST['iniactlab'])   ? $_POST['iniactlab']    : '' ?>" >
                               </div>
                           </div>
-                          <div class="row mb-1">
-                              <!-- onchange="calcularTiemLabo()" -->
-                              <label for="iniactlab" class="col-sm-5 col-form-label">Inicio de Act. Laboral:</label>
-                              <div class="col-sm-7">
-                                <input type="text" readonly id="iniactlab" name="iniactlab" value="<?php echo $_POST['iniactlab'] ?>" class="form-control form-control-sm" >
-                              </div>
-                          </div>
-                        </div>
-                        <div class="col-6">
-                          <div class="row mb-1">
-                              <label for="fecafiafp" class="col-sm-5 col-form-label">Fecha de Afil. AFP:</label>
-                              <div class="col-sm-7">
-                                <input type="date" id="fecafiafp" name="fecafiafp" class="form-control form-control-sm" onchange="calcularTiemLabo()">
-                                <input type="hidden" id="anioslaborados" value="" >
-                              </div>
-                          </div>
-                          <div class="row mb-3">
-                              <label for="numautog" class="col-sm-5 col-form-label">Número Autogenerado:</label>
-                              <div class="col-sm-7">
-                                <input type="text" id="numautog" name="numautog" class="form-control form-control-sm" placeholder="Núm. Autogenerado">
-                              </div>
-                          </div>
-                          <div class="row mb-3">
-                            <label for="cargo_o" class="col-sm-3 col-form-label">Cargo:</label>
-                            <div class="col-sm-9">
-                              <input type="text" id="cargo_o" name="cargo_o" class="form-control form-control-sm" placeholder="Cargo" value="<?php echo $_POST['cargo_o'] ?>">
-                            </div>
-                          </div>
-                          <div class="row mb-3">
-                            <label for="sueldo" class="col-sm-3 col-form-label">Sueldo:</label>
-                            <div class="col-sm-9">
-                              <input type="text" id="sueldo" name="sueldo" class="form-control form-control-sm" placeholder="Sueldo" value="<?php echo $_POST['sueldo'] ?>">
-                            </div>
-                          </div>
-                        </div>
 
-                        <!-- Acordeon -->
-                        <!-- <div class="col-6">
-                          <div id="pensionado" style="display:none;">
-                              <div class="accordion" id="accordion">
-                                <div class="accordion-item">
-                                  <h2 class="accordion-header" id="headingOne">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                      Reporte "O"
-                                    </button>
-                                  </h2>
-                                  <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordion" >
-                                    <div class="accordion-body">
-                                        <div class="row ">
-                                          <label for="empleador" class="col-sm-3 col-form-label">Empresa:</label>
-                                          <div class="col-sm-9">
-                                            <input type="text" id="empresa" name="empresa" class="form-control form-control-sm" placeholder="Empresa">
-                                          </div>
-                                        </div>
-                                        <div class="row ">
-                                          <label for="cargo_o" class="col-sm-3 col-form-label">Cargo:</label>
-                                          <div class="col-sm-9">
-                                            <input type="text" id="cargo_o" name="cargo_o" class="form-control form-control-sm" placeholder="Cargo">
-                                          </div>
-                                        </div>
-                                        <hr style="margin: 5px 0;"/>
-                                        <div class="row">
-                                          <div class="col-6 ">
-                                            <label for="inicio_act" class="form-label">Inicio Actividades:</label>
-                                              <input type="date" id="ini_act_O" name="nacimiento" class="form-control form-control-sm" placeholder="Fecha de Inicio en la empresa" >
-                                          </div>
-                                          <div class="col-6 ">
-                                            <label for="fin_act" class="form-label">Fin Actividades:</label>
-                                            <input type="date" id="fin_act_O" name="nacimiento" class="form-control form-control-sm" placeholder="Fecha de finalizacion" >
-                                          </div>
-                                        </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="accordion-item">
-                                  <h2 class="accordion-header" id="headingTwo">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                      Reporte "H"
-                                    </button>
-                                  </h2>
-                                  <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordion">
-                                    <div class="accordion-body">
-                                        <div class="row ">
-                                          <label for="empleador" class="col-sm-3 col-form-label">Empresa:</label>
-                                          <div class="col-sm-9">
-                                            <input type="text" id="empresa" name="empresa" class="form-control form-control-sm" placeholder="Empresa">
-                                          </div>
-                                        </div>
-                                        <div class="row ">
-                                          <label for="cargo" class="col-sm-3 col-form-label">Cargo:</label>
-                                          <div class="col-sm-9">
-                                            <input type="text" id="cargo" name="cargo" class="form-control form-control-sm" placeholder="Cargo">
-                                          </div>
-                                        </div>
-                                        <hr style="margin: 5px 0;"/>
-                                        <div class="row">
-                                          <div class="col-6 ">
-                                            <label for="inicio_act" class="form-label">Inicio Actividades:</label>
-                                              <input type="date" id="ini_act_O" name="nacimiento" class="form-control form-control-sm" placeholder="Fecha de Inicio en la empresa" >
-                                          </div>
-                                          <div class="col-6 ">
-                                            <label for="fin_act" class="form-label">Fin Actividades:</label>
-                                            <input type="date" id="fin_act_O" name="nacimiento" class="form-control form-control-sm" placeholder="Fecha de finalizacion" >
-                                          </div>
-                                        </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="accordion-item">
-                                  <h2 class="accordion-header" id="headingThree">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                      Reporte "R"
-                                    </button>
-                                  </h2>
-                                  <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordion">
-                                    <div class="accordion-body">
-                                      <div class="row ">
-                                        <label for="empleador" class="col-sm-3 col-form-label">Empresa:</label>
-                                        <div class="col-sm-9">
-                                          <input type="text" id="empresa" name="empresa" class="form-control form-control-sm" placeholder="Empresa">
-                                        </div>
-                                      </div>
-                                      <div class="row ">
-                                        <label for="cargo" class="col-sm-3 col-form-label">Cargo:</label>
-                                        <div class="col-sm-9">
-                                          <input type="text" id="cargo" name="cargo" class="form-control form-control-sm" placeholder="Cargo">
-                                        </div>
-                                      </div>
-                                      <hr style="margin: 5px 0;"/>
-                                      <div class="row">
-                                        <div class="col-6 ">
-                                          <label for="inicio_act" class="form-label">Inicio Actividades:</label>
-                                            <input type="date" id="ini_act_O" name="nacimiento" class="form-control form-control-sm" placeholder="Fecha de Inicio en la empresa" >
-                                        </div>
-                                        <div class="col-6 ">
-                                          <label for="fin_act" class="form-label">Fin Actividades:</label>
-                                          <input type="date" id="fin_act_O" name="nacimiento" class="form-control form-control-sm" placeholder="Fecha de finalizacion" >
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                          </div>
-                        </div> -->
+                        </div>
                       </div>
 
                       <!-- Opciones de reporte -->
                       <hr style="margin: 5px 0;" />
-                      <div class="row">
-                        <!-- <div class="col-6">
-                          <div class="mb-1 px-3 row">
-                              <div class="col-4 form-check">
-                                  <input class="form-check-input" type="radio" value="boleta" name="opcion" id="optboleta" onchange="mostrar(this.value);">
-                                  <label class="form-check-label" for="optboleta">
-                                      Boleta
-                                  </label>
-                              </div>
-                              <div class="col-4 form-check">
-                                  <input class="form-check-input" type="radio" value="pensionado" name="opcion" id="optpensionado" onchange="mostrar(this.value);">
-                                  <label class="form-check-label" for="optpensionado">
-                                      Pensionado
-                                  </label>
-                              </div>
-                              <div class="col-4 form-check">
-                                  <input class="form-check-input" type="radio" value="noreporte" name="opcion" id="optnoreporte" onchange="mostrar(this.value);">
-                                  <label class="form-check-label" for="optnoreporte">
-                                      Sin reporte
-                                  </label>
-                              </div>
-                          </div>
-                        </div> -->
+                      <div class="row justify-content-end">
                         <div class="col-12">
                           <div class="mb-3 row justify-content-end " >
-                              <button type="submit" class="col-xl-2 col-lg-2 col-md-3 col-sm-3 btn btn-primary btn-sm me-3 ">Cargar</button>
-                              <button type="reset" class="col-xl-2 col-lg-2 col-md-3 col-sm-3 btn btn-primary btn-sm me-3 ">Cancelar</button>
+                              <button type="submit" class="col-xl-10 col-lg-10 col-md-6 col-sm-6 btn btn-primary btn-sm me-3 ">Autogenerar</button>
                           </div>
                         </div>
                       </div>
-                  </fieldset>
-                </form>
+                    </fieldset>
+                  </form>
+                  <form class="col mb-3" action="index.php">
+                    <div class="row justify-content-end" >
+                      <button type=""  class="col-10 btn btn-primary btn-sm me-3 " onclick="">Cancelar</button>
+                    </div>
+                  </form>                              
+                  <!-- <form class="col mb-3" action="index.php">
+                    <div class="row justify-content-end" >
+                      <button type=""  class="col-10 btn btn-primary btn-sm me-3 " onclick="">Reportes</button>
+                    </div>
+                  </form>                               -->
+              </div>
+              <div class="col-9">
+                <div class="column-reverse" >
+                  <div class="col">
+                    <div class="row">
+                                <?php $datosfechas = array(); ?>
+                                <?php
+                                    if ( isset($_POST['fnacimiento']) ) {
+                                      $numemp = 0;
+                                      $anniorepa = "";
+                                      $anniorepb = "";
+                                      $fnacimiento = $_POST['fnacimiento'];
+                                      $fecha_anterior = null;
+                                      $valido = false;
+                                      do {
+                                        $aniosa = rand(8, 12);
+                                        $aniosb = rand(8, 12);
+                                        $daysint = rand(8, 25);
+                                        $monthsint = rand(1, 3);
+                                        $aniosint = rand(0, 2);
+                                        if ( ( $aniosa + $aniosb ) >= 20 ) $valido = true;
+                                      } while (!$valido);
+                                      $datosfechas = $bonoactivo ? generar_fechas_trabajo_bono(array($aniosa, $aniosb, $daysint, $monthsint, $aniosint)) : array();
+                                      foreach ($empresas as $empresa) {
+                                        $numemp++;
+                                        if ($bonoactivo) {
+                                          $datos = $datosfechas[$numemp];
+                                        } else {
+                                          $datos = datos_empresa($empresa, array($fnacimiento, $aniosa, $aniosb, $daysint, $monthsint, $aniosint), $numemp === 2, $numemp === 2 ? $fecha_anterior : null );
+                                          $fecha_anterior = $datos['fechas']['fb3'];
+                                          $datosfechas[] = $datos;
+                                        }
+                                        ?>
+                                        <div class="col-6 <?php if ($numemp === 2) echo "border-start border-warning" ?>">
+                                        <?php
+                                        ?>
+                                        <!-- <td style="display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: center; text-align: center; padding: 0 15px;"> -->
+                                          <?php
+  
+                                            $sueldo = nf(obtener_sueldo($datos['fechas']['fb3'])['sueldo_minimo']);
+  
+                                            $control[0] = '<input type="hidden" name="empresa" value="'.$empresa['empleador'].'">'; 
+                                            $control[1] = '<input type="hidden" name="nombres" value="'.$_POST['nombres'].'">'; 
+                                            $control[2] = '<input type="hidden" name="apellidos" value="'.$_POST['apellidos'].'">'; 
+  
+                                            $control[3]  = '<input type="hidden" name="f_a" value="'.$datos['fechas']['fa2'].'">'; 
+                                            $control[12] = '<input type="hidden" name="f_a_b" value="'.$datos['fechas']['fa1'].'">'; 
+                                            $control[4]  = '<input type="hidden" name="f_b" value="'.$datos['fechas']['fb2'].'">'; 
+                                            $control[13] = '<input type="hidden" name="f_b_b" value="'.$datos['fechas']['fb1'].'">'; 
+                                            $control[10] = '<input type="hidden" name="emision" value="'.$datos['fechas']['emision'].'">'; 
+                                            
+                                            $control[14] = '<input type="hidden" name="f_a_b" value="'.$datos['fechas']['fa1'].'">'; 
+                                            $control[5]  = '<input type="hidden" name="f_a" value="'.$datos['fechas']['fa2'].'">'; 
+                                            $control[15] = '<input type="hidden" name="f_b_b" value="'.$datos['fechas']['fb1'].'">'; 
+                                            $control[6]  = '<input type="hidden" name="f_b" value="'.$datos['fechas']['fb2'].'">'; 
+                                            $control[9]  = '<input type="hidden" name="fecha_emision" value="'.$datos['fechas']['fb1'].'">';
+  
+                                            $control[11] = '<input type="hidden" name="emision" value="'.$datos['fechas']['emision'].'">'; 
+  
+                                            $control[16] = '<input type="hidden" name="fsueldo" value="'.$datos['fechas']['fb3'].'">'; 
+                                            
+                                            $control[8] = '<input type="hidden" name="dpto" value="'.$empresa['dpto'].'">'; 
+  
+                                            $rp = "";
+                                            $bo = "";
+                                            $anniorp = $datos['fechas']['anniorep'];
+                                              
+                                            if ( $anniorp >= 1962 && $anniorp <= 1972 ) { $rp = "_62al72"; }
+                                            if ( $anniorp >= 1973 && $anniorp <= 1975 ) { $rp = "_73al75"; }
+                                            if ( $anniorp >= 1976 && $anniorp <= 1983 ) { $rp = "_76al83"; }
+                                            if ( $anniorp >= 1984 && $anniorp <= 1994 ) { $rp = "_84al94"; }
+                                            if ( $anniorp >= 1995 ) { $rp = "_95al00"; }
+  
+                                            if ( $anniorp >= 1978 && $anniorp <= 1980 ) { $bo = "_78al80"; }
+                                            if ( $anniorp >= 1981 && $anniorp <= 1987 ) { $bo = "_81al87"; }
+                                            if ( $anniorp >= 1988 && $anniorp <= 1992 ) { $bo = "_88al92"; }
+                                            if ( $anniorp >= 1993 ) { $bo = "_93al00"; }
+  
+                                            echo "<div class=' border-bottom border-info text-center mb-2 pb-2 fs-5 text-warning' >Empresa $numemp</div>";
+                                            
+                                            echo "<div class='text-center fw-bolder text-info ' style='font-size: 13px;'>",$empresa['id']," - ",$empresa['empleador'],"</div>";
+                                            echo "<div class=' text-center fw-lighter fst-italic pb-2' style='font-size: 11px;' >","Desde el: ", $datos['fechas']['fa2']," / Hasta el: ",$datos['fechas']['fb2'],"</div>";
+                                            echo "<div class=' text-center fw-lighter fst-italic pb-2 border-bottom border-info ' style='font-size: 11px;' >","Último sueldo: ", $sueldo,"</div>";
+  
+                                            if ($numemp === 1) {
+                                          ?>
+                                                <div class="row mb-3 mt-2 ">
+                                                  <label for="cargo" class="col-sm-3 col-form-label">Cargo:</label>
+                                                  <div class="col-sm-9">
+                                                    <select required id="cargoc" name="cargoc" placeholder="Cargo"  class="form-control form-control-sm" placeholder="Cargo" onchange="asignar_cargo_c(this.value)" >
+                                                      <option value=""></option>
+                                                      <option value="SUPERVISOR">SUPERVISOR</option>
+                                                      <option value="ADMINISTRADOR">ADMINISTRADOR</option>
+                                                      <option value="CONTADOR">CONTADOR</option>
+                                                      <option value="GERENTE">GERENTE</option>
+                                                      <option value="GERENTE GENERAL">GERENTE GENERAL</option>
+                                                      <option value="JEFE DE PERSONAL">JEFE DE PERSONAL</option>
+                                                      <option value="JEFE DE PLANTA">JEFE DE PLANTA</option>
+                                                      <option value="JEFE DE VENTAS">JEFE DE VENTAS</option>
+                                                      <option value="JEFE DE ALMACEN">JEFE DE ALMACEN</option>
+                                                      <option value="AYUDANTE DE ALMACEN">AYUDANTE DE ALMACEN</option>
+                                                      <option value="ASISTENTE DE CONTABILIDAD">ASISTENTE DE CONTABILIDAD</option>
+                                                      <option value="INGENIERO DE PLANTA">INGENIERO DE PLANTA</option>
+                                                      <option value="SECRETARIO">SECRETARIO</option>
+                                                      <option value="SUPERVISOR DE VENTAS">SUPERVISOR DE VENTAS</option>
+                                                      <option value="MAESTRO DE OBRA">MAESTRO DE OBRA</option>
+                                                      <option value="AYUDANTE ">AYUDANTE </option>
+                                                      <option value="AUXILIAR DE OFICINA">AUXILIAR DE OFICINA</option>
+                                                      <option value="ASISTENTE DE OFICINA">ASISTENTE DE OFICINA</option>
+                                                      <option value="ASISTENTE ADMINISTRATIVO">ASISTENTE ADMINISTRATIVO</option>
+                                                      <option value="DIRECTOR">DIRECTOR</option>
+                                                      <option value="FARMACEUTICO">FARMACEUTICO</option>
+                                                      <option value="CAJERO">CAJERO</option>
+                                                      <option value="JEFE DE COBRANZAS">JEFE DE COBRANZAS</option>
+                                                      <option value="AUXILIAR DE CONTABILIDAD">AUXILIAR DE CONTABILIDAD</option>
+                                                      <option value="LIMPIEZA">LIMPIEZA</option>
+                                                      <option value="MECANICO">MECANICO</option>
+                                                      <option value="OPERARIO">OPERARIO</option>
+                                                      <option value="JEFE DE OPERACIONES">JEFE DE OPERACIONES</option>
+                                                      <option value="JEFE ZONAL">JEFE ZONAL</option>
+                                                      <option value="GERENTE COMERCIAL">GERENTE COMERCIAL</option>
+                                                      <option value="GERENTE FINANCIERO">GERENTE FINANCIERO</option>
+                                                      <option value="JEFE DE PRODUCCION">JEFE DE PRODUCCION</option>
+                                                      <option value="OPERADOR DE MAQUINA">OPERADOR DE MAQUINA</option>
+                                                      <option value="JEFE DE CALIDAD">JEFE DE CALIDAD</option>
+                                                      <option value="JEFE DE LOGISTICA">JEFE DE LOGISTICA</option>
+                                                      <option value="ASISTENTE GERENCIAL">ASISTENTE GERENCIAL</option>
+                                                      <option value="GERENTE DE SERVICIO AL CLIENTE">GERENTE DE SERVICIO AL CLIENTE</option>
+                                                      <option value="ENCARGADO DE TIENDA">ENCARGADO DE TIENDA</option>
+                                                      <option value="ALMACENERO">ALMACENERO</option>
+                                                      <option value="PROMOTOR DE VENTAS">PROMOTOR DE VENTAS</option>
+                                                      <option value="SUPERVISOR DE SERVICIOS GENERALES">SUPERVISOR DE SERVICIOS GENERALES</option>
+                                                      <option value="OPERARIO DE MONTAJE">OPERARIO DE MONTAJE</option>
+                                                      <option value="EJECUTIVO COMERCIAL">EJECUTIVO COMERCIAL</option>
+                                                      <option value="REPRESENTANTE TECNICO">REPRESENTANTE TECNICO</option>
+                                                      <option value="JEFE COMERCIAL">JEFE COMERCIAL</option>
+                                                      <option value="ANALISTA">ANALISTA</option>
+                                                      <option value="JEFE ZONAL">JEFE ZONAL</option>
+                                                    </select>
+                                                  </div>
+                                                </div>
+                                          <?php
+                                            } else {
+                                          ?>
+                                                <div class="row mb-3 mt-2 ">
+                                                  <label for="cargo" class="col-sm-3 col-form-label">Cargo:</label>
+                                                  <div class="col-sm-9">
+                                                    <select required id="cargol" name="cargol" placeholder="Cargo"  class="form-control form-control-sm" placeholder="Cargo" onchange="asignar_cargo_l(this.value)" >
+                                                      <option value=""></option>
+                                                      <option value="SUPERVISOR">SUPERVISOR</option>
+                                                      <option value="ADMINISTRADOR">ADMINISTRADOR</option>
+                                                      <option value="CONTADOR">CONTADOR</option>
+                                                      <option value="GERENTE">GERENTE</option>
+                                                      <option value="GERENTE GENERAL">GERENTE GENERAL</option>
+                                                      <option value="JEFE DE PERSONAL">JEFE DE PERSONAL</option>
+                                                      <option value="JEFE DE PLANTA">JEFE DE PLANTA</option>
+                                                      <option value="JEFE DE VENTAS">JEFE DE VENTAS</option>
+                                                      <option value="JEFE DE ALMACEN">JEFE DE ALMACEN</option>
+                                                      <option value="AYUDANTE DE ALMACEN">AYUDANTE DE ALMACEN</option>
+                                                      <option value="ASISTENTE DE CONTABILIDAD">ASISTENTE DE CONTABILIDAD</option>
+                                                      <option value="INGENIERO DE PLANTA">INGENIERO DE PLANTA</option>
+                                                      <option value="SECRETARIO">SECRETARIO</option>
+                                                      <option value="SUPERVISOR DE VENTAS">SUPERVISOR DE VENTAS</option>
+                                                      <option value="MAESTRO DE OBRA">MAESTRO DE OBRA</option>
+                                                      <option value="AYUDANTE ">AYUDANTE </option>
+                                                      <option value="AUXILIAR DE OFICINA">AUXILIAR DE OFICINA</option>
+                                                      <option value="ASISTENTE DE OFICINA">ASISTENTE DE OFICINA</option>
+                                                      <option value="ASISTENTE ADMINISTRATIVO">ASISTENTE ADMINISTRATIVO</option>
+                                                      <option value="DIRECTOR">DIRECTOR</option>
+                                                      <option value="FARMACEUTICO">FARMACEUTICO</option>
+                                                      <option value="CAJERO">CAJERO</option>
+                                                      <option value="JEFE DE COBRANZAS">JEFE DE COBRANZAS</option>
+                                                      <option value="AUXILIAR DE CONTABILIDAD">AUXILIAR DE CONTABILIDAD</option>
+                                                      <option value="LIMPIEZA">LIMPIEZA</option>
+                                                      <option value="MECANICO">MECANICO</option>
+                                                      <option value="OPERARIO">OPERARIO</option>
+                                                      <option value="JEFE DE OPERACIONES">JEFE DE OPERACIONES</option>
+                                                      <option value="JEFE ZONAL">JEFE ZONAL</option>
+                                                      <option value="GERENTE COMERCIAL">GERENTE COMERCIAL</option>
+                                                      <option value="GERENTE FINANCIERO">GERENTE FINANCIERO</option>
+                                                      <option value="JEFE DE PRODUCCION">JEFE DE PRODUCCION</option>
+                                                      <option value="OPERADOR DE MAQUINA">OPERADOR DE MAQUINA</option>
+                                                      <option value="JEFE DE CALIDAD">JEFE DE CALIDAD</option>
+                                                      <option value="JEFE DE LOGISTICA">JEFE DE LOGISTICA</option>
+                                                      <option value="ASISTENTE GERENCIAL">ASISTENTE GERENCIAL</option>
+                                                      <option value="GERENTE DE SERVICIO AL CLIENTE">GERENTE DE SERVICIO AL CLIENTE</option>
+                                                      <option value="ENCARGADO DE TIENDA">ENCARGADO DE TIENDA</option>
+                                                      <option value="ALMACENERO">ALMACENERO</option>
+                                                      <option value="PROMOTOR DE VENTAS">PROMOTOR DE VENTAS</option>
+                                                      <option value="SUPERVISOR DE SERVICIOS GENERALES">SUPERVISOR DE SERVICIOS GENERALES</option>
+                                                      <option value="OPERARIO DE MONTAJE">OPERARIO DE MONTAJE</option>
+                                                      <option value="EJECUTIVO COMERCIAL">EJECUTIVO COMERCIAL</option>
+                                                      <option value="REPRESENTANTE TECNICO">REPRESENTANTE TECNICO</option>
+                                                      <option value="JEFE COMERCIAL">JEFE COMERCIAL</option>
+                                                      <option value="ANALISTA">ANALISTA</option>
+                                                      <option value="JEFE ZONAL">JEFE ZONAL</option>
+                                                    </select>
+                                                  </div>
+                                                </div>
+                                                
+                                                <?php
+                                            }
+                                            ?>
+                                            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                              <li class="nav-item" role="presentation">
+                                                <button class="nav-link active" id="certificado_<?php echo $numemp ?>-tab" data-bs-toggle="pill" data-bs-target="#certificado_<?php echo $numemp ?>" type="button" role="tab"   aria-controls="certificado_<?php echo $numemp ?>" aria-selected="true">Certificado</button>
+                                              </li>
+                                              <li class="nav-item" role="presentation">
+                                                <button class="nav-link" id="liquidacion_<?php echo $numemp ?>-tab" data-bs-toggle="pill" data-bs-target="#liquidacion_<?php echo $numemp ?>" type="button" role="tab"   aria-controls="liquidacion_<?php echo $numemp ?>" aria-selected="false">Liquidación</button>
+                                              </li>
+                                              <?php
+                                              if ( $anniorp >= 1978 ) {
+                                              ?>
+                                              <li class="nav-item" role="presentation">
+                                                <button class="nav-link" id="boletadepago_<?php echo $numemp ?>-tab" data-bs-toggle="pill" data-bs-target="#boletadepago_<?php echo $numemp ?>" type="button" role="tab" aria-controls="boletadepago_<?php echo $numemp ?>" aria-selected="false">Boleta</button>
+                                              </li>
+                                              <?php
+                                              }
+                                              ?>
+                                              <?php
+                                              if ( $bonoactivo && $anniorp >= 1992 && $anniorp <= 1994 ) {
+                                              ?>
+                                              <li class="nav-item" role="presentation">
+                                                <button class="nav-link" id="bono_<?php echo $numemp ?>-tab" data-bs-toggle="pill" data-bs-target="#bono_<?php echo $numemp ?>" type="button" role="tab" aria-controls="bono_<?php echo $numemp ?>" aria-selected="false">Bono</button>
+                                              </li>
+                                              <?php
+                                              }
+                                              ?>
+                                            </ul>
+                                            <div class="tab-content" id="pills-tabContent">
+                                            <?php
+                                              for ( $p = 1 ; $p < 4 ; $p++ ) {
+                                                if ($p === 1) {
+                                                  $rep = "certificado";
+                                                  echo "<div class='tab-pane fade capitalizar show active' id='".$rep."_".$numemp."' role='tabpanel' aria-labelledby='".$rep."_".$numemp."-tab'>";
+                                                  echo "<form action='reportes/".$rep.$rp.".php' method='post' target='_blank'>","\n";
+                                                  if( $numemp === 1 ) echo '<input required type="hidden" name="cargo_ac" id="cargo_ac" value="" />',"\n";
+                                                  if( $numemp === 2 ) echo '<input required type="hidden" name="cargo_al" id="cargo_al" value="" />',"\n";
+                                                  echo $control[0],"\n";
+                                                  echo $control[1],"\n";
+                                                  echo $control[2],"\n";
+                                                  // if ( $numemp === 1 ) {
+                                                  echo $control[3],"\n";
+                                                  echo $control[4],"\n";
+                                                  echo $control[10],"\n";
+                                                  echo $control[12],"\n";
+                                                  echo $control[13],"\n";
+                                                  // }
+                                                  // if ( $numemp === 2 ) {
+                                                  //   echo $control[5],"\n";
+                                                  //   echo $control[6],"\n";
+                                                  //   echo $control[11],"\n";
+                                                  //   echo $control[14],"\n";
+                                                  //   echo $control[15],"\n";
+                                                  // }
+                                                  echo $control[8],"\n";
+                                                  echo $control[9],"\n";
+                                                  echo $control[16],"\n";
+                                                  echo "<div style='display: flex; flex-direction: row; justify-content: end; align-items: center;' > <button class='btn btn-outline-info mb-4' type='submit' style=' text-transform: capitalize; ' > imprimir $rep <i class='fa fa-file-alt fa-sm ' ></i> </button></div>";
+                                                  echo "</form>";
+                                                  echo "</div>";
+                                                }
+                                                if ($p === 2) {
+                                                  $rep = "liquidacion";
+                                                  echo "<div class='tab-pane fade capitalizar' id='".$rep."_".$numemp."' role='tabpanel' aria-labelledby='".$rep."_".$numemp."-tab'>";
+                                                  echo "<form action='reportes/".$rep.$rp.".php' method='post' target='_blank'>","\n";
+                                                  if( $numemp === 1 ) echo '<input required type="hidden" name="cargo_al" id="cargo_al" value="" />',"\n";
+                                                  if( $numemp === 2 ) echo '<input required type="hidden" name="cargo_bl" id="cargo_bl" value="" />',"\n";
+                                                  ?>
+                                                    <div class="row mb-1 border-bottom border-info">
+                                                      <label for="sueldo" class="col-sm-7 col-form-label">Adelanto:</label>
+                                                      <div class="col-sm-5">
+                                                        <input onkeypress="return filterFloat(event,this);" type="text" id="adelanto" name="adelanto" class="form-control form-control-sm bg-danger bg-gradient bg-opacity-50 text-white" placeholder="Adelanto" value="<?php echo isset($_POST['adelanto']) ? $_POST['adelanto'] : '0' ?>">
+                                                      </div>
+                                                    </div>
+                                                    <!-- <div class="row mb-1 border-bottom border-info">
+                                                      <label for="sueldo" class="col-sm-7 col-form-label">Retencion:</label>
+                                                      <div class="col-sm-5">
+                                                        <input onkeypress="return filterFloat(event,this);"  type="text" id="retencion" name="retencion" class="form-control form-control-sm bg-danger bg-gradient bg-opacity-50 text-white" placeholder="Retencion" value="<?php echo isset($_POST['retencion']) ? $_POST['retencion'] : '0' ?>">
+                                                      </div>
+                                                    </div> -->
+                                                    <div class="row mb-1">
+                                                      <label for="sueldo" class="col-sm-7 col-form-label">Vacaciones:</label>
+                                                      <div class="col-sm-5">
+                                                        <input onkeypress="return filterFloat(event,this);" type="text" id="vacaciones" name="vacaciones" class="form-control form-control-sm" placeholder="Vacaciones" value="<?php echo isset($_POST['vacaciones']) ? $_POST['vacaciones'] : '0' ?>">
+                                                      </div>
+                                                    </div>
+                                                    <div class="row mb-1">
+                                                      <label for="sueldo" class="col-sm-7 col-form-label">Gratificaciones:</label>
+                                                      <div class="col-sm-5">
+                                                        <input onkeypress="return filterFloat(event,this);" type="text" id="gratificaciones" name="gratificaciones" class="form-control form-control-sm" placeholder="Gratificaciones" value="<?php echo isset($_POST['gratificaciones']) ? $_POST['gratificaciones'] : '0' ?>">
+                                                      </div>
+                                                    </div>
+                                                    <div class="row mb-1">
+                                                      <label for="sueldo" class="col-sm-7 col-form-label">Reintegro:</label>
+                                                      <div class="col-sm-5">
+                                                        <input onkeypress="return filterFloat(event,this);" type="text" id="reintegro" name="reintegro" class="form-control form-control-sm" placeholder="Reintegro" value="<?php echo isset($_POST['reintegro']) ? $_POST['reintegro'] : '0' ?>">
+                                                      </div>
+                                                    </div>
+                                                    <div class="row mb-1">
+                                                      <label for="sueldo" class="col-sm-7 col-form-label">Incentivo:</label>
+                                                      <div class="col-sm-5">
+                                                        <input onkeypress="return filterFloat(event,this);"  type="text" id="incentivo" name="incentivo" class="form-control form-control-sm" placeholder="Incentivo" value="<?php echo isset($_POST['incentivo']) ? $_POST['incentivo'] : '0' ?>">
+                                                      </div>
+                                                    </div>
+                                                    <div class="row mb-1">
+                                                      <label for="sueldo" class="col-sm-7 col-form-label">Bonificacion:</label>
+                                                      <div class="col-sm-5">
+                                                        <input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion" name="bonificacion" class="form-control form-control-sm" placeholder="Bonificacion" value="<?php echo isset($_POST['bonificacion']) ? $_POST['bonificacion'] : '0' ?>">
+                                                      </div>
+                                                    </div>
+                                                    <div class="row mb-1">
+                                                      <label for="sueldo" class="col-sm-7 col-form-label">Bonificacion Graciosa:</label>
+                                                      <div class="col-sm-5">
+                                                        <input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion_graciosa" name="bonificacion_graciosa" class="form-control form-control-sm" placeholder="Bonificacion Graciosa" value="<?php echo isset($_POST['bonificacion_graciosa']) ? $_POST['bonificacion_graciosa'] : '0' ?>">
+                                                      </div>
+                                                    </div>
+                                                    <div class="row mb-1">
+                                                      <label for="sueldo" class="col-sm-7 col-form-label">Bonificacion Extraordinaria:</label>
+                                                      <div class="col-sm-5">
+                                                        <input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion_extraordinaria" name="bonificacion_extraordinaria" class="form-control form-control-sm" placeholder="Bonificacion Extraordinaria" value="<?php echo isset($_POST['bonificacion_extraordinaria']) ? $_POST['bonificacion_extraordinaria'] : '0' ?>">
+                                                      </div>
+                                                    </div>
+                                                  <?php
+                                                  echo $control[0],"\n";
+                                                  echo $control[1],"\n";
+                                                  echo $control[2],"\n";
+                                                  // if ( $numemp === 1 ) {
+                                                  echo $control[3],"\n";
+                                                  echo $control[4],"\n";
+                                                  echo $control[10],"\n";
+                                                  echo $control[12],"\n";
+                                                  echo $control[13],"\n";
+                                                  // }
+                                                  // if ( $numemp === 2 ) {
+                                                  //   echo $control[5],"\n";
+                                                  //   echo $control[6],"\n";
+                                                  //   echo $control[11],"\n";
+                                                  //   echo $control[14],"\n";
+                                                  //   echo $control[15],"\n";
+                                                  // }
+                                                  echo $control[8],"\n";
+                                                  echo $control[9],"\n";
+                                                  echo $control[16],"\n";
+                                                  echo "<div style='display: flex; flex-direction: row; justify-content: end; align-items: center;' > <button class='btn btn-outline-info mb-4' type='submit' style=' text-transform: capitalize; ' > imprimir $rep <i class='fa fa-file-alt fa-sm ' ></i> </button></div>";
+                                                  echo "</form>";
+                                                  echo "</div>";
+                                                }
+                                                if ($p === 3 ) {
+                                                  $rep = "boletadepago";
+                                                  echo "<div class='tab-pane fade capitalizar' id='".$rep."_".$numemp."' role='tabpanel' aria-labelledby='".$rep."_".$numemp."-tab'>";
+                                                  echo "<form action='reportes/".$rep.$bo.".php' method='post' target='_blank'>","\n";
+                                                  if( $numemp === 1 ) echo '<input required type="hidden" name="cargo_ab" id="cargo_ab" value="" />',"\n";
+                                                  if( $numemp === 2 ) echo '<input required type="hidden" name="cargo_bb" id="cargo_bb" value="" />',"\n";
+                                                  ?>
+                                                    <div class="row mb-1">
+                                                      <label for="sueldo" class="col-sm-7 col-form-label">Fecha:</label>
+                                                      <div class="col-sm-5">
+                                                        <input required type="date" id="fechaboleta" name="fechaboleta" min="1978-08-22" class="form-control form-control-sm" value="<?php echo isset($_POST['fechaboleta']) ? $_POST['fechaboleta'] : '0' ?>">
+                                                      </div>
+                                                    </div>
+                                                    <div class="row mb-1">
+                                                      <label for="sueldo" class="col-sm-7 col-form-label">REM. VACACIONAL:</label>
+                                                      <div class="col-sm-5">
+                                                        <input onkeypress="return filterFloat(event,this);" type="text" id="remvacacionales" name="remvacacionales" class="form-control form-control-sm" value="<?php echo isset($_POST['remvacacionales']) ? $_POST['remvacacionales'] : '0' ?>">
+                                                      </div>
+                                                    </div>
+                                                    <div class="row mb-1">
+                                                      <label for="sueldo" class="col-sm-7 col-form-label">Reintegro:</label>
+                                                      <div class="col-sm-5">
+                                                        <input onkeypress="return filterFloat(event,this);" type="text" id="reintegro" name="reintegro" class="form-control form-control-sm" value="<?php echo isset($_POST['reintegro']) ? $_POST['reintegro'] : '0' ?>">
+                                                      </div>
+                                                    </div>
+                                                    <div class="row mb-1">
+                                                      <label for="sueldo" class="col-sm-7 col-form-label">H. EXTRAS:</label>
+                                                      <div class="col-sm-5">
+                                                        <input onkeypress="return filterFloat(event,this);" type="text" id="hextras" name="hextras" class="form-control form-control-sm" value="<?php echo isset($_POST['hextras']) ? $_POST['hextras'] : '0' ?>">
+                                                      </div>
+                                                    </div>
+                                                    <div class="row mb-1">
+                                                      <label for="sueldo" class="col-sm-7 col-form-label">Bonificacion:</label>
+                                                      <div class="col-sm-5">
+                                                        <input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion" name="bonificacion" class="form-control form-control-sm" value="<?php echo isset($_POST['bonificacion']) ? $_POST['bonificacion'] : '0' ?>">
+                                                      </div>
+                                                    </div>
+                                                    <div class="row mb-1 border-bottom border-info">
+                                                      <label for="sueldo" class="col-sm-7 col-form-label">OTROS:</label>
+                                                      <div class="col-sm-5">
+                                                        <input onkeypress="return filterFloat(event,this);" type="text" id="otros_deven" name="otros_deven" class="form-control form-control-sm" value="<?php echo isset($_POST['otros_deven']) ? $_POST['otros_deven'] : '0' ?>">
+                                                      </div>
+                                                    </div>
+                                                  <?php
+                                                    echo $control[0],"\n";
+                                                    echo $control[1],"\n";
+                                                    echo $control[2],"\n";
+                                                  // if ( $numemp === 1 ) {
+                                                    echo $control[3],"\n";
+                                                    echo $control[4],"\n";
+                                                    echo $control[10],"\n";
+                                                    echo $control[12],"\n";
+                                                    echo $control[13],"\n";
+                                                  // }
+                                                  // if ( $numemp === 2 ) {
+                                                  //   echo $control[5],"\n";
+                                                  //   echo $control[6],"\n";
+                                                  //   echo $control[11],"\n";
+                                                  //   echo $control[14],"\n";
+                                                  //   echo $control[15],"\n";
+                                                  // }
+                                                    echo $control[8],"\n";
+                                                    echo $control[9],"\n";
+                                                    echo $control[16],"\n";
+                                                    echo "<div style='display: flex; flex-direction: row; justify-content: end; align-items: center;' > <button class='btn btn-outline-info mb-4' type='submit' style=' text-transform: capitalize; ' > imprimir $rep <i class='fa fa-file-alt fa-sm ' ></i> </button></div>";
+                                                    echo "</form>";
+                                                    echo "</div>";
+                                                }
+                                                if ( $bonoactivo && $numemp === 2 && $anniorp >= 1992 && $anniorp <= 1994 ) {
+                                                  $rep = "bono";
+                                                  $dec = rand(1, 3);
+                                                  echo "<div class='tab-pane fade capitalizar' id='".$rep."_".$numemp."' role='tabpanel' aria-labelledby='".$rep."_".$numemp."-tab'>";
+                                                  // echo "<form action='reportes/".$rep.$bo.".php' method='post' target='_blank'>","\n";
+                                                  echo "<form action='reportes/declaracionempleador0$dec.php' method='post' target='_blank'>","\n";
+                                                  // echo "<form action='reportes/declaracionempleador03.php' method='post' target='_blank'>","\n";
+                                                  if( $numemp === 1 ) echo '<input required type="hidden" name="cargo_abo" id="cargo_ab" value="" />',"\n";
+                                                  if( $numemp === 2 ) echo '<input required type="hidden" name="cargo_bbo" id="cargo_bb" value="" />',"\n";
+                                                  
+                                                  echo '<input type="hidden" name="rep_legal" value="'.$empresa['id'].'">';
+                                                  echo '<input type="hidden" name="rep_legal" value="'.$empresa['rep_legal'].'">';
+                                                  echo '<input type="hidden" name="dni_a" value="'.$empresa['dni_a'].'">';
+                                                  echo '<input type="hidden" name="ruc" value="'.$empresa['ruc'].'">';
+                                                  echo '<input type="hidden" name="dni" value="'.$_POST['dni'].'">';
+                                                  // echo '<input type="hidden" name="numautog" value="'.$_POST['numautog'].'">';
+                                                  ?>
+
+                                                  <div class="row">
+                                                    <div class="col-6">
+                                                      <div class="row mb-3">
+                                                          <label for="numautog" class="col-sm-7 col-form-label">Número Autogenerado:</label>
+                                                          <div class="col-sm-5">
+                                                            <input type="text" id="numautog" name="numautog" class="form-control form-control-sm" placeholder="Núm. Autogenerado" value="<?php echo isset($_POST['numautog']) ? $_POST['numautog']  : '' ?>" >
+                                                          </div>
+                                                      </div>
+                                                      <div class="row mb-1">
+                                                        <label for="sueldo" class="col-sm-7 col-form-label text-end">Diciembre '91':</label>
+                                                        <div class="col-sm-5">
+                                                          <input onkeypress="return filterFloat(event,this);" type="text" id="mes12" name="mes12" class="form-control form-control-sm" value="">
+                                                        </div>
+                                                      </div>
+                                                      <div class="row mb-1">
+                                                        <label for="sueldo" class="col-sm-7 col-form-label text-end">Enero '92':</label>
+                                                        <div class="col-sm-5">
+                                                          <input onkeypress="return filterFloat(event,this);" type="text" id="mes01" name="mes01" class="form-control form-control-sm" value="">
+                                                        </div>
+                                                      </div>
+                                                      <div class="row mb-1">
+                                                        <label for="sueldo" class="col-sm-7 col-form-label text-end">Febrero '92':</label>
+                                                        <div class="col-sm-5">
+                                                          <input onkeypress="return filterFloat(event,this);" type="text" id="mes02" name="mes02" class="form-control form-control-sm" value="">
+                                                        </div>
+                                                      </div>
+                                                      <div class="row mb-1">
+                                                        <label for="sueldo" class="col-sm-7 col-form-label text-end">Marzo '92':</label>
+                                                        <div class="col-sm-5">
+                                                          <input onkeypress="return filterFloat(event,this);" type="text" id="mes03" name="mes03" class="form-control form-control-sm" value="">
+                                                        </div>
+                                                      </div>
+                                                      <div class="row mb-1">
+                                                        <label for="sueldo" class="col-sm-7 col-form-label text-end">Abril '92':</label>
+                                                        <div class="col-sm-5">
+                                                          <input onkeypress="return filterFloat(event,this);" type="text" id="mes04" name="mes04" class="form-control form-control-sm" value="">
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                      <div class="row mb-1">
+                                                        <label for="sueldo" class="col-sm-7 col-form-label text-end">Mayo '92':</label>
+                                                        <div class="col-sm-5">
+                                                          <input onkeypress="return filterFloat(event,this);" type="text" id="mes05" name="mes05" class="form-control form-control-sm" value="">
+                                                        </div>
+                                                      </div>
+                                                      <div class="row mb-1">
+                                                        <label for="sueldo" class="col-sm-7 col-form-label text-end">Junio '92':</label>
+                                                        <div class="col-sm-5">
+                                                          <input onkeypress="return filterFloat(event,this);" type="text" id="mes06" name="mes06" class="form-control form-control-sm" value="">
+                                                        </div>
+                                                      </div>
+                                                      <div class="row mb-1">
+                                                        <label for="sueldo" class="col-sm-7 col-form-label text-end">Julio '92':</label>
+                                                        <div class="col-sm-5">
+                                                          <input onkeypress="return filterFloat(event,this);" type="text" id="mes07" name="mes07" class="form-control form-control-sm" value="">
+                                                        </div>
+                                                      </div>
+                                                      <div class="row mb-1">
+                                                        <label for="sueldo" class="col-sm-7 col-form-label text-end">Agosto '92':</label>
+                                                        <div class="col-sm-5">
+                                                          <input onkeypress="return filterFloat(event,this);" type="text" id="mes08" name="mes08" class="form-control form-control-sm" value="">
+                                                        </div>
+                                                      </div>
+                                                      <div class="row mb-1">
+                                                        <label for="sueldo" class="col-sm-7 col-form-label text-end">Septiembre '92':</label>
+                                                        <div class="col-sm-5">
+                                                          <input onkeypress="return filterFloat(event,this);" type="text" id="mes09" name="mes09" class="form-control form-control-sm" value="">
+                                                        </div>
+                                                      </div>
+                                                      <div class="row mb-1">
+                                                        <label for="sueldo" class="col-sm-7 col-form-label text-end">Octubre '92':</label>
+                                                        <div class="col-sm-5">
+                                                          <input onkeypress="return filterFloat(event,this);" type="text" id="mes10" name="mes10" class="form-control form-control-sm" value="">
+                                                        </div>
+                                                      </div>
+                                                      <div class="row mb-1">
+                                                        <label for="sueldo" class="col-sm-7 col-form-label text-end">Noviembre '92':</label>
+                                                        <div class="col-sm-5">
+                                                          <input onkeypress="return filterFloat(event,this);" type="text" id="mes11" name="mes11" class="form-control form-control-sm" value="">
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+
+                                                  <!-- <div class="row mb-1">
+                                                    <label for="sueldo" class="col-sm-7 col-form-label">Enero '92':</label>
+                                                    <div class="col-sm-5">
+                                                      <input onkeypress="return filterFloat(event,this);" type="text" id="mes01" name="mes01" class="form-control form-control-sm" value="">
+                                                    </div>
+                                                  </div> -->
+                                                  <?php
+                                                  // echo "Bono Activo";
+                                                  echo $control[0],"\n";
+                                                  echo $control[1],"\n";
+                                                  echo $control[2],"\n";
+                                                  // if ( $numemp === 1 ) {
+                                                  echo $control[3],"\n";
+                                                  echo $control[4],"\n";
+                                                  echo $control[10],"\n";
+                                                  echo $control[12],"\n";
+                                                  echo $control[13],"\n";
+                                                  // }
+                                                  // if ( $numemp === 2 ) {
+                                                  //   echo $control[5],"\n";
+                                                  //   echo $control[6],"\n";
+                                                  //   echo $control[11],"\n";
+                                                  //   echo $control[14],"\n";
+                                                  //   echo $control[15],"\n";
+                                                  // }
+                                                  echo $control[8],"\n";
+                                                  echo $control[9],"\n";
+                                                  echo $control[16],"\n";
+                                                  echo "<div style='display: flex; flex-direction: row; justify-content: end; align-items: center;' > <button class='btn btn-outline-info mb-4' type='submit' style=' text-transform: capitalize; ' > imprimir $rep <i class='fa fa-file-alt fa-sm ' ></i> </button></div>";
+                                                  echo "</form>";
+                                                  echo "</div>";
+                                                }
+                                              }
+                                            ?>
+                                            </div>
+                                          </div>
+                                      <?php
+                                      }
+                                    }
+                                  ?>
+                    </div>
+                      
+                  </div>
+                  
+                  <?php
+
+                    if ( count($datosfechas) ) {
+                      echo '<div class="col border-top border-bottom border-warning py-3 mb-3 text-center">';
+                      // var_dump($datosfechas);
+                      $feai = date_create($datosfechas[0]['fechas']['fa3']);
+                      $feaf = date_create($datosfechas[0]['fechas']['fb3']);
+                      $febi = date_create($datosfechas[1]['fechas']['fa3']);
+                      $febf = date_create($datosfechas[1]['fechas']['fb3']);
+
+                      $difea = date_diff($feaf,$feai);
+                      $difeb = date_diff($febf,$febi);
+
+                      $años = $difea->y + $difeb->y;
+                      $meses = $difea->m + $difeb->m;
+                      $dias = $difea->d + $difeb->d;
+
+                      echo "Tiempo de servicio total: ",$años," Años - ",$meses," Meses y ",$dias," Días.";
+
+                      // var_dump($difea);
+                      // var_dump($difeb);
+
+                      // echo $feai,"  -  ",$feaf,"  -  ",$febi,"  -  ",$febf;
+                      echo '</div>';
+                    }
+                  ?>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="app_contenido_tabla p-2" >
-          <div class="title" >Listado</div>
-          <table id="tabladatos" class="display hover compact stripe" >
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <!-- <th>IND</th> -->
-                    <th>Empleador</th>
-                    <th>Dpto</th>
-                    <th>Inic Act.</th>
-                    <th>Baja Act.</th>
-                    <!-- <th>Años</th> -->
-                    <th style='text-align: center;'>Acciones</th>
-                </tr>
-            </thead>
-            <tbody class="text-dark">
-                <?php // var_dump($empresas); ?>
-                <?php
-                  $numemp = 0;
-                  if ( isset($_POST['fnacimiento']) ) {
-                    foreach ($empresas as $empresa) {
-                      $numemp++;
-                      echo "<tr>";
-                      echo "<td>".$empresa['id']."</td>";
-                      // echo "<td>".$empresa['ind']."</td>";
-                      echo "<td>".$empresa['empleador']."</td>";
-                      echo "<td>".$empresa['dpto']."</td>";
-                      echo "<td>".$empresa['f_inic_act']."</td>";
-                      echo "<td>".$empresa['f_baja_act']."</td>";
-                      // echo "<td>".$empresa['anios_transcurridos']."</td>";
-                      ?>
-                      <td style="display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: center; text-align: center; padding: 0 15px;">
-                        <?php
-                          // echo "Fecha de Nacimiento: ",$_POST['fnacimiento'];
-                          $control[0] = '<input type="hidden" name="empresa" value="'.$empresa['empleador'].'">'; 
-                          $control[1] = '<input type="hidden" name="nombres" value="'.$_POST['nombres'].'">'; 
-                          $control[2] = '<input type="hidden" name="apellidos" value="'.$_POST['apellidos'].'">'; 
-                          
-                          
-                          $valido = false;
-                          do {
-                            $aniosa = rand(8, 12);
-                            $aniosb = rand(8, 12);
-                            $daysint = rand(8, 25);
-                            $monthsint = rand(1, 5);
-                            $aniosint = rand(0, 2);
-                            if ( ( $aniosa + $aniosb ) >= 20 ) $valido = true;
-                          } while (!$valido);
-
-                          $date = new DateTime();
-                          // echo "Fecha Nacimiento: ",$_POST['fnacimiento'],"<br>";
-                          // $datea_a = date_create($_POST['fnacimiento']);
-                          $datea_a = date_create($_POST['fnacimiento']);
-                          //$datea_a = date_create($empresa['f_inic_act']);
-                          $datea_a = date_add($datea_a, date_interval_create_from_date_string("18 year"));
-                          //echo "Fecha Legal Laboral: ",date_format($datea_a, "Y-m-d"),"<br><br>";
-
-                          $datea_a = date_add($datea_a, date_interval_create_from_date_string($monthsint." months"));
-                          $datea_a = date_add($datea_a, date_interval_create_from_date_string($daysint." days"));
-                          $control[3] = '<input type="hidden" name="f_a" value="'.date_format($datea_a, "j").' de '.$meses[date_format($datea_a , "n")].' de '.date_format($datea_a , "Y").'">'; 
-                          if ( $numemp === 1 ) echo "Fecha I A: ",date_format($datea_a, "Y-m-d"),"<br>";
-                          
-                          $datea_b = date_add($datea_a, date_interval_create_from_date_string(($monthsint + 1)." months"));
-                          $datea_b = date_add($datea_b, date_interval_create_from_date_string($aniosa." years"));
-                          $datea_b = date_create(date_format($datea_b, "Y-m-d"));
-                          $control[4] = '<input type="hidden" name="f_b" value="'.date_format($datea_b, 'j').' de '.$meses[date_format($datea_b , "n")].' de '.date_format($datea_b , "Y").'">'; 
-                          if ( $numemp === 1 ) echo "Fecha B A: ",date_format($datea_b, "Y-m-d"),"<br>";
-                          
-                          $dateb_a = date_add($datea_b, date_interval_create_from_date_string(($monthsint - 1)." months"));
-                          $dateb_a = date_add($dateb_a, date_interval_create_from_date_string($aniosint." years"));
-                          $dateb_a = date_create(date_format($dateb_a, "Y-m-d"));
-                          $control[5] = '<input type="hidden" name="f_a" value="'.date_format($dateb_a, "j").' de '.$meses[date_format($dateb_a , "n")].' de '.date_format($dateb_a , "Y").'">'; 
-                          if ( $numemp === 2 ) echo "Fecha I B: ",date_format($dateb_a, "Y-m-d"),"<br>";
-                          
-                          $dateb_b = date_add($dateb_a, date_interval_create_from_date_string($aniosb." years"));
-                          $dateb_b = date_create(date_format($dateb_b, "Y-m-d"));
-                          $control[6] = '<input type="hidden" name="f_b" value="'.date_format($dateb_b, 'j').' de '.$meses[date_format($dateb_b , "n")].' de '.date_format($dateb_b , "Y").'">'; 
-                          if ( $numemp === 2 ) echo "Fecha B B: ",date_format($dateb_b, "Y-m-d"),"<br>";
-
-                          $control[7] = '<input type="hidden" name="cargo_a" value="'.$_POST['cargo_o'].'">'; 
-                          $control[8] = '<input type="hidden" name="dpto" value="'.$empresa['dpto'].'">'; 
-                          $control[9] = '<input type="hidden" name="fecha_emision" value="'.date_format($date, 'j').' de '.$meses[date_format($date , 'n')].' de '.date_format($date ,'Y').'">';
-                        ?>
-                          <?php
-                          for ( $p = 1 ; $p < 3 ; $p++ ) {
-                            echo "<form action='reportes/reporte0$p.php' method='post'>";
-                            // for ( $i = 0; $i < 10; $i++  ) {
-                            //   echo $control[$i],"\n";
-                            // }
-                            echo $control[0],"\n";
-                            echo $control[1],"\n";
-                            echo $control[2],"\n";
-                            if ( $numemp === 1 ) {
-                              echo $control[3],"\n";
-                              echo $control[4],"\n";
-                            }
-                            if ( $numemp === 2 ) {
-                              echo $control[5],"\n";
-                              echo $control[6],"\n";
-                            }
-                            echo $control[7],"\n";
-                            echo $control[8],"\n";
-                            echo $control[9],"\n";
-                            echo "<button type='submit' data-title='Reporte A' > <i class='fa fa-file-alt' ></i> </button>";
-                            echo "</form>";
-                          }
-                          ?>
-                      </td>
-                      <?php
-                      echo "</tr>";
-                    }
-                    // var_dump($empresas);
-                  }
-                  // for ($i=1; $i < 51; $i++) {
-                  //   echo "<tr>";
-                  //   for ($o=1; $o < 11; $o++) {
-                  //     echo "<td>","F: ",str_pad($i,2,"0",STR_PAD_LEFT)," / C: ",str_pad(strval($o),2,"0",STR_PAD_LEFT),"</td>";
-                  //   }
-                  //   echo "</tr>";
-                  // }
-                ?>
-            </tbody>
-          </table>
         </div>
       </div>
     </div>
@@ -408,32 +712,62 @@ $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "
         
         $(document).ready( function () {
             $('#tabladatos').DataTable({
+              "ordering": false,
+              "searching": false,
+              "paging": false,
+              "info": false
             });
         } );
 
         const mostrar = (dato) => { $('#pensionado').css("display", dato == "pensionado" ? "block" : "none" ) }
 
-        // const calcularTiemLabo = () => {
-        //   const fechaIniAct = moment($('#iniactlab').val())
-        //   const fechaFinAct = moment($('#fecafiafp').val())
-        //   const anios = fechaFinAct.diff(fechaIniAct, 'years')
-        //   $("#anioslaborados").val(anios)
-        //   console.info('Ini Actividad Laboral: ', fechaIniAct.format('L'))
-        //   console.info('Fin Actividad Laboral: ', fechaFinAct.format('L'))
-        //   console.info('Años que laboró: ', anios)
-        // }
+        const limpiarFomulario = () => {
+          // console.info("limpiando formulario");
+          $('#nombres').val('')
+        }
 
         const calcularEdad = () => {
-          const fechaAct = moment()
+          const fechaAct = h()
           const fechaNac = moment($('#nacimiento').val())
           const edad = fechaAct.diff(fechaNac, 'years')
           const fecleglab = fechaNac.add(18, 'years').format('Y/M/D')
           $('#edad').val(edad)
           $('#iniactlab').val(fecleglab)
-          //console.info('Fecha de Nacimiento: ', $('#nacimiento').val())
-          //console.info('Edad: ', edad)
-          //console.info('Fecha de edad legal para laborar: ', fecleglab)
         }
+
+        const asignar_cargo_c = (valor) => {
+          // alert("El cargo es: "+valor)
+          $('#cargo_ac').val(valor)
+          $('#cargo_al').val(valor)
+          $('#cargo_ab').val(valor)
+        }
+
+        const asignar_cargo_l = (valor) => {
+          // alert("El cargo es: "+valor)
+          $('#cargo_bc').val(valor)
+          $('#cargo_bl').val(valor)
+          $('#cargo_bb').val(valor)
+        }
+
+        function filterFloat(evt,input){
+          // Backspace = 8, Enter = 13, ‘0′ = 48, ‘9′ = 57, ‘.’ = 46, ‘-’ = 43
+          var key = window.Event ? evt.which : evt.keyCode;   
+          var chark = String.fromCharCode(key);
+          var tempValue = input.value+chark;
+          var isNumber = (key >= 48 && key <= 57);
+          var isSpecial = (key == 8 || key == 13 || key == 0 ||  key == 46);
+          if(isNumber || isSpecial){
+              return filter(tempValue);
+          }        
+          
+          return false;    
+            
+        }
+        function filter(__val__){
+          var preg = /^([0-9]+\.?[0-9]{0,2})$/; 
+          return (preg.test(__val__) === true);
+        }
+
     </script>
 </body>
 </html>
