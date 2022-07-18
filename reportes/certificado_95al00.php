@@ -3,6 +3,9 @@
 if ( isset($_POST['cargo_ac']) ) $cargo = $_POST['cargo_ac'];
 if ( isset($_POST['cargo_bc']) ) $cargo = $_POST['cargo_bc'];
 
+header("Content-type: application/vnd.ms-word");
+header("Content-Disposition: attachment; Filename=Certificado.doc");
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,7 +25,7 @@ if ( isset($_POST['cargo_bc']) ) $cargo = $_POST['cargo_bc'];
     <div class="pagina" >
         <div class="certificado9500">
             <div class="cer9500_empresa resaltar"><?php echo $_POST['empresa'] ?></div>
-            <div class="cer9500_titulo"><strong>Constancia de Trabjao </strong></div>
+            <div class="cer9500_titulo"><center><strong>Constancia de Trabajo </strong></center></div>
             <div class="cer9500_cuerpo">SE DEJA CONSTANCIA QUE EL SEÑOR(A) <strong class="resaltar"><?php echo $_POST['nombres']." ".$_POST['apellidos'] ?></strong>, HA LABORADO PARA NUESTRA EMPRESA COMO <strong style="color: red"><?php echo $cargo ?></strong> A PARTIR DEL <strong class="resaltar"><?php echo $_POST['f_a_b'] ?></strong> AL <strong style="color: red"><?php echo $_POST['f_b_b'] ?></strong>. </div>
             <div class="cer9500_cuerpo">DURANTE SU TIEMPO DE SERVICIOS EL MENCIONADO SEÑOR, DEMOSTRO EN TODO MOMENTO UN ALTO GRADO DE RESPONSABILIDAD EN LAS TAREAS ENCOMENDADAS POR LA EMPRESA.</div>
             <div class="cer9500_cuerpo">A SOLICITUD DEL INTERESADO, SE EXTIENDE LA CONSTANCIA PARA EL USO QUE EL, LE PUEDA DAR.</div>

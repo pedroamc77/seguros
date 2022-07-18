@@ -1,5 +1,66 @@
 <?php
+
 require_once('data_base.php');
+
+$salt = '$6$4dm1n1str4d0r3s';
+
+function encriptar_clave($clave) {
+    $hash = crypt($clave, $GLOBALS['salt']);
+    $hash = crypt($hash , $hash);
+    return $hash;
+}
+
+function autenticar_usuario( $alias, $clave ) {
+    try {
+        $hash = explode($GLOBALS['salt'] , encriptar_clave($clave))[1];
+        $sql  = "SELECT * FROM usuarios WHERE alias = '$alias'";
+        $db = new db();
+        $db = $db->connectionDB();
+        $resultado = $db->query($sql);
+        if ($resultado->rowCount() > 0) {
+            $datos = $resultado->fetchAll()[0];
+            if ($datos['clave'] === $hash) {
+                // echo $datos['nombres']." ".$datos['apellidos']." / Clave: ".$datos['clave'];
+                $_SESSION['usuario_id'] = $datos['id'];
+                $_SESSION['nombre'] = $datos['nombres']." ".$datos['apellidos'];
+            } else {
+                unset($_SESSION['usuario_id']);
+                unset($_SESSION['nombre']);
+            }
+            return $datos;
+        } else {
+            unset($_SESSION['usuario_id']);
+            unset($_SESSION['nombre']);
+            return "No existen registros";
+        }
+    } catch (\Throwable $th) {
+        return "Error al consultar información.";
+    }
+}
+
+function obtener_usuarios() {
+    $sql = "SELECT id, nombres, apellidos, alias FROM usuarios";
+    try {
+        $db = new db();
+        $db = $db->connectionDB();
+        $resultado = $db->query($sql);
+        if ($resultado->rowCount() > 0) {
+            $datos = $resultado->fetchAll();
+            return $datos;
+            // return $res->withStatus(200)
+            //     ->withHeader('Content-Type', 'application/json')
+            //     ->write(json_encode($datos));
+        } else {
+            echo json_encode("No existen registros");
+        }
+    } catch (\Throwable $th) {
+        $datos = array([ "Error" => 401, "mensaje" => "Error al obtener registros."]);
+        return $datos;
+        // return $res->withStatus(401)
+        //     ->withHeader('Content-Type', 'application/json')
+        //     ->write(json_encode($datos[0]));
+    }
+}
 
 function cargar_csv_bd( $csv, $encabezado, string $delimitador = ',' ) {
     $campos = 'ind, ruc, empleador, direccion, dpto, prov, dist, f_inic_act, f_baja_act, rep_legal, dni_a, f_inicio_a, otro_representante, dni_b, f_inicio_b, imprimir';
@@ -171,7 +232,7 @@ function buscar_empresa_ruc( $ruc ) {
     }
 }
 
-function empresa_cotizada( $finicial, $ffinal ) {
+function empresa_cotizada( $finicial, $ffinal, $manual = false ) {
     $sql  = "SELECT DISTINCT id, ruc, empleador, dpto, f_inic_act, f_baja_act, rep_legal, dni_a FROM vempresasfiltradas WHERE f_inic_act <= '$finicial' and f_baja_act >= '$ffinal' ORDER BY rand() LIMIT 1";
     // echo $sql;
     // exit;
@@ -214,7 +275,7 @@ function empresas_cotizadas( $fecha ) {
 
 function basico($numero) {
     $valor = array ('uno','dos','tres','cuatro','cinco','seis','siete','ocho',
-    'nueve','diez','once','doce','trece','catorce','quince','dieciseis','diecisiete','dieciocho','diecinueve','veinte','veintiuno ','vientidos ','veintitrés ', 'veinticuatro','veinticinco',
+    'nueve','diez','once','doce','trece','catorce','quince','dieciseis','diecisiete','dieciocho','diecinueve','veinte','veintiuno ','veintidós ','veintitrés ', 'veinticuatro','veinticinco',
     'veintiséis','veintisiete','veintiocho','veintinueve');
     return $valor[$numero - 1];
 }

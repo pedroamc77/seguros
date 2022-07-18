@@ -298,6 +298,38 @@ html body
         width: 50%
         text-align: end
 
+.centrar
+    &_descarga
+        position: absolute
+        top: 0
+        left: 0
+        width: 100vw
+        height: 100vh
+        overflow: hidden
+        display: flex
+        justify-content: center
+        align-items: center
+        background-color: lightblue
+
+        >div
+            position: relative
+            width: 20em
+
+.tarjeta
+    &_descarga
+        position: fixed
+        float: right
+        width: 200px
+        height: 400px
+        top: 20px
+        right: 20px
+        // border: 1px solid lightgray
+        text-align: center
+
+        >div
+            >div
+                padding: 3px
+
 .valores
     display: -webkit-inline-box
     width: 300px !important
@@ -544,12 +576,12 @@ html body
     margin: 0 auto
     border: 1px solid lightgrey
     font-family: 'Roboto', sans-serif
-    font-size: 14px
+    font-size: 12px
 
     .liquidacion6272
         font-size: $letras_empresa
         font-weight: bolder
-        margin: 3cm 2cm
+        margin: 1.5cm 2cm
     
     .liq6272
         &_empresa
@@ -615,11 +647,84 @@ html body
             border-top: dotted 2px black
             color: red
             // background-color: rgba(0,0,255,.1)
+        
+        &_ret
+            display: flex
+            flex-direction: row
+            justify-content: start
+
+            >div
+                // display: inline-flex
+
+            >div:nth-child(1)
+                text-align: right !important
+                width: 5%
+
+            >div:nth-child(2)
+                padding-left: 10px
+                width: 45%
+
+            >div:nth-child(3)
+                text-align: right !important
+                width: 25%
+
+            >div:nth-child(4)
+                text-align: right !important
+                width: 25%
+        
+        &_dev
+            display: flex
+            flex-direction: row
+            justify-content: start
+
+            >div
+                // display: inline-flex
+
+            >div:nth-child(1)
+                text-align: right !important
+                width: 5%
+
+            >div:nth-child(2)
+                padding-left: 10px
+                width: 45%
+
+            >div:nth-child(3)
+                text-align: right !important
+                width: 25%
+
+            >div:nth-child(4)
+                text-align: right !important
+                width: 25%
+        
+        &_total
+            display: flex
+            flex-direction: row
+            justify-content: start
+
+            >div
+                // display: inline-flex
+
+            >div:nth-child(1)
+                text-align: right !important
+                width: 5%
+
+            >div:nth-child(2)
+                padding-left: 10px
+                width: 45%
+
+            >div:nth-child(3)
+                text-align: right !important
+                width: 25%
+
+            >div:nth-child(4)
+                text-align: right !important
+                width: 25%
+
 
     .liquidacion7375
         font-size: $letras_empresa
         font-weight: bolder
-        margin: 3cm 2cm
+        margin: 1.5cm 2cm
     
     .liq7375
         &_empresa

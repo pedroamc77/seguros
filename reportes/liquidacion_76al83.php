@@ -7,6 +7,7 @@ if ( isset($_POST['cargo_bl']) ) $cargo = $_POST['cargo_bl'];
 
 $fechaini   = date_create($_POST['f_a']);
 $fechafin   = date_create($_POST['f_b']);
+$añofin     = date_format($fechafin,"Y");
 $diferencia = date_diff($fechafin, $fechaini);
 
 // Deducciones
@@ -23,7 +24,7 @@ $incentivo                   = isset($_POST['incentivo'])                   ? $_
 $bonificacion                = isset($_POST['bonificacion'])                ? $_POST['bonificacion']                : 0;
 $bonificacion_graciosa       = isset($_POST['bonificacion_graciosa'])       ? $_POST['bonificacion_graciosa']       : 0;
 $bonificacion_extraordinaria = isset($_POST['bonificacion_extraordinaria']) ? $_POST['bonificacion_extraordinaria'] : 0;
-$total_deven = $vacaciones+$gratificaciones+$incentivo+$bonificacion_graciosa;
+$total_deven = $vacaciones+$gratificaciones+$reintegro+$incentivo+$bonificacion+$bonificacion_graciosa+$bonificacion_extraordinaria;
 
 // var_dump($diferencia);
 $meses = $diferencia->format("%m");
@@ -39,9 +40,9 @@ $sueldo = $sueldos['sueldo_minimo'];
 
 $totalpago = $sueldo*$anios;
 
-$tretencion = $totalpago*($retencion/100);
+$tretencion = $añofin >= 1980 ? $totalpago*($retencion/100) : 0;
 
-$totalapagar = ($totalpago+$total_deven)-$tretencion;
+$totalapagar = ($totalpago+$total_deven)-($total_deduc+$tretencion);
 
 ?>
 <!DOCTYPE html>
@@ -70,7 +71,8 @@ $totalapagar = ($totalpago+$total_deven)-$tretencion;
             <div class="liq7683_desglose"><div>Motivo de cese </div>        :&nbsp;<div class="valores"><strong>Renuncia Voluntaria</strong></div></div>
             <div class="liq7683_desglose"><div>sueldo básico </div>         :&nbsp;<div class="valores"><strong class="resaltar" ><?php echo "S/.".nf($sueldo) ?></strong></div></div>
             <!-- <div class="liq7683_desglose"><div>incentivo </div>             :&nbsp;<div class="valores"><strong class="resaltar" ><?php //echo "S/.",nf($incentivo) ?></strong></div></div> -->
-            <div class="liq7683_desglose"><div>monto computable </div>      :&nbsp;<div class="valores"><strong class="resaltar" ><?php echo "S/.",nf($totalpago) ?></strong></div></div>
+            <!-- <div class="liq7683_desglose"><div>monto computable </div>      :&nbsp;<div class="valores"><strong class="resaltar" ><?php //echo "S/.",nf($totalpago) ?></strong></div></div> -->
+            <div class="liq7683_desglose"><div>monto computable </div>      :&nbsp;<div class="valores"><strong class="resaltar" ><?php echo "S/.",nf($sueldo) ?></strong></div></div>
             <div class="liq7683_desglose"><div>tiempo de servicios </div>   :&nbsp;<div class="valores"><strong class="resaltar" ><?php echo $tiempo ?></strong></div></div>
             <div class="liq7683_desglose" style="border-bottom: solid 2px black;"><div>a pagar </div>:&nbsp;<div class="valores"><strong class="resaltar" ><?php echo "S/.",nf($totalpago) ?></strong></div></div>
             <div class="liq7683_titulo">resumen de cálculo</div>
@@ -81,43 +83,57 @@ $totalapagar = ($totalpago+$total_deven)-$tretencion;
 
 
 
-            <? if ($adelanto) { ?>
-            <div class="liq7683_calculo">
+            <? //if ($adelanto) { ?>
+            <!-- <div class="liq7683_calculo">
                 <div class="titulo_b"><strong class="" >Adelanto</strong></div>
-                <div class="titulo_b"><strong class="resaltar" > <?php echo "S/.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",nf($adelanto) ?> </strong></div>
-            </div>
-            <? } ?>
-            <? if ($vacaciones) { ?>
-            <div class="liq7683_calculo">
+                <div class="titulo_b"><strong class="resaltar" > <?php //echo "S/.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",nf($adelanto) ?> </strong></div>
+            </div> -->
+            <? //} ?>
+            <? //if ($vacaciones) { ?>
+            <!-- <div class="liq7683_calculo">
                 <div class="titulo_b"><strong class="" >Vacaciones</strong></div>
-                <div class="titulo_b"><strong class="resaltar" > <?php echo "S/.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",nf($vacaciones) ?> </strong></div>
-            </div>
-            <? } ?>
-            <? if ($gratificaciones) { ?>
-            <div class="liq7683_calculo">
+                <div class="titulo_b"><strong class="resaltar" > <?php //echo "S/.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",nf($vacaciones) ?> </strong></div>
+            </div> -->
+            <? //} ?>
+            <? //if ($gratificaciones) { ?>
+            <!-- <div class="liq7683_calculo">
                 <div class="titulo_b"><strong class="" >Gratificaciones</strong></div>
-                <div class="titulo_b"><strong class="resaltar" > <?php echo "S/.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",nf($gratificaciones) ?> </strong></div>
-            </div>
-            <? } ?>
-            <? if ($incentivo) { ?>
-            <div class="liq7683_calculo">
+                <div class="titulo_b"><strong class="resaltar" > <?php //echo "S/.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",nf($gratificaciones) ?> </strong></div>
+            </div> -->
+            <? //} ?>
+            <? //if ($incentivo) { ?>
+            <!-- <div class="liq7683_calculo">
                 <div class="titulo_b"><strong class="" >Incentivo</strong></div>
-                <div class="titulo_b"><strong class="resaltar" > <?php echo "S/.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",nf($incentivo) ?> </strong></div>
-            </div>
-            <? } ?>
-            <? if ($bonificacion_graciosa) { ?>
-            <div class="liq7683_calculo">
+                <div class="titulo_b"><strong class="resaltar" > <?php //echo "S/.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",nf($incentivo) ?> </strong></div>
+            </div> -->
+            <? //} ?>
+            <? //if ($bonificacion_graciosa) { ?>
+            <!-- <div class="liq7683_calculo">
                 <div class="titulo_b"><strong class="" >Bonificación Graciosa</strong></div>
-                <div class="titulo_b"><strong class="resaltar" > <?php echo "S/.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",nf($bonificacion_graciosa) ?> </strong></div>
+                <div class="titulo_b"><strong class="resaltar" > <?php //echo "S/.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",nf($bonificacion_graciosa) ?> </strong></div>
+            </div> -->
+            <? //} ?>
+            <? //if ($tretencion) { ?>
+            <!-- <div class="liq7683_calculo">
+                <! -- <div class="titulo_b"><strong class="resaltar" ><?php //echo "Retención $retencion%" ?></strong></div> - - >
+                <div class="titulo_b"><strong class="resaltar" ><?php //echo "Retención 2%" ?></strong></div>
+                <div class="titulo_b"><strong class="resaltar" > (<?php //echo "S/.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",nf($tretencion) ?>) </strong></div>
+            </div> -->
+            <? //} ?>
+            <div class="" style="margin-top: 1.5em;" >
+                <?php if ($tretencion && $añofin >= 1980)                   { echo "<div class='liq6272_ret'><div></div>     <div>Retención:</div>                   <div><strong class='resaltar'>(&nbsp;S/.",nf($tretencion)                   ," )</strong></div></div>"; } ?>
+                <?php if ($adelanto)                    { echo "<div class='liq6272_ret'><div></div>      <div>Adelanto:</div>                    <div><strong class='resaltar'>(&nbsp;S/.",nf($adelanto)                    ," )</strong></div></div>"; } ?>
+                <?php if ($vacaciones)                  { echo "<div class='liq6272_dev'><div></div>     <div>Vacaciones:</div>                  <div></div><div><strong class='resaltar'>&nbsp;S/." ,nf($vacaciones)                   ," </strong></div></div>"; } ?>
+                <?php if ($gratificaciones)             { echo "<div class='liq6272_dev'><div></div>    <div>Gratificaciones:</div>             <div></div><div><strong class='resaltar'>&nbsp;S/." ,nf($gratificaciones)              ," </strong></div></div>"; } ?>
+                <?php if ($reintegro)                   { echo "<div class='liq6272_dev'><div></div>   <div>Reintegro:</div>                   <div></div><div><strong class='resaltar'>&nbsp;S/." ,nf($reintegro)                   ,"  </strong></div></div>"; } ?>
+                <?php if ($incentivo)                   { echo "<div class='liq6272_dev'><div></div>     <div>Incentivo:</div>                   <div></div><div><strong class='resaltar'>&nbsp;S/." ,nf($incentivo)                   ,"  </strong></div></div>"; } ?>
+                <?php if ($bonificacion)                { echo "<div class='liq6272_dev'><div></div>      <div>Bonificación:</div>                <div></div><div><strong class='resaltar'>&nbsp;S/." ,nf($bonificacion)                ,"  </strong></div></div>"; } ?>
+                <?php if ($bonificacion_graciosa)       { echo "<div class='liq6272_dev'><div></div>     <div>Bonificación Graciosa:</div>       <div></div><div><strong class='resaltar'>&nbsp;S/." ,nf($bonificacion_graciosa)       ,"  </strong></div></div>"; } ?>
+                <?php if ($bonificacion_extraordinaria) { echo "<div class='liq6272_dev'><div></div>    <div>Bonificación Extraordinaria:</div> <div></div><div><strong class='resaltar'>&nbsp;S/." ,nf($bonificacion_extraordinaria) ,"  </strong></div></div>"; } ?>
             </div>
-            <? } ?>
-            <? if ($tretencion) { ?>
-            <div class="liq7683_calculo">
-                <!-- <div class="titulo_b"><strong class="resaltar" ><?php //echo "Retención $retencion%" ?></strong></div> -->
-                <div class="titulo_b"><strong class="resaltar" ><?php echo "Retención 2%" ?></strong></div>
-                <div class="titulo_b"><strong class="resaltar" > (<?php echo "S/.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",nf($tretencion) ?>) </strong></div>
+            <div class="" style="margin-top: 1.5em;border-top: 1px solid black; margin-bottom: 1.5em;" >
+                <?php if ($total_deduc && $total_deven) { echo "<div class='liq6272_total'><div></div>     <div>Total:</div>                       <div></div><div><strong class='resaltar'>&nbsp;S/.",nf($total_deven-($total_deduc+$tretencion)),"</strong></div></div>"; } ?>
             </div>
-            <? } ?>
 
             <div class="liq7683_calculo">
                 <div class="titulo_b"><strong class="mayusculas" ><?php echo "liquidacion a apagar" ?></strong></div>

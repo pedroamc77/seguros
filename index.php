@@ -1,4 +1,10 @@
 <?php 
+session_start();
+ 
+if(!isset($_SESSION['usuario_id'])){
+    header('Location: acceso.php');
+    exit;
+}
 
 require_once('./_db/nomina.php');
 
@@ -22,8 +28,6 @@ $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link rel="stylesheet" href="css/estilos.min.css" media="all">
-    <!-- <link rel="stylesheet" href="css/impresion.min.css" media="print"> -->
-    <link rel="stylesheet" href="./datatables/datatables.min.css">
     <link href="fa5130/css/all.min.css" rel="stylesheet" >
 
 </head>
@@ -34,9 +38,14 @@ $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "
           <div class="app_horizontal_barra_logo"><div>Sis</div><div>Pen</div></div>
           <div class="app_horizontal_barra_menu">
             <a href="index.php" class="custom-btn btn-13 text-center">Pensiones</a>
-            <a href="bono.php"  class="custom-btn btn-13 text-center">Bono</a>
-            <a href="manual.php"  class="custom-btn btn-13  text-center">Pensiones Manual</a>
-            <a href="manual_bono.php"  class="custom-btn btn-13  text-center">Bono Manual</a>
+            <a href="bono.php" class="custom-btn btn-13 text-center">Bono</a>
+            <a href="manual.php" class="custom-btn btn-13 text-center">Pensiones Manual</a>
+            <a href="manual_bono.php" class="custom-btn btn-13 text-center">Bono Manual</a>
+            <form action="acceso.php" method="post" >
+              <input type="hidden" name="desloguearse" value="true">
+              <!-- <a href="javascript:void()" class="custom-btn btn-13 text-center" onclick="submit()" >Salir</a> -->
+              <button type="submit" class="btn btn-link text-white" style="font-size: .75em;" >Salir</button>
+            </form>
           </div>
       </div>
       <div class="app_horizontal_contenido">
@@ -116,8 +125,8 @@ $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "
                                       $fecha_anterior = null;
                                       $valido = false;
                                       do {
-                                        $aniosa = rand(8, 12);
-                                        $aniosb = rand(8, 12);
+                                        $aniosa = rand(9, 11);
+                                        $aniosb = rand(9, 11);
                                         $daysint = rand(8, 25);
                                         $monthsint = rand(1, 3);
                                         $aniosint = rand(0, 2);
@@ -130,8 +139,11 @@ $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "
                                           $datos = $datosfechas[$numemp];
                                         } else {
                                           $datos = datos_empresa($empresa, array($fnacimiento, $aniosa, $aniosb, $daysint, $monthsint, $aniosint), $numemp === 2, $numemp === 2 ? $fecha_anterior : null );
-                                          $fecha_anterior = $datos['fechas']['fb3'];
+                                          if (empty($datos['fechas'])) continue;
+                                          if (count($datos) === 1) $fecha_anterior = $datos['fechas']['fb3'];
                                           $datosfechas[] = $datos;
+                                          // if (count($datosfechas) === 2) var_dump($datosfechas);
+                                          // continue;
                                         }
                                         ?>
                                         <div class="col-6 <?php if ($numemp === 2) echo "border-start border-warning" ?>">
@@ -182,11 +194,11 @@ $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "
                                             echo "<div class=' border-bottom border-info text-center mb-2 pb-2 fs-5 text-warning' >Empresa $numemp</div>";
                                             
                                             echo "<div class='text-center fw-bolder text-info ' style='font-size: 13px;'>",$empresa['id']," - ",$empresa['empleador'],"</div>";
-                                            echo "<div class=' text-center fw-lighter fst-italic pb-2' style='font-size: 11px;' >","Desde el: ", $datos['fechas']['fa2']," / Hasta el: ",$datos['fechas']['fb2'],"</div>";
-                                            echo "<div class=' text-center fw-lighter fst-italic pb-2 border-bottom border-info ' style='font-size: 11px;' >","Último sueldo: ", $sueldo,"</div>";
+                                            echo "<div class='text-center fw-lighter fst-italic pb-2' style='font-size: 11px;' >","Desde el: ", $datos['fechas']['fa2']," / Hasta el: ",$datos['fechas']['fb2'],"</div>";
+                                            echo "<div class='text-center fw-lighter fst-italic pb-2 border-bottom border-info ' style='font-size: 11px;' >","Último sueldo: ", $sueldo,"</div>";
   
                                             if ($numemp === 1) {
-                                          ?>
+                                              ?>
                                                 <div class="row mb-3 mt-2 ">
                                                   <label for="cargo" class="col-sm-3 col-form-label">Cargo:</label>
                                                   <div class="col-sm-9">
@@ -242,9 +254,9 @@ $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "
                                                     </select>
                                                   </div>
                                                 </div>
-                                          <?php
+                                              <?php
                                             } else {
-                                          ?>
+                                              ?>
                                                 <div class="row mb-3 mt-2 ">
                                                   <label for="cargo" class="col-sm-3 col-form-label">Cargo:</label>
                                                   <div class="col-sm-9">
@@ -301,7 +313,7 @@ $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "
                                                   </div>
                                                 </div>
                                                 
-                                                <?php
+                                              <?php
                                             }
                                             ?>
                                             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -336,9 +348,9 @@ $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "
                                                 if ($p === 1) {
                                                   $rep = "certificado";
                                                   echo "<div class='tab-pane fade capitalizar show active' id='".$rep."_".$numemp."' role='tabpanel' aria-labelledby='".$rep."_".$numemp."-tab'>";
-                                                  echo "<form action='reportes/".$rep.$rp.".php' method='post' target='_blank'>","\n";
+                                                  echo "<form action='reportesword/".$rep.$rp.".php' method='post' target='_blank'>","\n";
                                                   if( $numemp === 1 ) echo '<input required type="hidden" name="cargo_ac" id="cargo_ac" value="" />',"\n";
-                                                  if( $numemp === 2 ) echo '<input required type="hidden" name="cargo_al" id="cargo_al" value="" />',"\n";
+                                                  if( $numemp === 2 ) echo '<input required type="hidden" name="cargo_bc" id="cargo_bc" value="" />',"\n";
                                                   echo $control[0],"\n";
                                                   echo $control[1],"\n";
                                                   echo $control[2],"\n";
@@ -366,7 +378,7 @@ $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "
                                                 if ($p === 2) {
                                                   $rep = "liquidacion";
                                                   echo "<div class='tab-pane fade capitalizar' id='".$rep."_".$numemp."' role='tabpanel' aria-labelledby='".$rep."_".$numemp."-tab'>";
-                                                  echo "<form action='reportes/".$rep.$rp.".php' method='post' target='_blank'>","\n";
+                                                  echo "<form action='reportesword/".$rep.$rp.".php' method='post' target='_blank'>","\n";
                                                   if( $numemp === 1 ) echo '<input required type="hidden" name="cargo_al" id="cargo_al" value="" />',"\n";
                                                   if( $numemp === 2 ) echo '<input required type="hidden" name="cargo_bl" id="cargo_bl" value="" />',"\n";
                                                   ?>
@@ -452,7 +464,7 @@ $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "
                                                 if ($p === 3 ) {
                                                   $rep = "boletadepago";
                                                   echo "<div class='tab-pane fade capitalizar' id='".$rep."_".$numemp."' role='tabpanel' aria-labelledby='".$rep."_".$numemp."-tab'>";
-                                                  echo "<form action='reportes/".$rep.$bo.".php' method='post' target='_blank'>","\n";
+                                                  echo "<form action='reportesword/".$rep.$bo.".php' method='post' target='_blank'>","\n";
                                                   if( $numemp === 1 ) echo '<input required type="hidden" name="cargo_ab" id="cargo_ab" value="" />',"\n";
                                                   if( $numemp === 2 ) echo '<input required type="hidden" name="cargo_bb" id="cargo_bb" value="" />',"\n";
                                                   ?>
@@ -522,7 +534,7 @@ $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "
                                                   $dec = rand(1, 3);
                                                   echo "<div class='tab-pane fade capitalizar' id='".$rep."_".$numemp."' role='tabpanel' aria-labelledby='".$rep."_".$numemp."-tab'>";
                                                   // echo "<form action='reportes/".$rep.$bo.".php' method='post' target='_blank'>","\n";
-                                                  echo "<form action='reportes/declaracionempleador0$dec.php' method='post' target='_blank'>","\n";
+                                                  echo "<form action='reportesword/declaracionempleador0$dec.php' method='post' target='_blank'>","\n";
                                                   // echo "<form action='reportes/declaracionempleador03.php' method='post' target='_blank'>","\n";
                                                   if( $numemp === 1 ) echo '<input required type="hidden" name="cargo_abo" id="cargo_ab" value="" />',"\n";
                                                   if( $numemp === 2 ) echo '<input required type="hidden" name="cargo_bbo" id="cargo_bb" value="" />',"\n";
@@ -669,17 +681,23 @@ $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "
                     if ( count($datosfechas) ) {
                       echo '<div class="col border-top border-bottom border-warning py-3 mb-3 text-center">';
                       // var_dump($datosfechas);
-                      $feai = date_create($datosfechas[0]['fechas']['fa3']);
-                      $feaf = date_create($datosfechas[0]['fechas']['fb3']);
-                      $febi = date_create($datosfechas[1]['fechas']['fa3']);
-                      $febf = date_create($datosfechas[1]['fechas']['fb3']);
+                      echo count($datosfechas);
 
-                      $difea = date_diff($feaf,$feai);
-                      $difeb = date_diff($febf,$febi);
-
-                      $años = $difea->y + $difeb->y;
-                      $meses = $difea->m + $difeb->m;
-                      $dias = $difea->d + $difeb->d;
+                      if (count($datosfechas)) {
+                        $feai = date_create($datosfechas[0]['fechas']['fa3']);
+                        $feaf = date_create($datosfechas[0]['fechas']['fb3']);
+                        $difea = date_diff($feaf,$feai);
+                      }
+                      
+                      if (count($datosfechas) === 2) {
+                        $febi = date_create($datosfechas[1]['fechas']['fa3']);
+                        $febf = date_create($datosfechas[1]['fechas']['fb3']);
+                        $difeb = date_diff($febf,$febi);
+                      }
+                      
+                      $años  = count($datosfechas) === 2 ? $difea->y + $difeb->y: $difea->y;
+                      $meses = count($datosfechas) === 2 ? $difea->m + $difeb->m: $difea->m;
+                      $dias  = count($datosfechas) === 2 ? $difea->d + $difeb->d: $difea->d;
 
                       echo "Tiempo de servicio total: ",$años," Años - ",$meses," Meses y ",$dias," Días.";
 

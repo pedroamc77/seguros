@@ -9,13 +9,8 @@ list($dia,$mes,$anio) = explode(".",$_POST['f_b']);
 
 $fecha_anterior = "";
 
-if ( $dia <= 30 && $mes >= 10 || $mes <= 4 ) {
-    $fecha_anterior = date_create(($anio-1)."/10/31");
-}
-if ( $dia <= 31 && $mes >= 5 && $mes <= 8 ) {
-    $fecha_anterior = date_create("$anio/4/30");
-}
-
+if ( $dia <= 30 && $mes >= 10 || $mes <= 4 ) $fecha_anterior = date_create(($anio-1)."/10/31");
+if ( $dia <= 31 && $mes >= 5 && $mes <= 8 )  $fecha_anterior = date_create("$anio/4/30");
 
 $fechaini = date_create($_POST['f_a']);
 $fechafin = date_create($_POST['f_b']);
@@ -40,7 +35,7 @@ $incentivo                   = isset($_POST['incentivo'])                   ? $_
 $bonificacion                = isset($_POST['bonificacion'])                ? $_POST['bonificacion']                : 0;
 $bonificacion_graciosa       = isset($_POST['bonificacion_graciosa'])       ? $_POST['bonificacion_graciosa']       : 0;
 $bonificacion_extraordinaria = isset($_POST['bonificacion_extraordinaria']) ? $_POST['bonificacion_extraordinaria'] : 0;
-$total_deven = $vacaciones+$gratificaciones+$bonificacion;
+$total_deven = $vacaciones+$gratificaciones+$reintegro+$incentivo+$bonificacion+$bonificacion_graciosa+$bonificacion_extraordinaria;
 
 // var_dump($diferencia);
 // var_dump($diferenciaa);
@@ -58,9 +53,9 @@ $sueldos = obtener_sueldo($_POST['fsueldo']);
 $sueldo = $sueldos['sueldo_minimo'];
 $totalpago = ($sueldo/12)*$mesesa;
 
-$tretencion = $totalpago*($retencion/100);
+// $tretencion = $totalpago*($retencion/100);
 
-$totalapagar = ($totalpago+$total_deven)-($total_deduc+$tretencion);
+$totalapagar = ($totalpago+$total_deven)-($total_deduc);
 
 ?>
 <!DOCTYPE html>
@@ -108,41 +103,56 @@ $totalapagar = ($totalpago+$total_deven)-($total_deduc+$tretencion);
             </div>
 
             
-            <? if ($adelanto) { ?>
-            <div class="liq9500_calculo">
-                <div class="titulo_b"><strong><?php echo "ADELANTO" ?></strong></div>
+            <? //if ($adelanto) { ?>
+            <!-- <div class="liq9500_calculo">
+                <div class="titulo_b"><strong><?php //echo "ADELANTO" ?></strong></div>
                 &nbsp;=&nbsp;
-                <div class="titulo_c"><strong>( <?php echo "S/.".nf($adelanto) ?> )</strong></div>
-            </div>
-            <? } ?>
-            <? if ($retencion) { ?>
-            <div class="liq9500_calculo">
-                <div class="titulo_b"><strong><?php echo "RETENCIÓN $retencion%" ?></strong></div>
+                <div class="titulo_c"><strong>( <?php //echo "S/.".nf($adelanto) ?> )</strong></div>
+            </div> -->
+            <? //} ?>
+            <? //if ($retencion) { ?>
+            <!-- <div class="liq9500_calculo">
+                <div class="titulo_b"><strong><?php //echo "RETENCIÓN $retencion%" ?></strong></div>
                 &nbsp;=&nbsp;
-                <div class="titulo_c"><strong>( <?php echo "S/.".nf($tretencion) ?> )</strong></div>
-            </div>
-            <? } ?>
-            <? if ($vacaciones) { ?>
-            <div class="liq9500_calculo">
-                <div class="titulo_b"><strong><?php echo "VACACIONES" ?></strong></div>
+                <div class="titulo_c"><strong>( <?php //echo "S/.".nf($tretencion) ?> )</strong></div>
+            </div> -->
+            <? //} ?>
+            <? //if ($vacaciones) { ?>
+            <!-- <div class="liq9500_calculo">
+                <div class="titulo_b"><strong><?php //echo "VACACIONES" ?></strong></div>
                 &nbsp;=&nbsp;
-                <div class="titulo_c"><strong> <?php echo "S/.".nf($vacaciones) ?> </strong></div>
-            </div>
-            <? } ?>
-            <? if ($gratificaciones) { ?>
-            <div class="liq9500_calculo">
-                <div class="titulo_b"><strong><?php echo "GRATIFICACIÓN" ?></strong></div>
+                <div class="titulo_c"><strong> <?php //echo "S/.".nf($vacaciones) ?> </strong></div>
+            </div> -->
+            <? //} ?>
+            <? //if ($gratificaciones) { ?>
+            <!-- <div class="liq9500_calculo">
+                <div class="titulo_b"><strong><?php //echo "GRATIFICACIÓN" ?></strong></div>
                 &nbsp;=&nbsp;
-                <div class="titulo_c"><strong> <?php echo "S/.".nf($gratificaciones) ?> </strong></div>
-            </div>
-            <? } ?>
-            <? if ($bonificacion) { ?>
-            <div class="liq9500_calculo">
-                <div class="titulo_b"><strong><?php echo "BONIFICACIÓN" ?></strong></div>
+                <div class="titulo_c"><strong> <?php //echo "S/.".nf($gratificaciones) ?> </strong></div>
+            </div> -->
+            <? //} ?>
+            <? //if ($bonificacion) { ?>
+            <!-- <div class="liq9500_calculo">
+                <div class="titulo_b"><strong><?php //echo "BONIFICACIÓN" ?></strong></div>
                 &nbsp;=&nbsp;
-                <div class="titulo_c"><strong> <?php echo "S/.".nf($bonificacion) ?> </strong></div>
+                <div class="titulo_c"><strong> <?php //echo "S/.".nf($bonificacion) ?> </strong></div>
+            </div> -->
+            <? //} ?>
+            
+            <div class="" style="margin-top: 1.5em;" >
+                <?php //if ($tretencion)                   { echo "<div class='liq6272_ret'><div></div> <div>Retención:</div>                   <div><strong class='resaltar'>(&nbsp;S/.",nf($tretencion)                   ," )</strong></div></div>"; } ?>
+                <?php if ($adelanto)                    { echo "<div class='liq6272_ret'><div></div>  <div>Adelanto:</div>                    <div><strong class='resaltar'>(&nbsp;S/.",nf($adelanto)                    ," )</strong></div></div>"; } ?>
+                <?php if ($vacaciones)                  { echo "<div class='liq6272_dev'><div></div>  <div>Vacaciones:</div>                  <div></div><div><strong class='resaltar'>&nbsp;S/." ,nf($vacaciones)                   ," </strong></div></div>"; } ?>
+                <?php if ($gratificaciones)             { echo "<div class='liq6272_dev'><div></div>  <div>Gratificaciones:</div>             <div></div><div><strong class='resaltar'>&nbsp;S/." ,nf($gratificaciones)              ," </strong></div></div>"; } ?>
+                <?php if ($reintegro)                   { echo "<div class='liq6272_dev'><div></div>  <div>Reintegro:</div>                   <div></div><div><strong class='resaltar'>&nbsp;S/." ,nf($reintegro)                   ,"  </strong></div></div>"; } ?>
+                <?php if ($incentivo)                   { echo "<div class='liq6272_dev'><div></div>  <div>Incentivo:</div>                   <div></div><div><strong class='resaltar'>&nbsp;S/." ,nf($incentivo)                   ,"  </strong></div></div>"; } ?>
+                <?php if ($bonificacion)                { echo "<div class='liq6272_dev'><div></div>  <div>Bonificación:</div>                <div></div><div><strong class='resaltar'>&nbsp;S/." ,nf($bonificacion)                ,"  </strong></div></div>"; } ?>
+                <?php if ($bonificacion_graciosa)       { echo "<div class='liq6272_dev'><div></div>  <div>Bonificación Graciosa:</div>       <div></div><div><strong class='resaltar'>&nbsp;S/." ,nf($bonificacion_graciosa)       ,"  </strong></div></div>"; } ?>
+                <?php if ($bonificacion_extraordinaria) { echo "<div class='liq6272_dev'><div></div>  <div>Bonificación Extraordinaria:</div> <div></div><div><strong class='resaltar'>&nbsp;S/." ,nf($bonificacion_extraordinaria) ,"  </strong></div></div>"; } ?>
             </div>
-            <? } ?>
+            <div class="" style="margin-top: 1.5em;border-top: 1px solid black; margin-bottom: 1.5em;" >
+                <?php if ($total_deduc && $total_deven) { echo "<div class='liq6272_total'><div></div>     <div>Total:</div>                       <div></div><div><strong class='resaltar'>&nbsp;S/.",nf($totalapagar),"</strong></div></div>"; } ?>
+            </div>
 
             <div class="liq9500_declaracion">Al firmar la presente liquidación dejo constancia expresa que los señores de <strong class="resaltar" ><?php echo $_POST['empresa'] ?></strong> han cumplido con abonarme todos los beneficios sociales conforme a Ley, por tanto, firmo dando por cancelado mi liquidación.</div>
             <div class="liq9500_fecha"><?php echo isset($_POST['dpto']) ? $_POST['dpto']."," : ""; ?> <?php echo $_POST['fecha_emision'] ?> </div>

@@ -1,14 +1,14 @@
 <?php 
+session_start();
+ 
+if(!isset($_SESSION['usuario_id'])){
+    header('Location: acceso.php');
+    exit;
+}
 
 require_once('./_db/nomina.php');
 
-// if ( isset($_POST['finicio']) && $_POST['finicio'] !== "" ) {
-//     $empresas = empresas_cotizadas($_POST['finicio']);
-// }
-
 $bonoactivo = true;
-
-// $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
 
 $anniorp = [];
 $rp = [];
@@ -26,10 +26,6 @@ $empresa = [];
 $datosfechas = [];
 
 $tab = isset($_POST['tab']) && $_POST['tab'] !== '' ? $_POST['tab'] : '';
-
-// if (isset($_POST['orci_fechaf'])) echo $_POST['orci_fechaf'],"<br>";
-// if (isset($_POST['host_fechaf'])) echo $_POST['host_fechaf'],"<br>";
-// if (isset($_POST['refl_fechaf'])) echo $_POST['refl_fechaf'],"<br>";
 
 if ( isset($_POST['orci_fechai']) && $_POST['orci_fechai'] !== '' ) { 
   $datea_a = date_create($_POST['orci_fechai']); 
@@ -170,6 +166,11 @@ if (isset($_POST['refl_fechai']) && $_POST['refl_fechai'] !== '' ) {
 					<a href="bono.php"  class="custom-btn btn-13 text-center">Bono</a>
 					<a href="manual.php"  class="custom-btn btn-13  text-center">Pensiones Manual</a>
 					<a href="manual_bono.php"  class="custom-btn btn-13  text-center">Bono Manual</a>
+					<form action="acceso.php" method="post" >
+					<input type="hidden" name="desloguearse" value="true">
+					<!-- <a href="javascript:void()" class="custom-btn btn-13 text-center" onclick="submit()" >Salir</a> -->
+					<button type="submit" class="btn btn-link text-white" style="font-size: .75em;" >Salir</button>
+					</form>
 				</div>
 			</div>
 			<div class="app_horizontal_contenido">
@@ -179,7 +180,7 @@ if (isset($_POST['refl_fechai']) && $_POST['refl_fechai'] !== '' ) {
 						<div class="col-6">
 							<div class="row">
 								<div class="col-5">
-									<h2>Bono</h2>
+									<h2>Reportes<br>Bono</h2>
 								</div>
 								<div class="col-7">
 									<div class="row justify-content-end">
@@ -219,33 +220,33 @@ if (isset($_POST['refl_fechai']) && $_POST['refl_fechai'] !== '' ) {
 											}
 											?>
 										</div>
-										<div class="col-4 text-end">
+										<!-- <div class="col-4 text-end">
 											Reflex:&nbsp;
 										</div>
 										<div class="col-8 text-start">
 											<?php
-											$ar = 0;
-											$mr = 0;
-											$dr = 0;
-											if ($dif_refl) {
-												echo str_pad($dif_refl->y,2,"0",STR_PAD_LEFT)," Años, ",str_pad($dif_refl->m,2,"0",STR_PAD_LEFT)," Meses, ",str_pad($dif_refl->d,2,"0",STR_PAD_LEFT)," Días.";
-												$ar = $dif_refl->y;
-												$mr = $dif_refl->m;
-												$dr = $dif_refl->d;
-											} else {
-												echo "-------------------------";
-											}
+											// $ar = 0;
+											// $mr = 0;
+											// $dr = 0;
+											// if ($dif_refl) {
+											// 	echo str_pad($dif_refl->y,2,"0",STR_PAD_LEFT)," Años, ",str_pad($dif_refl->m,2,"0",STR_PAD_LEFT)," Meses, ",str_pad($dif_refl->d,2,"0",STR_PAD_LEFT)," Días.";
+											// 	$ar = $dif_refl->y;
+											// 	$mr = $dif_refl->m;
+											// 	$dr = $dif_refl->d;
+											// } else {
+											// 	echo "-------------------------";
+											// }
 											?>
-										</div>
+										</div> -->
 										<div class="col-4 text-end">
 											Total:&nbsp;
 										</div>
 										<div class="col-8 text-start">
 											<?php
-											if ( $dif_orci || $dif_host || $dif_refl) { 
-												$at = $ao + $ah + $ar; 
-												$mt = $mo + $mh + $mr; 
-												$dt = $do + $dh + $dr; 
+											if ( $dif_orci || $dif_host ) { 
+												$at = $ao + $ah; 
+												$mt = $mo + $mh; 
+												$dt = $do + $dh; 
 												
 												$at = $at + intdiv($mt, 12);
 												$mt = intdiv($mt, 12) ? ($mt - (intdiv($mt, 12)*12)) + intdiv($dt, 30) : $mt + intdiv($dt, 30);
@@ -262,1085 +263,1212 @@ if (isset($_POST['refl_fechai']) && $_POST['refl_fechai'] !== '' ) {
 							</div>
 							<ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist">
 								<li class="nav-item" role="presentation">
-								<button class="nav-link <?php echo $tab === '' || $tab === 'orci' ? 'active' : '' ?>"  id="orcinea-tab"  data-bs-toggle="pill" data-bs-target="#orcinea" type="button" role="tab" aria-controls="orcinea"  aria-selected="true">ORCINEA  </button>
+									<button class="nav-link <?php echo $tab === '' || $tab === 'orci' ? 'active' : '' ?>"  id="orcinea-tab"  data-bs-toggle="pill" data-bs-target="#orcinea" type="button" role="tab" aria-controls="orcinea"  aria-selected="true">ORCINEA  </button>
 								</li>
 								<li class="nav-item" role="presentation">
-								<button class="nav-link <?php echo $tab === 'host' ? 'active' : '' ?>"                 id="host-tab"     data-bs-toggle="pill" data-bs-target="#host"    type="button" role="tab" aria-controls="host"     aria-selected="false">HOST    </button>
+									<button class="nav-link <?php echo $tab === 'host' ? 'active' : '' ?>"                 id="host-tab"     data-bs-toggle="pill" data-bs-target="#host"    type="button" role="tab" aria-controls="host"     aria-selected="false">HOST    </button>
 								</li>
-								<li class="nav-item" role="presentation">
-								<button class="nav-link <?php echo $tab === 'refl' ? 'active' : '' ?>"                 id="refelx-tab"   data-bs-toggle="pill" data-bs-target="#reflex"  type="button" role="tab" aria-controls="reflex"   aria-selected="false">REFLEX  </button>
-								</li>
+								<!-- <li class="nav-item" role="presentation">
+									<button class="nav-link <?php //echo $tab === 'refl' ? 'active' : '' ?>"                 id="refelx-tab"   data-bs-toggle="pill" data-bs-target="#reflex"  type="button" role="tab" aria-controls="reflex"   aria-selected="false">REFLEX  </button>
+								</li> -->
 							</ul>
-							<?php //echo $tab; ?>
 							<div class="tab-content">
 								<!-- ORCINEA -->
-								<div id="orcinea" class="tab-pane fadein <?php echo $tab === '' || $tab === 'orci' ? ' show active' : '' ?>">
-									<!-- <div class="col border border-light rounded"> -->
-									<form id="form_orci" action="manual_bono.php" method="post">
-										<div class="text-center fs-4 fw-semibold text-white">ORCINEA</div>
-										<div class="row align-items-center mb-1"><label for="orci_emprdni"    class="col-sm-2 col-form-label">R.U.C.:   </label><div class="col-sm-7"> <input type="text" id="orci_emprdni"   name="orci_emprdni"   class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['orci_emprdni'])   ? $_POST['orci_emprdni']    : '' ?>"></div><div class="col-sm-3"><button class="btn btn-primary btn-sm" type="button" onclick="obtenerEmpresa('orci')">Buscar</button></div></div>
-										<div class="row align-items-center mb-1"><label for="orci_empresa"    class="col-sm-2 col-form-label">Empresa:  </label><div class="col-sm-10"><input type="text" id="orci_empresa"   name="orci_empresa"   class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['orci_empresa'])   ? $_POST['orci_empresa']    : '' ?>"></div></div>
-										<div class="row align-items-center mb-1"><label for="orci_nombres"    class="col-sm-2 col-form-label">Nombres:  </label><div class="col-sm-10"><input type="text" id="orci_nombres"   name="orci_nombres"   class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['orci_nombres'])   ? $_POST['orci_nombres']    : '' ?>"></div></div>
-										<div class="row align-items-center mb-1"><label for="orci_apellidos"  class="col-sm-2 col-form-label">Apellidos:</label><div class="col-sm-10"><input type="text" id="orci_apellidos" name="orci_apellidos" class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos']  : '' ?>"></div></div>
-										<div class="row align-items-center mb-1"><label for="orci_dni"        class="col-sm-2 col-form-label">D.N.I.:   </label><div class="col-sm-10"><input type="text" id="orci_dni"       name="orci_dni"       class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['orci_dni'])       ? $_POST['orci_dni']        : '' ?>"></div></div>
-										<div class="row justify-content-start align-items-center mb-1">
-											<label for="orci_fechai" class="col-sm-2 col-form-label ">Inicio: </label><div class="col-sm-4"><input required type="date" id="orci_fechai" name="orci_fechai" class="form-control form-control-sm" value="<?php echo isset($_POST['orci_fechai'])   ? $_POST['orci_fechai']    : '' ?>"></div>
-											<label for="orci_fechaf" class="col-sm-2 col-form-label ">Final:  </label><div class="col-sm-4"><input required type="date" id="orci_fechaf" name="orci_fechaf" class="form-control form-control-sm" value="<?php echo isset($_POST['orci_fechaf'])   ? $_POST['orci_fechaf']    : '' ?>" max="1994-12-31"></div>
-										</div>
-										<div class="row justify-content-start align-items-center mb-1 me-1">
-											<label for="orci_cargo"      class="col-sm-2 col-form-label">Cargo:    </label>
-											<div class="col-sm-8"><input type="text" id="orci_cargo"     name="orci_cargo"     class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['orci_cargo'])   ? $_POST['orci_cargo']    : '' ?>"></div>
-											<button type="submit" class="col-2 btn btn-light btn-sm">Cargar</button>
-										</div>
-						
-										<input type="hidden"  name="host_emprdni"   value="<?php echo isset($_POST['host_emprdni'])   ? $_POST['host_emprdni']    : '' ?>">
-										<input type="hidden"  name="host_empresa"   value="<?php echo isset($_POST['host_empresa'])   ? $_POST['host_empresa']    : '' ?>">
-										<input type="hidden"  name="host_nombres"   value="<?php echo isset($_POST['host_nombres'])   ? $_POST['host_nombres']    : '' ?>">
-										<input type="hidden"  name="host_apellidos" value="<?php echo isset($_POST['host_apellidos']) ? $_POST['host_apellidos']  : '' ?>">
-										<input type="hidden"  name="host_dni"       value="<?php echo isset($_POST['host_dni'])       ? $_POST['host_dni']        : '' ?>">
-										<input type="hidden"  name="host_fechai"    value="<?php echo isset($_POST['host_fechai'])    ? $_POST['host_fechai']     : '' ?>">
-										<input type="hidden"  name="host_fechaf"    value="<?php echo isset($_POST['host_fechaf'])    ? $_POST['host_fechaf']     : '' ?>">
-										<input type="hidden"  name="host_cargo"     value="<?php echo isset($_POST['host_cargo'])     ? $_POST['host_cargo']      : '' ?>">
-										
-										<input type="hidden"  name="refl_emprdni"   value="<?php echo isset($_POST['refl_emprdni'])   ? $_POST['refl_emprdni']    : '' ?>">
-										<input type="hidden"  name="refl_empresa"   value="<?php echo isset($_POST['refl_empresa'])   ? $_POST['refl_empresa']    : '' ?>">
-										<input type="hidden"  name="refl_nombres"   value="<?php echo isset($_POST['refl_nombres'])   ? $_POST['refl_nombres']    : '' ?>">
-										<input type="hidden"  name="refl_apellidos" value="<?php echo isset($_POST['refl_apellidos']) ? $_POST['refl_apellidos']  : '' ?>">
-										<input type="hidden"  name="refl_dni"       value="<?php echo isset($_POST['refl_dni'])       ? $_POST['refl_dni']        : '' ?>">
-										<input type="hidden"  name="refl_fechai"    value="<?php echo isset($_POST['refl_fechai'])    ? $_POST['refl_fechai']     : '' ?>">
-										<input type="hidden"  name="refl_fechaf"    value="<?php echo isset($_POST['refl_fechaf'])    ? $_POST['refl_fechaf']     : '' ?>">
-										<input type="hidden"  name="refl_cargo"     value="<?php echo isset($_POST['refl_cargo'])     ? $_POST['refl_cargo']      : '' ?>">
-
-										<input type="hidden" name="tab" value="orci">
-										
-									</form>
-									<?php if ($anniorp['orci'] && $pageorci) { ?>
-									<div class="row justify-content-end px-3">
-										<div class="col-3">
-											<form id="form_orci_cer" action="reportes/certificado<?php echo $rp['orci'] ?>.php" method="post" target="_blank" >
-												<input type="hidden" name="empresa" value="<?php echo isset($_POST['orci_empresa']) ? $_POST['orci_empresa'] : '' ?>" />
-												<input type="hidden" name="nombres" value="<?php echo isset($_POST['orci_nombres']) ? $_POST['orci_nombres'] : '' ?>" />
-												<input type="hidden" name="apellidos" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos'] : '' ?>" />
-												<input type="hidden" name="dni" value="<?php echo isset($_POST['orci_dni']) ? $_POST['orci_dni'] : '' ?>" />
-					
-												<input type="hidden" name="f_a"           value="<?php echo $fechas['orci']['fa2'];      ?>">
-												<input type="hidden" name="f_a_b"         value="<?php echo $fechas['orci']['fa1'];      ?>">
-												<input type="hidden" name="f_b"           value="<?php echo $fechas['orci']['fb2'];      ?>">
-												<input type="hidden" name="f_b_b"         value="<?php echo $fechas['orci']['fb1'];      ?>">
-												<input type="hidden" name="fecha_emision" value="<?php echo $fechas['orci']['fb1'];      ?>">
-												<input type="hidden" name="emision"       value="<?php echo $fechas['orci']['emision'];  ?>">
-					
-												<input type="hidden" name="cargo_ac" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
-												<input type="hidden" name="cargo_al" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
-												<input type="hidden" name="cargo_ab" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
-												<button type="submit" class="btn btn-light btn-sm">Certificado</button>
-											</form>
-										</div>
-										<div class="col-3">
-											<form action="manual_bono.php" id="frmPersona" method="POST" >
-												<input type="hidden" name="nombres"         value="<?php echo isset($_POST['orci_nombres'])     ? $_POST['orci_nombres']   : '' ?>">
-												<input type="hidden" name="apellidos"       value="<?php echo isset($_POST['orci_apellidos'])   ? $_POST['orci_apellidos'] : '' ?>">
-												<input type="hidden" name="dni"             value="<?php echo isset($_POST['orci_dni'])         ? $_POST['orci_dni']       : '' ?>">
-												<input type="hidden" name="finicio"         value="<?php echo isset($_POST['orci_fechai'])      ? $_POST['orci_fechai']    : '' ?>">
-												<input type="hidden" name="ffinal"          value="<?php echo isset($_POST['orci_fechaf'])      ? $_POST['orci_fechaf']    : '' ?>">
-						
-												<input type="hidden"  name="orci_emprdni"   value="<?php echo isset($_POST['orci_emprdni'])   ? $_POST['orci_emprdni']    : '' ?>">
-												<input type="hidden"  name="orci_empresa"   value="<?php echo isset($_POST['orci_empresa'])   ? $_POST['orci_empresa']    : '' ?>">
-												<input type="hidden"  name="orci_nombres"   value="<?php echo isset($_POST['orci_nombres'])   ? $_POST['orci_nombres']    : '' ?>">
-												<input type="hidden"  name="orci_apellidos" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos']  : '' ?>">
-												<input type="hidden"  name="orci_dni"       value="<?php echo isset($_POST['orci_dni'])       ? $_POST['orci_dni']        : '' ?>">
-												<input type="hidden"  name="orci_fechai"    value="<?php echo isset($_POST['orci_fechai'])    ? $_POST['orci_fechai']     : '' ?>">
-												<input type="hidden"  name="orci_fechaf"    value="<?php echo isset($_POST['orci_fechaf'])    ? $_POST['orci_fechaf']     : '' ?>">
-												<input type="hidden"  name="orci_cargo"     value="<?php echo isset($_POST['orci_cargo'])     ? $_POST['orci_cargo']      : '' ?>">
+									<div id="orcinea" class="tab-pane fadein <?php echo $tab === '' || $tab === 'orci' ? ' show active' : '' ?>">
+										<form id="form_orci" action="manual_bono.php" method="post">
+											<div class="text-center fs-4 fw-semibold text-white">ORCINEA</div>
+											<div class="row align-items-center mb-1"><label for="orci_nombres"    class="col-sm-2 col-form-label">Nombres:  </label><div class="col-sm-10"><input type="text" id="orci_nombres"   name="orci_nombres"   class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['orci_nombres'])   ? $_POST['orci_nombres']    : '' ?>" onchange="asignar_nombres(this.value)"></div></div>
+											<div class="row align-items-center mb-1"><label for="orci_apellidos"  class="col-sm-2 col-form-label">Apellidos:</label><div class="col-sm-10"><input type="text" id="orci_apellidos" name="orci_apellidos" class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos']  : '' ?>" onchange="asignar_apellidos(this.value)"></div></div>
+											<div class="row align-items-center mb-1"><label for="orci_dni"        class="col-sm-2 col-form-label">D.N.I.:   </label><div class="col-sm-10"><input type="text" id="orci_dni"       name="orci_dni"       class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['orci_dni'])       ? $_POST['orci_dni']        : '' ?>" onchange="asignar_dni(this.value)"></div></div>
+											<div class="row align-items-center mb-1"><label for="orci_empresa"    class="col-sm-2 col-form-label">Empresa:  </label><div class="col-sm-10"><input type="text" id="orci_empresa"   name="orci_empresa"   class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['orci_empresa'])   ? $_POST['orci_empresa']    : '' ?>"></div></div>
+											<div class="row align-items-center mb-1"><label for="orci_emprdni"    class="col-sm-2 col-form-label">R.U.C.:   </label><div class="col-sm-7"> <input type="text" id="orci_emprdni"   name="orci_emprdni"   class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['orci_emprdni'])   ? $_POST['orci_emprdni']    : '' ?>"></div><div class="col-sm-3"><button class="btn btn-primary btn-sm" type="button" onclick="obtenerEmpresa('orci')">Buscar</button></div></div>
+											<div class="row justify-content-start align-items-center mb-1">
+												<label for="orci_fechai" class="col-sm-2 col-form-label ">Inicio: </label><div class="col-sm-4"><input required type="date" id="orci_fechai" name="orci_fechai" class="form-control form-control-sm" value="<?php echo isset($_POST['orci_fechai'])   ? $_POST['orci_fechai']    : '' ?>"></div>
+												<label for="orci_fechaf" class="col-sm-2 col-form-label ">Final:  </label><div class="col-sm-4"><input required type="date" id="orci_fechaf" name="orci_fechaf" class="form-control form-control-sm" value="<?php echo isset($_POST['orci_fechaf'])   ? $_POST['orci_fechaf']    : '' ?>" max="1994-12-31"></div>
+											</div>
+											<div class="row justify-content-start align-items-center mb-1 me-1">
+												<label for="orci_cargo"      class="col-sm-2 col-form-label">Cargo:    </label>
+												<div class="col-sm-8"><input type="text" id="orci_cargo"     name="orci_cargo"     class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['orci_cargo'])   ? $_POST['orci_cargo']    : '' ?>"></div>
+												<button type="submit" class="col-2 btn btn-light btn-sm">Cargar</button>
+											</div>
+							
+											<input type="hidden"  name="host_emprdni"   value="<?php echo isset($_POST['host_emprdni'])   ? $_POST['host_emprdni']    : '' ?>">
+											<input type="hidden"  name="host_empresa"   value="<?php echo isset($_POST['host_empresa'])   ? $_POST['host_empresa']    : '' ?>">
+											<input type="hidden"  name="host_fechai"    value="<?php echo isset($_POST['host_fechai'])    ? $_POST['host_fechai']     : '' ?>">
+											<input type="hidden"  name="host_fechaf"    value="<?php echo isset($_POST['host_fechaf'])    ? $_POST['host_fechaf']     : '' ?>">
+											<input type="hidden"  name="host_cargo"     value="<?php echo isset($_POST['host_cargo'])     ? $_POST['host_cargo']      : '' ?>">
 											
-												<input type="hidden"  name="host_emprdni"   value="<?php echo isset($_POST['host_emprdni'])   ? $_POST['host_emprdni']    : '' ?>">
-												<input type="hidden"  name="host_empresa"   value="<?php echo isset($_POST['host_empresa'])   ? $_POST['host_empresa']    : '' ?>">
-												<input type="hidden"  name="host_nombres"   value="<?php echo isset($_POST['host_nombres'])   ? $_POST['host_nombres']    : '' ?>">
-												<input type="hidden"  name="host_apellidos" value="<?php echo isset($_POST['host_apellidos']) ? $_POST['host_apellidos']  : '' ?>">
-												<input type="hidden"  name="host_dni"       value="<?php echo isset($_POST['host_dni'])       ? $_POST['host_dni']        : '' ?>">
-												<input type="hidden"  name="host_fechai"    value="<?php echo isset($_POST['host_fechai'])    ? $_POST['host_fechai']     : '' ?>">
-												<input type="hidden"  name="host_fechaf"    value="<?php echo isset($_POST['host_fechaf'])    ? $_POST['host_fechaf']     : '' ?>">
-												<input type="hidden"  name="host_cargo"     value="<?php echo isset($_POST['host_cargo'])     ? $_POST['host_cargo']      : '' ?>">
-												
-												<input type="hidden"  name="refl_emprdni"   value="<?php echo isset($_POST['refl_emprdni'])   ? $_POST['refl_emprdni']    : '' ?>">
-												<input type="hidden"  name="refl_empresa"   value="<?php echo isset($_POST['refl_empresa'])   ? $_POST['refl_empresa']    : '' ?>">
-												<input type="hidden"  name="refl_nombres"   value="<?php echo isset($_POST['refl_nombres'])   ? $_POST['refl_nombres']    : '' ?>">
-												<input type="hidden"  name="refl_apellidos" value="<?php echo isset($_POST['refl_apellidos']) ? $_POST['refl_apellidos']  : '' ?>">
-												<input type="hidden"  name="refl_dni"       value="<?php echo isset($_POST['refl_dni'])       ? $_POST['refl_dni']        : '' ?>">
-												<input type="hidden"  name="refl_fechai"    value="<?php echo isset($_POST['refl_fechai'])    ? $_POST['refl_fechai']     : '' ?>">
-												<input type="hidden"  name="refl_fechaf"    value="<?php echo isset($_POST['refl_fechaf'])    ? $_POST['refl_fechaf']     : '' ?>">
-												<input type="hidden"  name="refl_cargo"     value="<?php echo isset($_POST['refl_cargo'])     ? $_POST['refl_cargo']      : '' ?>">
+											<input type="hidden"  name="refl_emprdni"   value="<?php echo isset($_POST['refl_emprdni'])   ? $_POST['refl_emprdni']    : '' ?>">
+											<input type="hidden"  name="refl_empresa"   value="<?php echo isset($_POST['refl_empresa'])   ? $_POST['refl_empresa']    : '' ?>">
+											<input type="hidden"  name="refl_fechai"    value="<?php echo isset($_POST['refl_fechai'])    ? $_POST['refl_fechai']     : '' ?>">
+											<input type="hidden"  name="refl_fechaf"    value="<?php echo isset($_POST['refl_fechaf'])    ? $_POST['refl_fechaf']     : '' ?>">
+											<input type="hidden"  name="refl_cargo"     value="<?php echo isset($_POST['refl_cargo'])     ? $_POST['refl_cargo']      : '' ?>">
 
-												<input type="hidden" name="tab" value="orci">
+											<input type="hidden" name="tab" value="orci">
+											
+										</form>
+										<?php if ( isset($anniorp['orci']) && $anniorp['orci'] && $pageorci) { ?>
+											<div class="text-center border-top border-bottom border-warning mt-3 mb-1">Último Sueldo: <?php echo nf(obtener_sueldo($_POST['orci_fechaf'])['sueldo_minimo']) ?></div>
+											<div class="row">
+												<div class="col-12">
+													<!-- <ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist"> -->
+													<ul class="nav nav-tabs mb-3">
+														<li class="nav-item" role="presentation">
+															<button class="nav-link active" id="orci_cert-tab"  data-bs-toggle="pill"     data-bs-target="#orci_cert" type="button" role="tab" aria-controls="orci_cert" aria-selected="true">CERTIFICADO  </button>
+														</li>
+														<li class="nav-item" role="presentation">
+															<button class="nav-link "       id="orci_liqu-tab"     data-bs-toggle="pill"  data-bs-target="#orci_liqu" type="button" role="tab" aria-controls="orci_liqu" aria-selected="false">LIQUIDACIÓN </button>
+														</li>
+														<li class="nav-item" role="presentation">
+															<button class="nav-link "       id="orci_bole-tab"   data-bs-toggle="pill"    data-bs-target="#orci_bole" type="button" role="tab" aria-controls="orci_bole" aria-selected="false">BOLETA </button>
+														</li>
+														<!-- <li class="nav-item" role="presentation">
+															<button class="nav-link "       id="orci_decl-tab"   data-bs-toggle="pill"    data-bs-target="#orci_decl" type="button" role="tab" aria-controls="orci_decl" aria-selected="false">DECLARACIÓN </button>
+														</li> -->
+														<li class="nav-item" role="presentation">
+															<button class="nav-link "       id="orci_empr-tab"   data-bs-toggle="pill"    data-bs-target="#orci_empr" type="button" role="tab" aria-controls="orci_empr" aria-selected="false">EMPRESA </button>
+														</li>
+													</ul>
+												</div>
+												<div class="col-12">
+													<div class="tab-content">
+														<div id="orci_cert" class="tab-pane fadein show active">
+															<form id="form_orci_cer" action="reportes/certificado<?php echo $rp['orci'] ?>.php" method="post" target="_blank" >
+																<input type="hidden" name="empresa" value="<?php echo isset($_POST['orci_empresa']) ? $_POST['orci_empresa'] : '' ?>" />
+																<input type="hidden" name="nombres" value="<?php echo isset($_POST['orci_nombres']) ? $_POST['orci_nombres'] : '' ?>" />
+																<input type="hidden" name="apellidos" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos'] : '' ?>" />
+																<input type="hidden" name="dni" value="<?php echo isset($_POST['orci_dni']) ? $_POST['orci_dni'] : '' ?>" />
+									
+																<input type="hidden" name="f_a"           value="<?php echo $fechas['orci']['fa2'];      ?>">
+																<input type="hidden" name="f_a_b"         value="<?php echo $fechas['orci']['fa1'];      ?>">
+																<input type="hidden" name="f_b"           value="<?php echo $fechas['orci']['fb2'];      ?>">
+																<input type="hidden" name="f_b_b"         value="<?php echo $fechas['orci']['fb1'];      ?>">
+																<input type="hidden" name="fecha_emision" value="<?php echo $fechas['orci']['fb1'];      ?>">
+																<input type="hidden" name="emision"       value="<?php echo $fechas['orci']['emision'];  ?>">
+									
+																<input type="hidden" name="cargo_ac" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
+																<input type="hidden" name="cargo_al" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
+																<input type="hidden" name="cargo_ab" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
+																<button type="submit" class="btn btn-light btn-sm">Certificado</button>
+															</form>
+														</div>
+														<div id="orci_liqu" class="tab-pane fadein">
+															<form id="form_orci_liq" action="reportes/liquidacion<?php echo $rp['orci'] ?>.php" method="post" target="_blank" >
+																<input type="hidden" name="empresa" value="<?php echo isset($_POST['orci_empresa']) ? $_POST['orci_empresa'] : '' ?>" />
+																<input type="hidden" name="nombres" value="<?php echo isset($_POST['orci_nombres']) ? $_POST['orci_nombres'] : '' ?>" />
+																<input type="hidden" name="apellidos" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos'] : '' ?>" />
+																<input type="hidden" name="dni" value="<?php echo isset($_POST['orci_dni']) ? $_POST['orci_dni'] : '' ?>" />
+									
+																<input type="hidden" name="f_a"           value="<?php echo $fechas['orci']['fa2'];      ?>">
+																<input type="hidden" name="f_a_b"         value="<?php echo $fechas['orci']['fa1'];      ?>">
+																<input type="hidden" name="f_b"           value="<?php echo $fechas['orci']['fb2'];      ?>">
+																<input type="hidden" name="f_b_b"         value="<?php echo $fechas['orci']['fb1'];      ?>">
+																<input type="hidden" name="fecha_emision" value="<?php echo $fechas['orci']['fb1'];      ?>">
+																<input type="hidden" name="emision"       value="<?php echo $fechas['orci']['emision'];  ?>">
+																<input type="hidden" name="fsueldo"       value="<?php echo $fechas['orci']['fb3'];      ?>">
+																
+																<input type="hidden" name="cargo_ac" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
+																<input type="hidden" name="cargo_al" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
+																<input type="hidden" name="cargo_ab" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
 
+																<div class="row">
+																	<div class="col-6">
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Adelanto:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);" type="text" id="adelanto" name="adelanto" class="form-control form-control-sm bg-danger bg-gradient bg-opacity-50 text-white" placeholder="Adelanto" value="<?php echo isset($_POST['adelanto']) ? $_POST['adelanto'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Vacaciones:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);" type="text" id="vacaciones" name="vacaciones" class="form-control form-control-sm" placeholder="Vacaciones" value="<?php echo isset($_POST['vacaciones']) ? $_POST['vacaciones'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Gratificaciones:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);" type="text" id="gratificaciones" name="gratificaciones" class="form-control form-control-sm" placeholder="Gratificaciones" value="<?php echo isset($_POST['gratificaciones']) ? $_POST['gratificaciones'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Reintegro:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);" type="text" id="reintegro" name="reintegro" class="form-control form-control-sm" placeholder="Reintegro" value="<?php echo isset($_POST['reintegro']) ? $_POST['reintegro'] : '0' ?>">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-6">
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Incentivo:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);"  type="text" id="incentivo" name="incentivo" class="form-control form-control-sm" placeholder="Incentivo" value="<?php echo isset($_POST['incentivo']) ? $_POST['incentivo'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Bonificacion:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion" name="bonificacion" class="form-control form-control-sm" placeholder="Bonificacion" value="<?php echo isset($_POST['bonificacion']) ? $_POST['bonificacion'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Bonificacion Graciosa:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion_graciosa" name="bonificacion_graciosa" class="form-control form-control-sm" placeholder="Bonificacion Graciosa" value="<?php echo isset($_POST['bonificacion_graciosa']) ? $_POST['bonificacion_graciosa'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Bonificacion Extraordinaria:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion_extraordinaria" name="bonificacion_extraordinaria" class="form-control form-control-sm" placeholder="Bonificacion Extraordinaria" value="<?php echo isset($_POST['bonificacion_extraordinaria']) ? $_POST['bonificacion_extraordinaria'] : '0' ?>">
+																			</div>
+																		</div>
+																	</div>
+																</div>
 
-												<button type="submit" class="btn btn-light btn-sm">Empresa</button>
-											</form>
-										</div>
+																<div class="row justify-content-end">
+																	<button type="submit" class="col-3 btn btn-light btn-sm me-3">Liquidación</button>
+																</div>
+															</form>
+														</div>
+														<?php if ( $anniorp['orci'] >= 1978 ) { ?>
+															<div id="orci_bole" class="tab-pane fadein">
+																<form id="form_orci_bol" action="reportes/boletadepago<?php echo $bo['orci'] ?>.php" method="post" target="_blank" >
+																	<input type="hidden" name="empresa" value="<?php echo isset($_POST['orci_empresa']) ? $_POST['orci_empresa'] : '' ?>" />
+																	<input type="hidden" name="nombres" value="<?php echo isset($_POST['orci_nombres']) ? $_POST['orci_nombres'] : '' ?>" />
+																	<input type="hidden" name="apellidos" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos'] : '' ?>" />
+																	<input type="hidden" name="dni" value="<?php echo isset($_POST['orci_dni']) ? $_POST['orci_dni'] : '' ?>" />
+										
+																	<input type="hidden" name="f_a"           value="<?php echo $fechas['orci']['fa2'];      ?>">
+																	<input type="hidden" name="f_a_b"         value="<?php echo $fechas['orci']['fa1'];      ?>">
+																	<input type="hidden" name="f_b"           value="<?php echo $fechas['orci']['fb2'];      ?>">
+																	<input type="hidden" name="f_b_b"         value="<?php echo $fechas['orci']['fb1'];      ?>">
+																	<input type="hidden" name="fecha_emision" value="<?php echo $fechas['orci']['fb1'];      ?>">
+																	<input type="hidden" name="emision"       value="<?php echo $fechas['orci']['emision'];  ?>">
+																	<input type="hidden" name="fsueldo"       value="<?php echo $fechas['orci']['fb3'];      ?>">
+																	
+																	<input type="hidden" name="cargo_ac" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
+																	<input type="hidden" name="cargo_al" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
+																	<input type="hidden" name="cargo_ab" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
+
+																	<div class="row">
+																		<div class="col-6">
+																			<div class="row mb-1">
+																				<label for="sueldo" class="col-5 col-form-label">Fecha:</label>
+																				<div class="col-7">
+																					<input required type="date" id="fechaboleta" name="fechaboleta" min="1978-08-22" class="form-control form-control-sm" value="<?php echo isset($_POST['fechaboleta']) ? $_POST['fechaboleta'] : '0' ?>">
+																				</div>
+																			</div>
+																			<div class="row mb-1">
+																				<label for="sueldo" class="col-5 col-form-label">R. VACACIONAL:</label>
+																				<div class="col-7">
+																					<input onkeypress="return filterFloat(event,this);" type="text" id="remvacacionales" name="remvacacionales" class="form-control form-control-sm" value="<?php echo isset($_POST['remvacacionales']) ? $_POST['remvacacionales'] : '0' ?>">
+																				</div>
+																			</div>
+																			<div class="row mb-1">
+																				<label for="sueldo" class="col-5 col-form-label">Reintegro:</label>
+																				<div class="col-7">
+																					<input onkeypress="return filterFloat(event,this);" type="text" id="reintegro" name="reintegro" class="form-control form-control-sm" value="<?php echo isset($_POST['reintegro']) ? $_POST['reintegro'] : '0' ?>">
+																				</div>
+																			</div>
+																		</div>
+																		<div class="col-6">
+																			<div class="row mb-1">
+																				<label for="sueldo" class="col-5 col-form-label">H. EXTRAS:</label>
+																				<div class="col-7">
+																					<input onkeypress="return filterFloat(event,this);" type="text" id="hextras" name="hextras" class="form-control form-control-sm" value="<?php echo isset($_POST['hextras']) ? $_POST['hextras'] : '0' ?>">
+																				</div>
+																			</div>
+																			<div class="row mb-1">
+																				<label for="sueldo" class="col-5 col-form-label">Bonificacion:</label>
+																				<div class="col-7">
+																					<input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion" name="bonificacion" class="form-control form-control-sm" value="<?php echo isset($_POST['bonificacion']) ? $_POST['bonificacion'] : '0' ?>">
+																				</div>
+																			</div>
+																			<div class="row mb-1">
+																				<label for="sueldo" class="col-5 col-form-label">OTROS:</label>
+																				<div class="col-7">
+																					<input onkeypress="return filterFloat(event,this);" type="text" id="otros_deven" name="otros_deven" class="form-control form-control-sm" value="<?php echo isset($_POST['otros_deven']) ? $_POST['otros_deven'] : '0' ?>">
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																	
+																	<div class="row justify-content-end ">
+																		<button type="submit" class="col-3 btn btn-light btn-sm me-3">Boleta</button>
+																	</div>
+																</form>
+															</div>
+														<?php } ?>
+														<div id="orci_decl" class="tab-pane fadein">
+															<?php $dec = rand(1, 3); ?>
+															<form id="form_orci_bol" action="reportes/declaracionempleador0<?php echo $dec ?>.php" method="post" target="_blank" >
+																<input type="hidden" name="empresa" value="<?php echo isset($_POST['orci_empresa']) ? $_POST['orci_empresa'] : '' ?>" />
+																<input type="hidden" name="nombres" value="<?php echo isset($_POST['orci_nombres']) ? $_POST['orci_nombres'] : '' ?>" />
+																<input type="hidden" name="apellidos" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos'] : '' ?>" />
+																<input type="hidden" name="dni" value="<?php echo isset($_POST['orci_dni']) ? $_POST['orci_dni'] : '' ?>" />
+									
+																<input type="hidden" name="f_a"           value="<?php echo $fechas['orci']['fa2'];      ?>">
+																<input type="hidden" name="f_a_b"         value="<?php echo $fechas['orci']['fa1'];      ?>">
+																<input type="hidden" name="f_b"           value="<?php echo $fechas['orci']['fb2'];      ?>">
+																<input type="hidden" name="f_b_b"         value="<?php echo $fechas['orci']['fb1'];      ?>">
+																<input type="hidden" name="fecha_emision" value="<?php echo $fechas['orci']['fb1'];      ?>">
+																<input type="hidden" name="emision"       value="<?php echo $fechas['orci']['emision'];  ?>">
+																<input type="hidden" name="fsueldo"       value="<?php echo $fechas['orci']['fb3'];      ?>">
+																
+																<input type="hidden" name="rep_legal" value="<?php echo $empresa['orci']['id']; ?>">
+																<input type="hidden" name="rep_legal" value="<?php echo $empresa['orci']['rep_legal']; ?>">
+																<input type="hidden" name="dni_a"     value="<?php echo $empresa['orci']['dni_a']; ?>">
+																<input type="hidden" name="ruc"       value="<?php echo $empresa['orci']['ruc']; ?>">
+																
+																<input type="hidden" name="cargo_abo" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
+																<input type="hidden" name="cargo_bbo" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
+
+																<div class="row mb-3">
+																	<label for="numautog" class="col-7 col-form-label text-end">Número Autogenerado:</label>
+																	<div class="col-5">
+																		<input type="text" id="numautog" name="numautog" class="form-control form-control-sm" placeholder="Núm. Autogenerado" value="<?php echo isset($_POST['numautog']) ? $_POST['numautog']  : '' ?>" >
+																	</div>
+																</div>
+
+																<div class="row">
+																	<div class="col-6">
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Diciembre '91:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes12" name="mes12" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Enero '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes01" name="mes01" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Febrero '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes02" name="mes02" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Marzo '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes03" name="mes03" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Abril '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes04" name="mes04" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Mayo '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes05" name="mes05" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-6">
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Junio '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes06" name="mes06" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Julio '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes07" name="mes07" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Agosto '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes08" name="mes08" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Septiembre '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes09" name="mes09" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Octubre '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes10" name="mes10" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Noviembre '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes11" name="mes11" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
+																			</div>
+																		</div>
+																	</div>
+																</div>
+
+																<div class="row border-top border-bottom border-warning py-1 mb-1">
+																	<div class="col text-end">
+																		Cálculo de Bono: <input id="orci_totalbono" value="" />
+																	</div>
+																</div>
+
+																<?php
+																	$sueldo = obtener_sueldo($fechas['orci']['fb3'])['sueldo_minimo'];
+																	$difea  = date_diff(date_create($fechas['orci']['fb3']), date_create($fechas['orci']['fa3']));
+																	$mesest  = ($difea->y * 12 )+$difea->m;
+																?>
+																<input type="hidden" id="orci_sueldo" name="sueldo" value="<?php echo nf($sueldo,0); ?>"/>
+																<input type="hidden" id="orci_mesest" name="mesest" value="<?php echo $mesest; ?>"/>
+																
+																<div class="row justify-content-end ">
+																	<button type="submit" class="col-3 btn btn-light btn-sm me-3">Declaración</button>
+																</div>
+															</form>
+														</div>
+														<div id="orci_empr" class="tab-pane fadein">
+															<form action="manual_bono.php" id="frmPersona" method="POST" >
+																<input type="hidden" name="nombres"         value="<?php echo isset($_POST['orci_nombres'])     ? $_POST['orci_nombres']   : '' ?>">
+																<input type="hidden" name="apellidos"       value="<?php echo isset($_POST['orci_apellidos'])   ? $_POST['orci_apellidos'] : '' ?>">
+																<input type="hidden" name="dni"             value="<?php echo isset($_POST['orci_dni'])         ? $_POST['orci_dni']       : '' ?>">
+																<input type="hidden" name="finicio"         value="<?php echo isset($_POST['orci_fechai'])      ? $_POST['orci_fechai']    : '' ?>">
+																<input type="hidden" name="ffinal"          value="<?php echo isset($_POST['orci_fechaf'])      ? $_POST['orci_fechaf']    : '' ?>">
+										
+																<input type="hidden"  name="orci_emprdni"   value="<?php echo isset($_POST['orci_emprdni'])   ? $_POST['orci_emprdni']    : '' ?>">
+																<input type="hidden"  name="orci_empresa"   value="<?php echo isset($_POST['orci_empresa'])   ? $_POST['orci_empresa']    : '' ?>">
+																<input type="hidden"  name="orci_nombres"   value="<?php echo isset($_POST['orci_nombres'])   ? $_POST['orci_nombres']    : '' ?>">
+																<input type="hidden"  name="orci_apellidos" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos']  : '' ?>">
+																<input type="hidden"  name="orci_dni"       value="<?php echo isset($_POST['orci_dni'])       ? $_POST['orci_dni']        : '' ?>">
+																<input type="hidden"  name="orci_fechai"    value="<?php echo isset($_POST['orci_fechai'])    ? $_POST['orci_fechai']     : '' ?>">
+																<input type="hidden"  name="orci_fechaf"    value="<?php echo isset($_POST['orci_fechaf'])    ? $_POST['orci_fechaf']     : '' ?>">
+																<input type="hidden"  name="orci_cargo"     value="<?php echo isset($_POST['orci_cargo'])     ? $_POST['orci_cargo']      : '' ?>">
+															
+																<input type="hidden"  name="host_emprdni"   value="<?php echo isset($_POST['host_emprdni'])   ? $_POST['host_emprdni']    : '' ?>">
+																<input type="hidden"  name="host_empresa"   value="<?php echo isset($_POST['host_empresa'])   ? $_POST['host_empresa']    : '' ?>">
+																<input type="hidden"  name="host_fechai"    value="<?php echo isset($_POST['host_fechai'])    ? $_POST['host_fechai']     : '' ?>">
+																<input type="hidden"  name="host_fechaf"    value="<?php echo isset($_POST['host_fechaf'])    ? $_POST['host_fechaf']     : '' ?>">
+																<input type="hidden"  name="host_cargo"     value="<?php echo isset($_POST['host_cargo'])     ? $_POST['host_cargo']      : '' ?>">
+																
+																<input type="hidden"  name="refl_emprdni"   value="<?php echo isset($_POST['refl_emprdni'])   ? $_POST['refl_emprdni']    : '' ?>">
+																<input type="hidden"  name="refl_empresa"   value="<?php echo isset($_POST['refl_empresa'])   ? $_POST['refl_empresa']    : '' ?>">
+																<input type="hidden"  name="refl_fechai"    value="<?php echo isset($_POST['refl_fechai'])    ? $_POST['refl_fechai']     : '' ?>">
+																<input type="hidden"  name="refl_fechaf"    value="<?php echo isset($_POST['refl_fechaf'])    ? $_POST['refl_fechaf']     : '' ?>">
+																<input type="hidden"  name="refl_cargo"     value="<?php echo isset($_POST['refl_cargo'])     ? $_POST['refl_cargo']      : '' ?>">
+
+																<input type="hidden" name="tab" value="orci">
+
+																<button type="submit" class="btn btn-light btn-sm">Empresa</button>
+															</form>
+														</div>
+													</div>
+												</div>
+											</div>
+										<?php } ?>
 									</div>
-									<!-- Liquidacion -->
-									<div class="row border-white border-top pt-3 mt-2">
-										<div class="col">
-											<form id="form_orci_liq" action="reportes/liquidacion<?php echo $rp['orci'] ?>.php" method="post" target="_blank" >
-												<input type="hidden" name="empresa" value="<?php echo isset($_POST['orci_empresa']) ? $_POST['orci_empresa'] : '' ?>" />
-												<input type="hidden" name="nombres" value="<?php echo isset($_POST['orci_nombres']) ? $_POST['orci_nombres'] : '' ?>" />
-												<input type="hidden" name="apellidos" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos'] : '' ?>" />
-												<input type="hidden" name="dni" value="<?php echo isset($_POST['orci_dni']) ? $_POST['orci_dni'] : '' ?>" />
-					
-												<input type="hidden" name="f_a"           value="<?php echo $fechas['orci']['fa2'];      ?>">
-												<input type="hidden" name="f_a_b"         value="<?php echo $fechas['orci']['fa1'];      ?>">
-												<input type="hidden" name="f_b"           value="<?php echo $fechas['orci']['fb2'];      ?>">
-												<input type="hidden" name="f_b_b"         value="<?php echo $fechas['orci']['fb1'];      ?>">
-												<input type="hidden" name="fecha_emision" value="<?php echo $fechas['orci']['fb1'];      ?>">
-												<input type="hidden" name="emision"       value="<?php echo $fechas['orci']['emision'];  ?>">
-												<input type="hidden" name="fsueldo"       value="<?php echo $fechas['orci']['fb3'];      ?>">
-												
-												<input type="hidden" name="cargo_ac" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
-												<input type="hidden" name="cargo_al" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
-												<input type="hidden" name="cargo_ab" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
-
-												<div class="row mb-1 border-bottom border-info">
-													<label for="sueldo" class="col-sm-7 col-form-label">Adelanto:</label>
-													<div class="col-sm-5">
-													<input onkeypress="return filterFloat(event,this);" type="text" id="adelanto" name="adelanto" class="form-control form-control-sm bg-danger bg-gradient bg-opacity-50 text-white" placeholder="Adelanto" value="<?php echo isset($_POST['adelanto']) ? $_POST['adelanto'] : '0' ?>">
-													</div>
-												</div>
-												<div class="row mb-1">
-													<label for="sueldo" class="col-sm-7 col-form-label">Vacaciones:</label>
-													<div class="col-sm-5">
-													<input onkeypress="return filterFloat(event,this);" type="text" id="vacaciones" name="vacaciones" class="form-control form-control-sm" placeholder="Vacaciones" value="<?php echo isset($_POST['vacaciones']) ? $_POST['vacaciones'] : '0' ?>">
-													</div>
-												</div>
-												<div class="row mb-1">
-													<label for="sueldo" class="col-sm-7 col-form-label">Gratificaciones:</label>
-													<div class="col-sm-5">
-													<input onkeypress="return filterFloat(event,this);" type="text" id="gratificaciones" name="gratificaciones" class="form-control form-control-sm" placeholder="Gratificaciones" value="<?php echo isset($_POST['gratificaciones']) ? $_POST['gratificaciones'] : '0' ?>">
-													</div>
-												</div>
-												<div class="row mb-1">
-													<label for="sueldo" class="col-sm-7 col-form-label">Reintegro:</label>
-													<div class="col-sm-5">
-													<input onkeypress="return filterFloat(event,this);" type="text" id="reintegro" name="reintegro" class="form-control form-control-sm" placeholder="Reintegro" value="<?php echo isset($_POST['reintegro']) ? $_POST['reintegro'] : '0' ?>">
-													</div>
-												</div>
-												<div class="row mb-1">
-													<label for="sueldo" class="col-sm-7 col-form-label">Incentivo:</label>
-													<div class="col-sm-5">
-													<input onkeypress="return filterFloat(event,this);"  type="text" id="incentivo" name="incentivo" class="form-control form-control-sm" placeholder="Incentivo" value="<?php echo isset($_POST['incentivo']) ? $_POST['incentivo'] : '0' ?>">
-													</div>
-												</div>
-												<div class="row mb-1">
-													<label for="sueldo" class="col-sm-7 col-form-label">Bonificacion:</label>
-													<div class="col-sm-5">
-													<input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion" name="bonificacion" class="form-control form-control-sm" placeholder="Bonificacion" value="<?php echo isset($_POST['bonificacion']) ? $_POST['bonificacion'] : '0' ?>">
-													</div>
-												</div>
-												<div class="row mb-1">
-													<label for="sueldo" class="col-sm-7 col-form-label">Bonificacion Graciosa:</label>
-													<div class="col-sm-5">
-													<input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion_graciosa" name="bonificacion_graciosa" class="form-control form-control-sm" placeholder="Bonificacion Graciosa" value="<?php echo isset($_POST['bonificacion_graciosa']) ? $_POST['bonificacion_graciosa'] : '0' ?>">
-													</div>
-												</div>
-												<div class="row mb-1">
-													<label for="sueldo" class="col-sm-7 col-form-label">Bonificacion Extraordinaria:</label>
-													<div class="col-sm-5">
-													<input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion_extraordinaria" name="bonificacion_extraordinaria" class="form-control form-control-sm" placeholder="Bonificacion Extraordinaria" value="<?php echo isset($_POST['bonificacion_extraordinaria']) ? $_POST['bonificacion_extraordinaria'] : '0' ?>">
-													</div>
-												</div>
-
-												<div class="row justify-content-end ">
-													<button type="submit" class="col-3 btn btn-light btn-sm">Liquidación</button>
-												</div>
-											</form>
-										</div>
-									</div>
-									<!-- fin Liquidación -->
-									<!-- BONO -->
-									<?php if ( $anniorp['orci'] >= 1978 ) { ?>
-									<div class="row border-white border-top pt-3 mt-2">
-										<div class="col">
-											<form id="form_orci_bol" action="reportes/boletadepago<?php echo $bo['orci'] ?>.php" method="post" target="_blank" >
-												<input type="hidden" name="empresa" value="<?php echo isset($_POST['orci_empresa']) ? $_POST['orci_empresa'] : '' ?>" />
-												<input type="hidden" name="nombres" value="<?php echo isset($_POST['orci_nombres']) ? $_POST['orci_nombres'] : '' ?>" />
-												<input type="hidden" name="apellidos" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos'] : '' ?>" />
-												<input type="hidden" name="dni" value="<?php echo isset($_POST['orci_dni']) ? $_POST['orci_dni'] : '' ?>" />
-					
-												<input type="hidden" name="f_a"           value="<?php echo $fechas['orci']['fa2'];      ?>">
-												<input type="hidden" name="f_a_b"         value="<?php echo $fechas['orci']['fa1'];      ?>">
-												<input type="hidden" name="f_b"           value="<?php echo $fechas['orci']['fb2'];      ?>">
-												<input type="hidden" name="f_b_b"         value="<?php echo $fechas['orci']['fb1'];      ?>">
-												<input type="hidden" name="fecha_emision" value="<?php echo $fechas['orci']['fb1'];      ?>">
-												<input type="hidden" name="emision"       value="<?php echo $fechas['orci']['emision'];  ?>">
-												<input type="hidden" name="fsueldo"       value="<?php echo $fechas['orci']['fb3'];      ?>">
-												
-												<input type="hidden" name="cargo_ac" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
-												<input type="hidden" name="cargo_al" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
-												<input type="hidden" name="cargo_ab" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
-
-												<div class="row">
-													<div class="col-6">
-														<div class="row mb-1">
-															<label for="sueldo" class="col-5 col-form-label">Fecha:</label>
-															<div class="col-7">
-																<input required type="date" id="fechaboleta" name="fechaboleta" min="1978-08-22" class="form-control form-control-sm" value="<?php echo isset($_POST['fechaboleta']) ? $_POST['fechaboleta'] : '0' ?>">
-															</div>
-														</div>
-														<div class="row mb-1">
-															<label for="sueldo" class="col-5 col-form-label">R. VACACIONAL:</label>
-															<div class="col-7">
-																<input onkeypress="return filterFloat(event,this);" type="text" id="remvacacionales" name="remvacacionales" class="form-control form-control-sm" value="<?php echo isset($_POST['remvacacionales']) ? $_POST['remvacacionales'] : '0' ?>">
-															</div>
-														</div>
-														<div class="row mb-1">
-															<label for="sueldo" class="col-5 col-form-label">Reintegro:</label>
-															<div class="col-7">
-																<input onkeypress="return filterFloat(event,this);" type="text" id="reintegro" name="reintegro" class="form-control form-control-sm" value="<?php echo isset($_POST['reintegro']) ? $_POST['reintegro'] : '0' ?>">
-															</div>
-														</div>
-													</div>
-													<div class="col-6">
-														<div class="row mb-1">
-															<label for="sueldo" class="col-5 col-form-label">H. EXTRAS:</label>
-															<div class="col-7">
-																<input onkeypress="return filterFloat(event,this);" type="text" id="hextras" name="hextras" class="form-control form-control-sm" value="<?php echo isset($_POST['hextras']) ? $_POST['hextras'] : '0' ?>">
-															</div>
-														</div>
-														<div class="row mb-1">
-															<label for="sueldo" class="col-5 col-form-label">Bonificacion:</label>
-															<div class="col-7">
-																<input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion" name="bonificacion" class="form-control form-control-sm" value="<?php echo isset($_POST['bonificacion']) ? $_POST['bonificacion'] : '0' ?>">
-															</div>
-														</div>
-														<div class="row mb-1">
-															<label for="sueldo" class="col-5 col-form-label">OTROS:</label>
-															<div class="col-7">
-																<input onkeypress="return filterFloat(event,this);" type="text" id="otros_deven" name="otros_deven" class="form-control form-control-sm" value="<?php echo isset($_POST['otros_deven']) ? $_POST['otros_deven'] : '0' ?>">
-															</div>
-														</div>
-													</div>
-												</div>
-												
-												<div class="row justify-content-end ">
-													<button type="submit" class="col-3 btn btn-light btn-sm me-3">Boleta</button>
-												</div>
-											</form>
-										</div>
-									</div>
-									<?php } ?>
-									<!-- fin BONO -->
-
-									<!-- inicio Declaracion Jurada -->
-									<div class="row border-white border-top pt-3 mt-2">
-										<div class="col">
-											<?php $dec = rand(1, 3); ?>
-											<form id="form_orci_bol" action="reportes/declaracionempleador0<?php echo $dec ?>.php" method="post" target="_blank" >
-												<input type="hidden" name="empresa" value="<?php echo isset($_POST['orci_empresa']) ? $_POST['orci_empresa'] : '' ?>" />
-												<input type="hidden" name="nombres" value="<?php echo isset($_POST['orci_nombres']) ? $_POST['orci_nombres'] : '' ?>" />
-												<input type="hidden" name="apellidos" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos'] : '' ?>" />
-												<input type="hidden" name="dni" value="<?php echo isset($_POST['orci_dni']) ? $_POST['orci_dni'] : '' ?>" />
-					
-												<input type="hidden" name="f_a"           value="<?php echo $fechas['orci']['fa2'];      ?>">
-												<input type="hidden" name="f_a_b"         value="<?php echo $fechas['orci']['fa1'];      ?>">
-												<input type="hidden" name="f_b"           value="<?php echo $fechas['orci']['fb2'];      ?>">
-												<input type="hidden" name="f_b_b"         value="<?php echo $fechas['orci']['fb1'];      ?>">
-												<input type="hidden" name="fecha_emision" value="<?php echo $fechas['orci']['fb1'];      ?>">
-												<input type="hidden" name="emision"       value="<?php echo $fechas['orci']['emision'];  ?>">
-												<input type="hidden" name="fsueldo"       value="<?php echo $fechas['orci']['fb3'];      ?>">
-												
-												<input type="hidden" name="rep_legal" value="<?php echo $empresa['orci']['id']; ?>">
-												<input type="hidden" name="rep_legal" value="<?php echo $empresa['orci']['rep_legal']; ?>">
-												<input type="hidden" name="dni_a"     value="<?php echo $empresa['orci']['dni_a']; ?>">
-												<input type="hidden" name="ruc"       value="<?php echo $empresa['orci']['ruc']; ?>">
-												
-												<input type="hidden" name="cargo_abo" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
-												<input type="hidden" name="cargo_bbo" value="<?php echo isset($_POST['orci_cargo']) ? $_POST['orci_cargo'] : '' ?>" />
-
-												<div class="row mb-3">
-												<label for="numautog" class="col-7 col-form-label text-end">Número Autogenerado:</label>
-												<div class="col-5">
-													<input type="text" id="numautog" name="numautog" class="form-control form-control-sm" placeholder="Núm. Autogenerado" value="<?php echo isset($_POST['numautog']) ? $_POST['numautog']  : '' ?>" >
-												</div>
-												</div>
-
-												<div class="row">
-													<div class="col-6">
-														<div class="row mb-1">
-															<label for="sueldo" class="col-sm-7 col-form-label text-end">Diciembre '91:</label>
-															<div class="col-sm-5">
-																<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes12" name="mes12" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
-															</div>
-														</div>
-														<div class="row mb-1">
-															<label for="sueldo" class="col-sm-7 col-form-label text-end">Enero '92:</label>
-															<div class="col-sm-5">
-																<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes01" name="mes01" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
-															</div>
-														</div>
-														<div class="row mb-1">
-															<label for="sueldo" class="col-sm-7 col-form-label text-end">Febrero '92:</label>
-															<div class="col-sm-5">
-																<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes02" name="mes02" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
-															</div>
-														</div>
-														<div class="row mb-1">
-															<label for="sueldo" class="col-sm-7 col-form-label text-end">Marzo '92:</label>
-															<div class="col-sm-5">
-																<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes03" name="mes03" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
-															</div>
-														</div>
-														<div class="row mb-1">
-															<label for="sueldo" class="col-sm-7 col-form-label text-end">Abril '92:</label>
-															<div class="col-sm-5">
-																<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes04" name="mes04" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
-															</div>
-														</div>
-														<div class="row mb-1">
-															<label for="sueldo" class="col-sm-7 col-form-label text-end">Mayo '92:</label>
-															<div class="col-sm-5">
-																<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes05" name="mes05" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
-															</div>
-														</div>
-													</div>
-													<div class="col-6">
-														<div class="row mb-1">
-															<label for="sueldo" class="col-sm-7 col-form-label text-end">Junio '92:</label>
-															<div class="col-sm-5">
-																<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes06" name="mes06" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
-															</div>
-														</div>
-														<div class="row mb-1">
-															<label for="sueldo" class="col-sm-7 col-form-label text-end">Julio '92:</label>
-															<div class="col-sm-5">
-																<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes07" name="mes07" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
-															</div>
-														</div>
-														<div class="row mb-1">
-															<label for="sueldo" class="col-sm-7 col-form-label text-end">Agosto '92:</label>
-															<div class="col-sm-5">
-																<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes08" name="mes08" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
-															</div>
-														</div>
-														<div class="row mb-1">
-															<label for="sueldo" class="col-sm-7 col-form-label text-end">Septiembre '92:</label>
-															<div class="col-sm-5">
-																<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes09" name="mes09" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
-															</div>
-														</div>
-														<div class="row mb-1">
-															<label for="sueldo" class="col-sm-7 col-form-label text-end">Octubre '92:</label>
-															<div class="col-sm-5">
-																<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes10" name="mes10" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
-															</div>
-														</div>
-														<div class="row mb-1">
-															<label for="sueldo" class="col-sm-7 col-form-label text-end">Noviembre '92:</label>
-															<div class="col-sm-5">
-																<input onkeypress="return filterFloat(event,this);" type="text" id="orci_mes11" name="mes11" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('orci', 'orci')">
-															</div>
-														</div>
-													</div>
-												</div>
-
-												<div class="row border-top border-bottom border-warning py-1 mb-1">
-												<div class="col text-end">
-													Cálculo de Bono: <input id="orci_totalbono" value="" />
-												</div>
-												</div>
-
-												<?php
-												$sueldo = obtener_sueldo($fechas['orci']['fb3'])['sueldo_minimo'];
-												$difea  = date_diff(date_create($fechas['orci']['fb3']), date_create($fechas['orci']['fa3']));
-												$mesest  = ($difea->y * 12 )+$difea->m;
-												?>
-												<input type="hidden" id="orci_sueldo" name="sueldo" value="<?php echo nf($sueldo,0); ?>"/>
-												<input type="hidden" id="orci_mesest" name="mesest" value="<?php echo $mesest; ?>"/>
-												
-												<div class="row justify-content-end ">
-													<button type="submit" class="col-3 btn btn-light btn-sm me-3">Declaración</button>
-												</div>
-											</form>
-										</div>
-									</div>
-									<!-- fin Declaracion Jurada -->
-									<?php } ?>
-								</div>
 								<!-- fin ORCINEA -->
 								<!-- HOST -->
-								<div id="host" 	 class="tab-pane fade <?php echo $tab === 'host' ? ' show active' : '' ?>">
-									<!-- <div class="col border border-light rounded mx-3"> -->
-									<form id="form_host" action="manual_bono.php" method="post">
-										<div class="text-center fs-4 fw-semibold text-white">HOST</div>
-										<div class="row align-items-center mb-1"><label for="host_emprdni"    class="col-sm-2 col-form-label">R.U.C.:   </label><div class="col-sm-7"> <input type="text" id="host_emprdni"   name="host_emprdni"   class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['host_emprdni'])   ? $_POST['host_emprdni']    : '' ?>"></div><div class="col-sm-3"><button class="btn btn-primary btn-sm" type="button" onclick="obtenerEmpresa('host')">Buscar</button></div></div>
-										<div class="row align-items-center mb-1"><label for="host_empresa"    class="col-sm-2 col-form-label">Empresa:  </label><div class="col-sm-10"><input type="text" id="host_empresa"   name="host_empresa"   class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['host_empresa'])   ? $_POST['host_empresa']    : '' ?>"></div></div>
-										<div class="row align-items-center mb-1"><label for="host_nombres"    class="col-sm-2 col-form-label">Nombres:  </label><div class="col-sm-10"><input type="text" id="host_nombres"   name="host_nombres"   class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['host_nombres'])   ? $_POST['host_nombres']    : '' ?>"></div></div>
-										<div class="row align-items-center mb-1"><label for="host_apellidos"  class="col-sm-2 col-form-label">Apellidos:</label><div class="col-sm-10"><input type="text" id="host_apellidos" name="host_apellidos" class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['host_apellidos']) ? $_POST['host_apellidos']  : '' ?>"></div></div>
-										<div class="row align-items-center mb-1"><label for="host_dni"        class="col-sm-2 col-form-label">D.N.I.:   </label><div class="col-sm-10"><input type="text" id="host_dni"       name="host_dni"       class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['host_dni'])       ? $_POST['host_dni']        : '' ?>"></div></div>
-										<div class="row align-items-center mb-1">
-											<label for="host_fechai" class="col-sm-2 col-form-label">Inicio: </label><div class="col-sm-4"><input required type="date" id="host_fechai" name="host_fechai" class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['host_fechai'])   ? $_POST['host_fechai']    : '' ?>"></div>
-											<label for="host_fechaf" class="col-sm-2 col-form-label">Final:  </label><div class="col-sm-4"><input required type="date" id="host_fechaf" name="host_fechaf" class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['host_fechaf'])   ? $_POST['host_fechaf']    : '' ?>" max="1994-12-31"></div>
-										</div>
-										<div class="row justify-content-start align-items-center mb-1 me-1">
-											<label for="host_cargo"      class="col-sm-2 col-form-label">Cargo:    </label>
-											<div class="col-sm-8"><input type="text" id="host_cargo"     name="host_cargo"     class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['host_cargo'])   ? $_POST['host_cargo']    : '' ?>"></div>
-											<button type="submit" class="col-2 btn btn-light btn-sm">Cargar</button>
-										</div>
-						
-										<input type="hidden"  name="orci_emprdni"   value="<?php echo isset($_POST['orci_emprdni'])   ? $_POST['orci_emprdni']    : '' ?>">
-										<input type="hidden"  name="orci_empresa"   value="<?php echo isset($_POST['orci_empresa'])   ? $_POST['orci_empresa']    : '' ?>">
-										<input type="hidden"  name="orci_nombres"   value="<?php echo isset($_POST['orci_nombres'])   ? $_POST['orci_nombres']    : '' ?>">
-										<input type="hidden"  name="orci_apellidos" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos']  : '' ?>">
-										<input type="hidden"  name="orci_dni"       value="<?php echo isset($_POST['orci_dni'])       ? $_POST['orci_dni']        : '' ?>">
-										<input type="hidden"  name="orci_fechai"    value="<?php echo isset($_POST['orci_fechai'])    ? $_POST['orci_fechai']     : '' ?>">
-										<input type="hidden"  name="orci_fechaf"    value="<?php echo isset($_POST['orci_fechaf'])    ? $_POST['orci_fechaf']     : '' ?>">
-										<input type="hidden"  name="orci_cargo"     value="<?php echo isset($_POST['orci_cargo'])     ? $_POST['orci_cargo']      : '' ?>">
+									<div id="host" 	 class="tab-pane fade <?php echo $tab === 'host' ? ' show active' : '' ?>">
+										<form id="form_host" action="manual_bono.php" method="post">
+											<div class="text-center fs-4 fw-semibold text-white">HOST</div>
+											<div class="row align-items-center mb-1"><label for="host_nombres"    class="col-sm-2 col-form-label">Nombres:  </label><div class="col-sm-10"><input readonly type="text" id="host_nombres"   name="host_nombres"   class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['orci_nombres'])   ? $_POST['orci_nombres']    : '' ?>"></div></div>
+											<div class="row align-items-center mb-1"><label for="host_apellidos"  class="col-sm-2 col-form-label">Apellidos:</label><div class="col-sm-10"><input readonly type="text" id="host_apellidos" name="host_apellidos" class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos']  : '' ?>"></div></div>
+											<div class="row align-items-center mb-1"><label for="host_dni"        class="col-sm-2 col-form-label">D.N.I.:   </label><div class="col-sm-10"><input readonly type="text" id="host_dni"       name="host_dni"       class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['orci_dni'])       ? $_POST['orci_dni']        : '' ?>"></div></div>
+											<div class="row align-items-center mb-1"><label for="host_empresa"    class="col-sm-2 col-form-label">Empresa:  </label><div class="col-sm-10"><input type="text" id="host_empresa"   name="host_empresa"   class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['host_empresa'])   ? $_POST['host_empresa']    : '' ?>"></div></div>
+											<div class="row align-items-center mb-1"><label for="host_emprdni"    class="col-sm-2 col-form-label">R.U.C.:   </label><div class="col-sm-7"> <input type="text" id="host_emprdni"   name="host_emprdni"   class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['host_emprdni'])   ? $_POST['host_emprdni']    : '' ?>"></div><div class="col-sm-3"><button class="btn btn-primary btn-sm" type="button" onclick="obtenerEmpresa('host')">Buscar</button></div></div>
+											<div class="row align-items-center mb-1">
+												<label for="host_fechai" class="col-sm-2 col-form-label">Inicio: </label><div class="col-sm-4"><input required type="date" id="host_fechai" name="host_fechai" class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['host_fechai'])   ? $_POST['host_fechai']    : '' ?>"></div>
+												<label for="host_fechaf" class="col-sm-2 col-form-label">Final:  </label><div class="col-sm-4"><input required type="date" id="host_fechaf" name="host_fechaf" class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['host_fechaf'])   ? $_POST['host_fechaf']    : '' ?>" max="1994-12-31"></div>
+											</div>
+											<div class="row justify-content-start align-items-center mb-1 me-1">
+												<label for="host_cargo"      class="col-sm-2 col-form-label">Cargo:    </label>
+												<div class="col-sm-8"><input type="text" id="host_cargo"     name="host_cargo"     class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['host_cargo'])   ? $_POST['host_cargo']    : '' ?>"></div>
+												<button type="submit" class="col-2 btn btn-light btn-sm">Cargar</button>
+											</div>
+							
+											<input type="hidden"  name="orci_emprdni"   value="<?php echo isset($_POST['orci_emprdni'])   ? $_POST['orci_emprdni']    : '' ?>">
+											<input type="hidden"  name="orci_empresa"   value="<?php echo isset($_POST['orci_empresa'])   ? $_POST['orci_empresa']    : '' ?>">
+											<input type="hidden"  name="orci_nombres"   value="<?php echo isset($_POST['orci_nombres'])   ? $_POST['orci_nombres']    : '' ?>">
+											<input type="hidden"  name="orci_apellidos" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos']  : '' ?>">
+											<input type="hidden"  name="orci_dni"       value="<?php echo isset($_POST['orci_dni'])       ? $_POST['orci_dni']        : '' ?>">
+											<input type="hidden"  name="orci_fechai"    value="<?php echo isset($_POST['orci_fechai'])    ? $_POST['orci_fechai']     : '' ?>">
+											<input type="hidden"  name="orci_fechaf"    value="<?php echo isset($_POST['orci_fechaf'])    ? $_POST['orci_fechaf']     : '' ?>">
+											<input type="hidden"  name="orci_cargo"     value="<?php echo isset($_POST['orci_cargo'])     ? $_POST['orci_cargo']      : '' ?>">
+											
+											<input type="hidden"  name="refl_emprdni"   value="<?php echo isset($_POST['refl_emprdni'])   ? $_POST['refl_emprdni']    : '' ?>">
+											<input type="hidden"  name="refl_empresa"   value="<?php echo isset($_POST['refl_empresa'])   ? $_POST['refl_empresa']    : '' ?>">
+											<input type="hidden"  name="refl_fechai"    value="<?php echo isset($_POST['refl_fechai'])    ? $_POST['refl_fechai']     : '' ?>">
+											<input type="hidden"  name="refl_fechaf"    value="<?php echo isset($_POST['refl_fechaf'])    ? $_POST['refl_fechaf']     : '' ?>">
+											<input type="hidden"  name="refl_cargo"     value="<?php echo isset($_POST['refl_cargo'])     ? $_POST['refl_cargo']      : '' ?>">
+
+											<input type="hidden" name="tab" value="host">
+
+										</form>
+										<?php if ( isset($anniorp['host']) && $anniorp['host'] && $pagehost) { ?>	
+											<div class="text-center border-top border-bottom border-warning mt-3 mb-1">Último Sueldo: <?php echo nf(obtener_sueldo($_POST['host_fechaf'])['sueldo_minimo']) ?></div>
+											<div class="row">
+												<div class="col-12">
+													<ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist">
+														<li class="nav-item" role="presentation">
+															<button class="nav-link active" id="host_cert-tab"  data-bs-toggle="pill"     data-bs-target="#host_cert" type="button" role="tab" aria-controls="host_cert" aria-selected="true">CERTIFICADO  </button>
+														</li>
+														<li class="nav-item" role="presentation">
+															<button class="nav-link "       id="host_liqu-tab"     data-bs-toggle="pill"  data-bs-target="#host_liqu" type="button" role="tab" aria-controls="host_liqu" aria-selected="false">LIQUIDACIÓN </button>
+														</li>
+														<li class="nav-item" role="presentation">
+															<button class="nav-link "       id="host_bole-tab"   data-bs-toggle="pill"    data-bs-target="#host_bole" type="button" role="tab" aria-controls="host_bole" aria-selected="false">BOLETA </button>
+														</li>
+														<li class="nav-item" role="presentation">
+															<button class="nav-link "       id="host_decl-tab"   data-bs-toggle="pill"    data-bs-target="#host_decl" type="button" role="tab" aria-controls="host_decl" aria-selected="false">DECLARACIÓN </button>
+														</li>
+														<li class="nav-item" role="presentation">
+															<button class="nav-link "       id="host_empr-tab"   data-bs-toggle="pill"    data-bs-target="#host_empr" type="button" role="tab" aria-controls="host_empr" aria-selected="false">EMPRESA </button>
+														</li>
+													</ul>
+												</div>
+												<div class="col-12">
+													<div class="tab-content">
+														<div id="host_cert" class="tab-pane fadein show active">
+															<form id="form_host_cer" action="reportes/certificado<?php echo $rp['host'] ?>.php" method="post" target="_blank" >
+																<input type="hidden" name="empresa" value="<?php echo isset($_POST['host_empresa']) ? $_POST['host_empresa'] : '' ?>" />
+																<input type="hidden" name="nombres" value="<?php echo isset($_POST['host_nombres']) ? $_POST['host_nombres'] : '' ?>" />
+																<input type="hidden" name="apellidos" value="<?php echo isset($_POST['host_apellidos']) ? $_POST['host_apellidos'] : '' ?>" />
+																<input type="hidden" name="dni" value="<?php echo isset($_POST['host_dni']) ? $_POST['host_dni'] : '' ?>" />
+
+																<input type="hidden" name="f_a"           value="<?php echo $fechas['host']['fa2'];      ?>">
+																<input type="hidden" name="f_a_b"         value="<?php echo $fechas['host']['fa1'];      ?>">
+																<input type="hidden" name="f_b"           value="<?php echo $fechas['host']['fb2'];      ?>">
+																<input type="hidden" name="f_b_b"         value="<?php echo $fechas['host']['fb1'];      ?>">
+																<input type="hidden" name="fecha_emision" value="<?php echo $fechas['host']['fb1'];      ?>">
+																<input type="hidden" name="emision"       value="<?php echo $fechas['host']['emision'];  ?>">
+
+																<input type="hidden" name="cargo_ac" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
+																<input type="hidden" name="cargo_al" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
+																<input type="hidden" name="cargo_ab" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
+																<button type="submit" class="btn btn-light btn-sm">Certificado</button>
+															</form>
+														</div>
+														<div id="host_liqu" class="tab-pane fadein">
+															<form id="form_host_liq" action="reportes/liquidacion<?php echo $rp['host'] ?>.php" method="post" target="_blank" >
+																<input type="hidden" name="empresa" value="<?php echo isset($_POST['host_empresa']) ? $_POST['host_empresa'] : '' ?>" />
+																<input type="hidden" name="nombres" value="<?php echo isset($_POST['host_nombres']) ? $_POST['host_nombres'] : '' ?>" />
+																<input type="hidden" name="apellidos" value="<?php echo isset($_POST['host_apellidos']) ? $_POST['host_apellidos'] : '' ?>" />
+																<input type="hidden" name="dni" value="<?php echo isset($_POST['host_dni']) ? $_POST['host_dni'] : '' ?>" />
+					
+																<input type="hidden" name="f_a"           value="<?php echo $fechas['host']['fa2'];      ?>">
+																<input type="hidden" name="f_a_b"         value="<?php echo $fechas['host']['fa1'];      ?>">
+																<input type="hidden" name="f_b"           value="<?php echo $fechas['host']['fb2'];      ?>">
+																<input type="hidden" name="f_b_b"         value="<?php echo $fechas['host']['fb1'];      ?>">
+																<input type="hidden" name="fecha_emision" value="<?php echo $fechas['host']['fb1'];      ?>">
+																<input type="hidden" name="emision"       value="<?php echo $fechas['host']['emision'];  ?>">
+																<input type="hidden" name="fsueldo"       value="<?php echo $fechas['host']['fb3'];      ?>">
+																
+																<input type="hidden" name="cargo_ac" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
+																<input type="hidden" name="cargo_al" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
+																<input type="hidden" name="cargo_ab" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
+
+																<div class="row">
+																	<div class="col-6">
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Adelanto:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);" type="text" id="adelanto" name="adelanto" class="form-control form-control-sm bg-danger bg-gradient bg-opacity-50 text-white" placeholder="Adelanto" value="<?php echo isset($_POST['adelanto']) ? $_POST['adelanto'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Vacaciones:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);" type="text" id="vacaciones" name="vacaciones" class="form-control form-control-sm" placeholder="Vacaciones" value="<?php echo isset($_POST['vacaciones']) ? $_POST['vacaciones'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Gratificaciones:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);" type="text" id="gratificaciones" name="gratificaciones" class="form-control form-control-sm" placeholder="Gratificaciones" value="<?php echo isset($_POST['gratificaciones']) ? $_POST['gratificaciones'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Reintegro:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);" type="text" id="reintegro" name="reintegro" class="form-control form-control-sm" placeholder="Reintegro" value="<?php echo isset($_POST['reintegro']) ? $_POST['reintegro'] : '0' ?>">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-6">
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Incentivo:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);"  type="text" id="incentivo" name="incentivo" class="form-control form-control-sm" placeholder="Incentivo" value="<?php echo isset($_POST['incentivo']) ? $_POST['incentivo'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Bonificacion:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion" name="bonificacion" class="form-control form-control-sm" placeholder="Bonificacion" value="<?php echo isset($_POST['bonificacion']) ? $_POST['bonificacion'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Bonificacion Graciosa:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion_graciosa" name="bonificacion_graciosa" class="form-control form-control-sm" placeholder="Bonificacion Graciosa" value="<?php echo isset($_POST['bonificacion_graciosa']) ? $_POST['bonificacion_graciosa'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Bonificacion Extraordinaria:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion_extraordinaria" name="bonificacion_extraordinaria" class="form-control form-control-sm" placeholder="Bonificacion Extraordinaria" value="<?php echo isset($_POST['bonificacion_extraordinaria']) ? $_POST['bonificacion_extraordinaria'] : '0' ?>">
+																			</div>
+																		</div>
+																	</div>
+																</div>
+																
+																<div class="row justify-content-end">
+																	<button type="submit" class="col-3 btn btn-light btn-sm me-3">Liquidación</button>
+																</div>
+															</form>
+														</div>
+														<?php if ( $anniorp['host'] >= 1978 ) { ?>
+															<div id="host_bole" class="tab-pane fadein">
+																<form id="form_host_bol" action="reportes/boletadepago<?php echo $bo['host'] ?>.php" method="post" target="_blank" >
+																	<input type="hidden" name="empresa" value="<?php echo isset($_POST['host_empresa']) ? $_POST['host_empresa'] : '' ?>" />
+																	<input type="hidden" name="nombres" value="<?php echo isset($_POST['host_nombres']) ? $_POST['host_nombres'] : '' ?>" />
+																	<input type="hidden" name="apellidos" value="<?php echo isset($_POST['host_apellidos']) ? $_POST['host_apellidos'] : '' ?>" />
+																	<input type="hidden" name="dni" value="<?php echo isset($_POST['host_dni']) ? $_POST['host_dni'] : '' ?>" />
 										
-										<input type="hidden"  name="refl_emprdni"   value="<?php echo isset($_POST['refl_emprdni'])   ? $_POST['refl_emprdni']    : '' ?>">
-										<input type="hidden"  name="refl_empresa"   value="<?php echo isset($_POST['refl_empresa'])   ? $_POST['refl_empresa']    : '' ?>">
-										<input type="hidden"  name="refl_nombres"   value="<?php echo isset($_POST['refl_nombres'])   ? $_POST['refl_nombres']    : '' ?>">
-										<input type="hidden"  name="refl_apellidos" value="<?php echo isset($_POST['refl_apellidos']) ? $_POST['refl_apellidos']  : '' ?>">
-										<input type="hidden"  name="refl_dni"       value="<?php echo isset($_POST['refl_dni'])       ? $_POST['refl_dni']        : '' ?>">
-										<input type="hidden"  name="refl_fechai"    value="<?php echo isset($_POST['refl_fechai'])    ? $_POST['refl_fechai']     : '' ?>">
-										<input type="hidden"  name="refl_fechaf"    value="<?php echo isset($_POST['refl_fechaf'])    ? $_POST['refl_fechaf']     : '' ?>">
-										<input type="hidden"  name="refl_cargo"     value="<?php echo isset($_POST['refl_cargo'])     ? $_POST['refl_cargo']      : '' ?>">
+																	<input type="hidden" name="f_a"           value="<?php echo $fechas['host']['fa2'];      ?>">
+																	<input type="hidden" name="f_a_b"         value="<?php echo $fechas['host']['fa1'];      ?>">
+																	<input type="hidden" name="f_b"           value="<?php echo $fechas['host']['fb2'];      ?>">
+																	<input type="hidden" name="f_b_b"         value="<?php echo $fechas['host']['fb1'];      ?>">
+																	<input type="hidden" name="fecha_emision" value="<?php echo $fechas['host']['fb1'];      ?>">
+																	<input type="hidden" name="emision"       value="<?php echo $fechas['host']['emision'];  ?>">
+																	<input type="hidden" name="fsueldo"       value="<?php echo $fechas['host']['fb3'];      ?>">
+																	
+																	<input type="hidden" name="cargo_ac" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
+																	<input type="hidden" name="cargo_al" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
+																	<input type="hidden" name="cargo_ab" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
 
-										<input type="hidden" name="tab" value="host">
+																	<div class="row">
+																		<div class="col-6">
+																			<div class="row mb-1">
+																				<label for="sueldo" class="col-5 col-form-label">Fecha:</label>
+																				<div class="col-7">
+																					<input required type="date" id="fechaboleta" name="fechaboleta" min="1978-08-22" class="form-control form-control-sm" value="<?php echo isset($_POST['fechaboleta']) ? $_POST['fechaboleta'] : '0' ?>">
+																				</div>
+																			</div>
+																			<div class="row mb-1">
+																				<label for="sueldo" class="col-5 col-form-label">R. VACACIONAL:</label>
+																				<div class="col-7">
+																					<input onkeypress="return filterFloat(event,this);" type="text" id="remvacacionales" name="remvacacionales" class="form-control form-control-sm" value="<?php echo isset($_POST['remvacacionales']) ? $_POST['remvacacionales'] : '0' ?>">
+																				</div>
+																			</div>
+																			<div class="row mb-1">
+																				<label for="sueldo" class="col-5 col-form-label">Reintegro:</label>
+																				<div class="col-7">
+																					<input onkeypress="return filterFloat(event,this);" type="text" id="reintegro" name="reintegro" class="form-control form-control-sm" value="<?php echo isset($_POST['reintegro']) ? $_POST['reintegro'] : '0' ?>">
+																				</div>
+																			</div>
+																		</div>
+																		<div class="col-6">
+																			<div class="row mb-1">
+																				<label for="sueldo" class="col-5 col-form-label">H. EXTRAS:</label>
+																				<div class="col-7">
+																					<input onkeypress="return filterFloat(event,this);" type="text" id="hextras" name="hextras" class="form-control form-control-sm" value="<?php echo isset($_POST['hextras']) ? $_POST['hextras'] : '0' ?>">
+																				</div>
+																			</div>
+																			<div class="row mb-1">
+																				<label for="sueldo" class="col-5 col-form-label">Bonificacion:</label>
+																				<div class="col-7">
+																					<input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion" name="bonificacion" class="form-control form-control-sm" value="<?php echo isset($_POST['bonificacion']) ? $_POST['bonificacion'] : '0' ?>">
+																				</div>
+																			</div>
+																			<div class="row mb-1">
+																				<label for="sueldo" class="col-5 col-form-label">OTROS:</label>
+																				<div class="col-7">
+																					<input onkeypress="return filterFloat(event,this);" type="text" id="otros_deven" name="otros_deven" class="form-control form-control-sm" value="<?php echo isset($_POST['otros_deven']) ? $_POST['otros_deven'] : '0' ?>">
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																	
+																	<div class="row justify-content-end ">
+																		<button type="submit" class="col-3 btn btn-light btn-sm me-3">Boleta</button>
+																	</div>
+																</form>
+															</div>
+														<?php } ?>
+														<div id="host_decl" class="tab-pane fadein">
+															<?php $dec = rand(1, 3); ?>
+															<form id="form_orci_bol" action="reportes/declaracionempleador0<?php echo $dec ?>.php" method="post" target="_blank" >
+																<input type="hidden" name="empresa"   value="<?php echo isset($_POST['host_empresa'])   ? $_POST['host_empresa'] : '' ?>" />
+																<input type="hidden" name="nombres"   value="<?php echo isset($_POST['host_nombres'])   ? $_POST['host_nombres'] : '' ?>" />
+																<input type="hidden" name="apellidos" value="<?php echo isset($_POST['host_apellidos']) ? $_POST['host_apellidos'] : '' ?>" />
+																<input type="hidden" name="dni"       value="<?php echo isset($_POST['host_dni'])       ? $_POST['host_dni'] : '' ?>" />
+									
+																<input type="hidden" name="f_a"           value="<?php echo $fechas['host']['fa2'];      ?>">
+																<input type="hidden" name="f_a_b"         value="<?php echo $fechas['host']['fa1'];      ?>">
+																<input type="hidden" name="f_b"           value="<?php echo $fechas['host']['fb2'];      ?>">
+																<input type="hidden" name="f_b_b"         value="<?php echo $fechas['host']['fb1'];      ?>">
+																<input type="hidden" name="fecha_emision" value="<?php echo $fechas['host']['fb1'];      ?>">
+																<input type="hidden" name="emision"       value="<?php echo $fechas['host']['emision'];  ?>">
+																<input type="hidden" name="fsueldo"       value="<?php echo $fechas['host']['fb3'];      ?>">
 
-									</form>
-									<?php if ($anniorp['host'] && $pagehost) { ?>
-									<div class="row justify-content-end px-3">
-										<div class="col-3">
-											<form id="form_host_cer" action="reportes/certificado<?php echo $rp['host'] ?>.php" method="post" target="_blank" >
-												<input type="hidden" name="empresa" value="<?php echo isset($_POST['host_empresa']) ? $_POST['host_empresa'] : '' ?>" />
-												<input type="hidden" name="nombres" value="<?php echo isset($_POST['host_nombres']) ? $_POST['host_nombres'] : '' ?>" />
-												<input type="hidden" name="apellidos" value="<?php echo isset($_POST['host_apellidos']) ? $_POST['host_apellidos'] : '' ?>" />
-												<input type="hidden" name="dni" value="<?php echo isset($_POST['host_dni']) ? $_POST['host_dni'] : '' ?>" />
+																<input type="hidden" name="rep_legal" value="<?php echo $empresa['host']['id']; ?>">
+																<input type="hidden" name="rep_legal" value="<?php echo $empresa['host']['rep_legal']; ?>">
+																<input type="hidden" name="dni_a"     value="<?php echo $empresa['host']['dni_a']; ?>">
+																<input type="hidden" name="ruc"       value="<?php echo $empresa['host']['ruc']; ?>">
+																
+																<input type="hidden" name="cargo_abo" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
+																<input type="hidden" name="cargo_bbo" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
 
-												<input type="hidden" name="f_a"           value="<?php echo $fechas['host']['fa2'];      ?>">
-												<input type="hidden" name="f_a_b"         value="<?php echo $fechas['host']['fa1'];      ?>">
-												<input type="hidden" name="f_b"           value="<?php echo $fechas['host']['fb2'];      ?>">
-												<input type="hidden" name="f_b_b"         value="<?php echo $fechas['host']['fb1'];      ?>">
-												<input type="hidden" name="fecha_emision" value="<?php echo $fechas['host']['fb1'];      ?>">
-												<input type="hidden" name="emision"       value="<?php echo $fechas['host']['emision'];  ?>">
+																<div class="row mb-3">
+																	<label for="numautog" class="col-7 col-form-label text-end">Número Autogenerado:</label>
+																	<div class="col-5">
+																		<input type="text" id="numautog" name="numautog" class="form-control form-control-sm" placeholder="Núm. Autogenerado" value="<?php echo isset($_POST['numautog']) ? $_POST['numautog']  : '' ?>" >
+																	</div>
+																</div>
 
-												<input type="hidden" name="cargo_ac" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
-												<input type="hidden" name="cargo_al" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
-												<input type="hidden" name="cargo_ab" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
-												<button type="submit" class="btn btn-light btn-sm">Certificado</button>
-											</form>
-										</div>
-										<div class="col-3">
-											<form id="form_host_liq" action="reportes/liquidacion<?php echo $rp['host'] ?>.php" method="post" target="_blank" >
-												<input type="hidden" name="empresa" value="<?php echo isset($_POST['host_empresa']) ? $_POST['host_empresa'] : '' ?>" />
-												<input type="hidden" name="nombres" value="<?php echo isset($_POST['host_nombres']) ? $_POST['host_nombres'] : '' ?>" />
-												<input type="hidden" name="apellidos" value="<?php echo isset($_POST['host_apellidos']) ? $_POST['host_apellidos'] : '' ?>" />
-												<input type="hidden" name="dni" value="<?php echo isset($_POST['host_dni']) ? $_POST['host_dni'] : '' ?>" />
+																<div class="row">
+																	<div class="col-6">
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Diciembre '91:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes12" name="mes12" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Enero '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes01" name="mes01" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Febrero '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes02" name="mes02" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Marzo '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes03" name="mes03" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Abril '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes04" name="mes04" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Mayo '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes05" name="mes05" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-6">
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Junio '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes06" name="mes06" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Julio '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes07" name="mes07" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Agosto '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes08" name="mes08" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Septiembre '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes09" name="mes09" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Octubre '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes10" name="mes10" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Noviembre '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes11" name="mes11" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
+																			</div>
+																		</div>
+																	</div>
+																</div>
 
-												<input type="hidden" name="f_a"           value="<?php echo $fechas['host']['fa2'];      ?>">
-												<input type="hidden" name="f_a_b"         value="<?php echo $fechas['host']['fa1'];      ?>">
-												<input type="hidden" name="f_b"           value="<?php echo $fechas['host']['fb2'];      ?>">
-												<input type="hidden" name="f_b_b"         value="<?php echo $fechas['host']['fb1'];      ?>">
-												<input type="hidden" name="fecha_emision" value="<?php echo $fechas['host']['fb1'];      ?>">
-												<input type="hidden" name="emision"       value="<?php echo $fechas['host']['emision'];  ?>">
-												<input type="hidden" name="fsueldo"       value="<?php echo $fechas['host']['fb3'];      ?>">
-												
-												<input type="hidden" name="cargo_ac" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
-												<input type="hidden" name="cargo_al" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
-												<input type="hidden" name="cargo_ab" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
-												<button type="submit" class="btn btn-light btn-sm">Liquidación</button>
-											</form>
-										</div>
-										<div class="col-3">
-											<form action="manual_bono.php" id="frmPersona" method="POST" >
-												<input type="hidden" name="nombres"    value="<?php echo isset($_POST['host_nombres'])     ? $_POST['host_nombres']   : '' ?>">
-												<input type="hidden" name="apellidos"  value="<?php echo isset($_POST['host_apellidos'])   ? $_POST['host_apellidos'] : '' ?>">
-												<input type="hidden" name="dni"        value="<?php echo isset($_POST['host_dni'])         ? $_POST['host_dni']       : '' ?>">
-												<input type="hidden" name="finicio"    value="<?php echo isset($_POST['host_fechai'])      ? $_POST['host_fechai']    : '' ?>">
-												<input type="hidden" name="ffinal"     value="<?php echo isset($_POST['host_fechaf'])      ? $_POST['host_fechaf']    : '' ?>">
-						
-												<input type="hidden"  name="orci_emprdni"   value="<?php echo isset($_POST['orci_emprdni'])   ? $_POST['orci_emprdni']    : '' ?>">
-												<input type="hidden"  name="orci_empresa"   value="<?php echo isset($_POST['orci_empresa'])   ? $_POST['orci_empresa']    : '' ?>">
-												<input type="hidden"  name="orci_nombres"   value="<?php echo isset($_POST['orci_nombres'])   ? $_POST['orci_nombres']    : '' ?>">
-												<input type="hidden"  name="orci_apellidos" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos']  : '' ?>">
-												<input type="hidden"  name="orci_dni"       value="<?php echo isset($_POST['orci_dni'])       ? $_POST['orci_dni']        : '' ?>">
-												<input type="hidden"  name="orci_fechai"    value="<?php echo isset($_POST['orci_fechai'])    ? $_POST['orci_fechai']     : '' ?>">
-												<input type="hidden"  name="orci_fechaf"    value="<?php echo isset($_POST['orci_fechaf'])    ? $_POST['orci_fechaf']     : '' ?>">
-												<input type="hidden"  name="orci_cargo"     value="<?php echo isset($_POST['orci_cargo'])     ? $_POST['orci_cargo']      : '' ?>">
-											
-												<input type="hidden"  name="host_emprdni"   value="<?php echo isset($_POST['host_emprdni'])   ? $_POST['host_emprdni']    : '' ?>">
-												<input type="hidden"  name="host_empresa"   value="<?php echo isset($_POST['host_empresa'])   ? $_POST['host_empresa']    : '' ?>">
-												<input type="hidden"  name="host_nombres"   value="<?php echo isset($_POST['host_nombres'])   ? $_POST['host_nombres']    : '' ?>">
-												<input type="hidden"  name="host_apellidos" value="<?php echo isset($_POST['host_apellidos']) ? $_POST['host_apellidos']  : '' ?>">
-												<input type="hidden"  name="host_dni"       value="<?php echo isset($_POST['host_dni'])       ? $_POST['host_dni']        : '' ?>">
-												<input type="hidden"  name="host_fechai"    value="<?php echo isset($_POST['host_fechai'])    ? $_POST['host_fechai']     : '' ?>">
-												<input type="hidden"  name="host_fechaf"    value="<?php echo isset($_POST['host_fechaf'])    ? $_POST['host_fechaf']     : '' ?>">
-												<input type="hidden"  name="host_cargo"     value="<?php echo isset($_POST['host_cargo'])     ? $_POST['host_cargo']      : '' ?>">
-												
-												<input type="hidden"  name="refl_emprdni"   value="<?php echo isset($_POST['refl_emprdni'])   ? $_POST['refl_emprdni']    : '' ?>">
-												<input type="hidden"  name="refl_empresa"   value="<?php echo isset($_POST['refl_empresa'])   ? $_POST['refl_empresa']    : '' ?>">
-												<input type="hidden"  name="refl_nombres"   value="<?php echo isset($_POST['refl_nombres'])   ? $_POST['refl_nombres']    : '' ?>">
-												<input type="hidden"  name="refl_apellidos" value="<?php echo isset($_POST['refl_apellidos']) ? $_POST['refl_apellidos']  : '' ?>">
-												<input type="hidden"  name="refl_dni"       value="<?php echo isset($_POST['refl_dni'])       ? $_POST['refl_dni']        : '' ?>">
-												<input type="hidden"  name="refl_fechai"    value="<?php echo isset($_POST['refl_fechai'])    ? $_POST['refl_fechai']     : '' ?>">
-												<input type="hidden"  name="refl_fechaf"    value="<?php echo isset($_POST['refl_fechaf'])    ? $_POST['refl_fechaf']     : '' ?>">
-												<input type="hidden"  name="refl_cargo"     value="<?php echo isset($_POST['refl_cargo'])     ? $_POST['refl_cargo']      : '' ?>">
+																<div class="row border-top border-bottom border-warning py-1 mb-1">
+																<div class="col text-end">
+																	Cálculo de Bono: <input id="host_totalbono" value="" />
+																</div>
+																</div>
 
-												<input type="hidden" name="tab" value="host">
+																<?php
+																$sueldo = obtener_sueldo($fechas['host']['fb3'])['sueldo_minimo'];
+																$difea  = date_diff(date_create($fechas['host']['fb3']), date_create($fechas['host']['fa3']));
+																$mesest  = ($difea->y * 12 )+$difea->m;
+																?>
+																<input type="hidden" id="host_sueldo" name="sueldo" value="<?php echo nf($sueldo,0); ?>"/>
+																<input type="hidden" id="host_mesest" name="mesest" value="<?php echo $mesest; ?>"/>
+																
+																
+																<div class="row justify-content-end ">
+																<button type="submit" class="col-3 btn btn-light btn-sm me-3">Declaración</button>
+																</div>
+															</form>
+														</div>
+														<div id="host_empr" class="tab-pane fadein">
+															<form action="manual_bono.php" id="frmPersona" method="POST" >
+																<input type="hidden" name="nombres"    value="<?php echo isset($_POST['host_nombres'])     ? $_POST['host_nombres']   : '' ?>">
+																<input type="hidden" name="apellidos"  value="<?php echo isset($_POST['host_apellidos'])   ? $_POST['host_apellidos'] : '' ?>">
+																<input type="hidden" name="dni"        value="<?php echo isset($_POST['host_dni'])         ? $_POST['host_dni']       : '' ?>">
+																<input type="hidden" name="finicio"    value="<?php echo isset($_POST['host_fechai'])      ? $_POST['host_fechai']    : '' ?>">
+																<input type="hidden" name="ffinal"     value="<?php echo isset($_POST['host_fechaf'])      ? $_POST['host_fechaf']    : '' ?>">
+										
+																<input type="hidden"  name="orci_emprdni"   value="<?php echo isset($_POST['orci_emprdni'])   ? $_POST['orci_emprdni']    : '' ?>">
+																<input type="hidden"  name="orci_empresa"   value="<?php echo isset($_POST['orci_empresa'])   ? $_POST['orci_empresa']    : '' ?>">
+																<input type="hidden"  name="orci_nombres"   value="<?php echo isset($_POST['orci_nombres'])   ? $_POST['orci_nombres']    : '' ?>">
+																<input type="hidden"  name="orci_apellidos" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos']  : '' ?>">
+																<input type="hidden"  name="orci_dni"       value="<?php echo isset($_POST['orci_dni'])       ? $_POST['orci_dni']        : '' ?>">
+																<input type="hidden"  name="orci_fechai"    value="<?php echo isset($_POST['orci_fechai'])    ? $_POST['orci_fechai']     : '' ?>">
+																<input type="hidden"  name="orci_fechaf"    value="<?php echo isset($_POST['orci_fechaf'])    ? $_POST['orci_fechaf']     : '' ?>">
+																<input type="hidden"  name="orci_cargo"     value="<?php echo isset($_POST['orci_cargo'])     ? $_POST['orci_cargo']      : '' ?>">
+															
+																<input type="hidden"  name="host_emprdni"   value="<?php echo isset($_POST['host_emprdni'])   ? $_POST['host_emprdni']    : '' ?>">
+																<input type="hidden"  name="host_empresa"   value="<?php echo isset($_POST['host_empresa'])   ? $_POST['host_empresa']    : '' ?>">
+																<input type="hidden"  name="host_fechai"    value="<?php echo isset($_POST['host_fechai'])    ? $_POST['host_fechai']     : '' ?>">
+																<input type="hidden"  name="host_fechaf"    value="<?php echo isset($_POST['host_fechaf'])    ? $_POST['host_fechaf']     : '' ?>">
+																<input type="hidden"  name="host_cargo"     value="<?php echo isset($_POST['host_cargo'])     ? $_POST['host_cargo']      : '' ?>">
+																
+																<input type="hidden"  name="refl_emprdni"   value="<?php echo isset($_POST['refl_emprdni'])   ? $_POST['refl_emprdni']    : '' ?>">
+																<input type="hidden"  name="refl_empresa"   value="<?php echo isset($_POST['refl_empresa'])   ? $_POST['refl_empresa']    : '' ?>">
+																<input type="hidden"  name="refl_fechai"    value="<?php echo isset($_POST['refl_fechai'])    ? $_POST['refl_fechai']     : '' ?>">
+																<input type="hidden"  name="refl_fechaf"    value="<?php echo isset($_POST['refl_fechaf'])    ? $_POST['refl_fechaf']     : '' ?>">
+																<input type="hidden"  name="refl_cargo"     value="<?php echo isset($_POST['refl_cargo'])     ? $_POST['refl_cargo']      : '' ?>">
 
-												<button type="submit" class="btn btn-light btn-sm">Empresa</button>
-											</form>
-										</div>
+																<input type="hidden" name="tab" value="host">
+
+																<button type="submit" class="btn btn-light btn-sm">Empresa</button>
+															</form>
+														</div>
+													</div>
+												</div>
+											</div>
+										<?php } ?>
 									</div>
-									<!-- inicio BONO -->
-									<?php if ( $anniorp['host'] >= 1978 ) { ?>
-									<div class="row border-white border-top pt-3 mt-2">
-										<div class="col">
-										<form id="form_host_bol" action="reportes/boletadepago<?php echo $bo['host'] ?>.php" method="post" target="_blank" >
-											<input type="hidden" name="empresa" value="<?php echo isset($_POST['host_empresa']) ? $_POST['host_empresa'] : '' ?>" />
-											<input type="hidden" name="nombres" value="<?php echo isset($_POST['host_nombres']) ? $_POST['host_nombres'] : '' ?>" />
-											<input type="hidden" name="apellidos" value="<?php echo isset($_POST['host_apellidos']) ? $_POST['host_apellidos'] : '' ?>" />
-											<input type="hidden" name="dni" value="<?php echo isset($_POST['host_dni']) ? $_POST['host_dni'] : '' ?>" />
-				
-											<input type="hidden" name="f_a"           value="<?php echo $fechas['host']['fa2'];      ?>">
-											<input type="hidden" name="f_a_b"         value="<?php echo $fechas['host']['fa1'];      ?>">
-											<input type="hidden" name="f_b"           value="<?php echo $fechas['host']['fb2'];      ?>">
-											<input type="hidden" name="f_b_b"         value="<?php echo $fechas['host']['fb1'];      ?>">
-											<input type="hidden" name="fecha_emision" value="<?php echo $fechas['host']['fb1'];      ?>">
-											<input type="hidden" name="emision"       value="<?php echo $fechas['host']['emision'];  ?>">
-											<input type="hidden" name="fsueldo"       value="<?php echo $fechas['host']['fb3'];      ?>">
-											
-											<input type="hidden" name="cargo_ac" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
-											<input type="hidden" name="cargo_al" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
-											<input type="hidden" name="cargo_ab" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
-
-											<div class="row">
-												<div class="col-6">
-													<div class="row mb-1">
-														<label for="sueldo" class="col-5 col-form-label">Fecha:</label>
-														<div class="col-7">
-															<input required type="date" id="fechaboleta" name="fechaboleta" min="1978-08-22" class="form-control form-control-sm" value="<?php echo isset($_POST['fechaboleta']) ? $_POST['fechaboleta'] : '0' ?>">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-5 col-form-label">R. VACACIONAL:</label>
-														<div class="col-7">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="remvacacionales" name="remvacacionales" class="form-control form-control-sm" value="<?php echo isset($_POST['remvacacionales']) ? $_POST['remvacacionales'] : '0' ?>">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-5 col-form-label">Reintegro:</label>
-														<div class="col-7">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="reintegro" name="reintegro" class="form-control form-control-sm" value="<?php echo isset($_POST['reintegro']) ? $_POST['reintegro'] : '0' ?>">
-														</div>
-													</div>
-												</div>
-												<div class="col-6">
-													<div class="row mb-1">
-														<label for="sueldo" class="col-5 col-form-label">H. EXTRAS:</label>
-														<div class="col-7">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="hextras" name="hextras" class="form-control form-control-sm" value="<?php echo isset($_POST['hextras']) ? $_POST['hextras'] : '0' ?>">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-5 col-form-label">Bonificacion:</label>
-														<div class="col-7">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion" name="bonificacion" class="form-control form-control-sm" value="<?php echo isset($_POST['bonificacion']) ? $_POST['bonificacion'] : '0' ?>">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-5 col-form-label">OTROS:</label>
-														<div class="col-7">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="otros_deven" name="otros_deven" class="form-control form-control-sm" value="<?php echo isset($_POST['otros_deven']) ? $_POST['otros_deven'] : '0' ?>">
-														</div>
-													</div>
-												</div>
-											</div>
-											
-											<div class="row justify-content-end ">
-												<button type="submit" class="col-3 btn btn-light btn-sm me-3">Boleta</button>
-											</div>
-										</form>
-										</div>
-									</div>
-									<?php } ?>
-									<!-- fin BONO -->
-
-									<!-- inicio Declaracion Jurada -->
-									<div class="row border-white border-top pt-3 mt-2">
-										<div class="col">
-										<?php $dec = rand(1, 3); ?>
-										<form id="form_orci_bol" action="reportes/declaracionempleador0<?php echo $dec ?>.php" method="post" target="_blank" >
-											<input type="hidden" name="empresa"   value="<?php echo isset($_POST['host_empresa'])   ? $_POST['host_empresa'] : '' ?>" />
-											<input type="hidden" name="nombres"   value="<?php echo isset($_POST['host_nombres'])   ? $_POST['host_nombres'] : '' ?>" />
-											<input type="hidden" name="apellidos" value="<?php echo isset($_POST['host_apellidos']) ? $_POST['host_apellidos'] : '' ?>" />
-											<input type="hidden" name="dni"       value="<?php echo isset($_POST['host_dni'])       ? $_POST['host_dni'] : '' ?>" />
-				
-											<input type="hidden" name="f_a"           value="<?php echo $fechas['host']['fa2'];      ?>">
-											<input type="hidden" name="f_a_b"         value="<?php echo $fechas['host']['fa1'];      ?>">
-											<input type="hidden" name="f_b"           value="<?php echo $fechas['host']['fb2'];      ?>">
-											<input type="hidden" name="f_b_b"         value="<?php echo $fechas['host']['fb1'];      ?>">
-											<input type="hidden" name="fecha_emision" value="<?php echo $fechas['host']['fb1'];      ?>">
-											<input type="hidden" name="emision"       value="<?php echo $fechas['host']['emision'];  ?>">
-											<input type="hidden" name="fsueldo"       value="<?php echo $fechas['host']['fb3'];      ?>">
-
-											<input type="hidden" name="rep_legal" value="<?php echo $empresa['host']['id']; ?>">
-											<input type="hidden" name="rep_legal" value="<?php echo $empresa['host']['rep_legal']; ?>">
-											<input type="hidden" name="dni_a"     value="<?php echo $empresa['host']['dni_a']; ?>">
-											<input type="hidden" name="ruc"       value="<?php echo $empresa['host']['ruc']; ?>">
-											
-											<input type="hidden" name="cargo_abo" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
-											<input type="hidden" name="cargo_bbo" value="<?php echo isset($_POST['host_cargo']) ? $_POST['host_cargo'] : '' ?>" />
-
-											<div class="row mb-3">
-												<label for="numautog" class="col-7 col-form-label text-end">Número Autogenerado:</label>
-												<div class="col-5">
-													<input type="text" id="numautog" name="numautog" class="form-control form-control-sm" placeholder="Núm. Autogenerado" value="<?php echo isset($_POST['numautog']) ? $_POST['numautog']  : '' ?>" >
-												</div>
-											</div>
-
-											<div class="row">
-												<div class="col-6">
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Diciembre '91:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes12" name="mes12" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Enero '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes01" name="mes01" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Febrero '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes02" name="mes02" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Marzo '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes03" name="mes03" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Abril '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes04" name="mes04" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Mayo '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes05" name="mes05" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
-														</div>
-													</div>
-												</div>
-												<div class="col-6">
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Junio '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes06" name="mes06" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Julio '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes07" name="mes07" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Agosto '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes08" name="mes08" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Septiembre '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes09" name="mes09" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Octubre '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes10" name="mes10" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Noviembre '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="host_mes11" name="mes11" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('host', 'host')">
-														</div>
-													</div>
-												</div>
-											</div>
-
-											<div class="row border-top border-bottom border-warning py-1 mb-1">
-											<div class="col text-end">
-												Cálculo de Bono: <input id="host_totalbono" value="" />
-											</div>
-											</div>
-
-											<?php
-											$sueldo = obtener_sueldo($fechas['host']['fb3'])['sueldo_minimo'];
-											$difea  = date_diff(date_create($fechas['host']['fb3']), date_create($fechas['host']['fa3']));
-											$mesest  = ($difea->y * 12 )+$difea->m;
-											?>
-											<input type="hidden" id="host_sueldo" name="sueldo" value="<?php echo nf($sueldo,0); ?>"/>
-											<input type="hidden" id="host_mesest" name="mesest" value="<?php echo $mesest; ?>"/>
-											
-											
-											<div class="row justify-content-end ">
-											<button type="submit" class="col-3 btn btn-light btn-sm me-3">Declaración</button>
-											</div>
-										</form>
-										</div>
-									</div>
-									<!-- fin Declaracion Jurada -->
-									<?php } ?>
-									<!-- </div> -->
-								</div>
 								<!-- fin HOST -->
 								<!-- REFLEX -->
-								<div id="reflex" class="tab-pane fade <?php echo $tab === 'refl' ? ' show active' : '' ?>">
-									<!-- <div class="col border border-light rounded"> -->
-									<form id="form_host" action="manual_bono.php" method="post">
-										<div class="text-center fs-4 fw-semibold text-white">REFLEX</div>
-										<div class="row align-items-center mb-1"><label for="refl_emprdni"    class="col-sm-2 col-form-label">R.U.C.:   </label><div class="col-sm-7"><input type="text" id="refl_emprdni"   name="refl_emprdni"   class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['refl_emprdni'])   ? $_POST['refl_emprdni']    : '' ?>"></div><div class="col-sm-3"><button class="btn btn-primary btn-sm" type="button" onclick="obtenerEmpresa('refl')">Buscar</button></div></div>
-										<div class="row align-items-center mb-1"><label for="refl_empresa"    class="col-sm-2 col-form-label">Empresa:  </label><div class="col-sm-10"><input type="text" id="refl_empresa"   name="refl_empresa"   class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['refl_empresa'])   ? $_POST['refl_empresa']    : '' ?>"></div></div>
-										<div class="row align-items-center mb-1"><label for="refl_nombres"    class="col-sm-2 col-form-label">Nombres:  </label><div class="col-sm-10"><input type="text" id="refl_nombres"   name="refl_nombres"   class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['refl_nombres'])   ? $_POST['refl_nombres']    : '' ?>"></div></div>
-										<div class="row align-items-center mb-1"><label for="refl_apellidos"  class="col-sm-2 col-form-label">Apellidos:</label><div class="col-sm-10"><input type="text" id="refl_apellidos" name="refl_apellidos" class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['refl_apellidos']) ? $_POST['refl_apellidos']  : '' ?>"></div></div>
-										<div class="row align-items-center mb-1"><label for="refl_dni"        class="col-sm-2 col-form-label">D.N.I.:   </label><div class="col-sm-10"><input type="text" id="refl_dni"       name="refl_dni"       class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['refl_dni'])       ? $_POST['refl_dni']        : '' ?>"></div></div>
-										<div class="row align-items-center mb-1">
-											<label for="refl_fechai" class="col-sm-2 col-form-label">Inicio: </label><div class="col-sm-4"><input required type="date" id="refl_fechai" name="refl_fechai" class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['refl_fechai'])   ? $_POST['refl_fechai']    : '' ?>"></div>
-											<label for="refl_fechaf" class="col-sm-2 col-form-label">Final:  </label><div class="col-sm-4"><input required type="date" id="refl_fechaf" name="refl_fechaf" class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['refl_fechaf'])   ? $_POST['refl_fechaf']    : '' ?>" max="1994-12-31"></div>
-										</div>
-										<div class="row justify-content-start align-items-center mb-1 me-1">
-											<label for="refl_cargo"      class="col-sm-2 col-form-label">Cargo:    </label>
-											<div class="col-sm-8"><input type="text" id="refl_cargo"     name="refl_cargo"     class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['refl_cargo'])   ? $_POST['refl_cargo']    : '' ?>"></div>
-											<button type="submit" class="col-2 btn btn-light btn-sm">Cargar</button>
-										</div>
-						
-										<input type="hidden"  name="orci_emprdni"   value="<?php echo isset($_POST['orci_emprdni'])   ? $_POST['orci_emprdni']    : '' ?>">
-										<input type="hidden"  name="orci_empresa"   value="<?php echo isset($_POST['orci_empresa'])   ? $_POST['orci_empresa']    : '' ?>">
-										<input type="hidden"  name="orci_nombres"   value="<?php echo isset($_POST['orci_nombres'])   ? $_POST['orci_nombres']    : '' ?>">
-										<input type="hidden"  name="orci_apellidos" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos']  : '' ?>">
-										<input type="hidden"  name="orci_dni"       value="<?php echo isset($_POST['orci_dni'])       ? $_POST['orci_dni']        : '' ?>">
-										<input type="hidden"  name="orci_fechai"    value="<?php echo isset($_POST['orci_fechai'])    ? $_POST['orci_fechai']     : '' ?>">
-										<input type="hidden"  name="orci_fechaf"    value="<?php echo isset($_POST['orci_fechaf'])    ? $_POST['orci_fechaf']     : '' ?>">
-										<input type="hidden"  name="orci_cargo"     value="<?php echo isset($_POST['orci_cargo'])     ? $_POST['orci_cargo']      : '' ?>">
-										
-										<input type="hidden"  name="host_emprdni"   value="<?php echo isset($_POST['host_emprdni'])   ? $_POST['host_emprdni']    : '' ?>">
-										<input type="hidden"  name="host_empresa"   value="<?php echo isset($_POST['host_empresa'])   ? $_POST['host_empresa']    : '' ?>">
-										<input type="hidden"  name="host_nombres"   value="<?php echo isset($_POST['host_nombres'])   ? $_POST['host_nombres']    : '' ?>">
-										<input type="hidden"  name="host_apellidos" value="<?php echo isset($_POST['host_apellidos']) ? $_POST['host_apellidos']  : '' ?>">
-										<input type="hidden"  name="host_dni"       value="<?php echo isset($_POST['host_dni'])       ? $_POST['host_dni']        : '' ?>">
-										<input type="hidden"  name="host_fechai"    value="<?php echo isset($_POST['host_fechai'])    ? $_POST['host_fechai']     : '' ?>">
-										<input type="hidden"  name="host_fechaf"    value="<?php echo isset($_POST['host_fechaf'])    ? $_POST['host_fechaf']     : '' ?>">
-										<input type="hidden"  name="host_cargo"     value="<?php echo isset($_POST['host_cargo'])     ? $_POST['host_cargo']      : '' ?>">
-
-										<input type="hidden" name="tab" value="refl">
-
-									</form>
-									<?php if ($anniorp['refl'] && $pagerefl) { ?>
-									<div class="row justify-content-center px-3">
-										<div class="col-3">
-											<form id="form_refl_cer" action="reportes/certificado<?php echo $rp['refl'] ?>.php" method="post" target="_blank" >
-												<input type="hidden" name="empresa" value="<?php echo isset($_POST['refl_empresa']) ? $_POST['refl_empresa'] : '' ?>" />
-												<input type="hidden" name="nombres" value="<?php echo isset($_POST['refl_nombres']) ? $_POST['refl_nombres'] : '' ?>" />
-												<input type="hidden" name="apellidos" value="<?php echo isset($_POST['refl_apellidos']) ? $_POST['refl_apellidos'] : '' ?>" />
-												<input type="hidden" name="dni" value="<?php echo isset($_POST['refl_dni']) ? $_POST['refl_dni'] : '' ?>" />
-
-												<input type="hidden" name="f_a"           value="<?php echo $fechas['refl']['fa2'];      ?>">
-												<input type="hidden" name="f_a_b"         value="<?php echo $fechas['refl']['fa1'];      ?>">
-												<input type="hidden" name="f_b"           value="<?php echo $fechas['refl']['fb2'];      ?>">
-												<input type="hidden" name="f_b_b"         value="<?php echo $fechas['refl']['fb1'];      ?>">
-												<input type="hidden" name="fecha_emision" value="<?php echo $fechas['refl']['fb1'];      ?>">
-												<input type="hidden" name="emision"       value="<?php echo $fechas['refl']['emision'];  ?>">
-
-												<input type="hidden" name="cargo_ac" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
-												<input type="hidden" name="cargo_al" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
-												<input type="hidden" name="cargo_ab" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
-												<button type="submit" class="btn btn-light btn-sm">Certificado</button>
-											</form>
-										</div>
-										<div class="col-3">
-											<form id="form_refl_liq" action="reportes/liquidacion<?php echo $rp['refl'] ?>.php" method="post" target="_blank" >
-												<input type="hidden" name="empresa" value="<?php echo isset($_POST['refl_empresa']) ? $_POST['refl_empresa'] : '' ?>" />
-												<input type="hidden" name="nombres" value="<?php echo isset($_POST['refl_nombres']) ? $_POST['refl_nombres'] : '' ?>" />
-												<input type="hidden" name="apellidos" value="<?php echo isset($_POST['refl_apellidos']) ? $_POST['refl_apellidos'] : '' ?>" />
-												<input type="hidden" name="dni" value="<?php echo isset($_POST['refl_dni']) ? $_POST['refl_dni'] : '' ?>" />
-
-												<input type="hidden" name="f_a"           value="<?php echo $fechas['refl']['fa2'];      ?>">
-												<input type="hidden" name="f_a_b"         value="<?php echo $fechas['refl']['fa1'];      ?>">
-												<input type="hidden" name="f_b"           value="<?php echo $fechas['refl']['fb2'];      ?>">
-												<input type="hidden" name="f_b_b"         value="<?php echo $fechas['refl']['fb1'];      ?>">
-												<input type="hidden" name="fecha_emision" value="<?php echo $fechas['refl']['fb1'];      ?>">
-												<input type="hidden" name="emision"       value="<?php echo $fechas['refl']['emision'];  ?>">
-												<input type="hidden" name="fsueldo"       value="<?php echo $fechas['refl']['fb3'];      ?>">
-												
-												<input type="hidden" name="cargo_ac" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
-												<input type="hidden" name="cargo_al" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
-												<input type="hidden" name="cargo_ab" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
-												<button type="submit" class="btn btn-light btn-sm">Liquidación</button>
-											</form>
-										</div>
-										<div class="col-3">
-											<form action="manual_bono.php" id="frmPersona" method="POST" >
-												<input type="hidden" name="nombres"    value="<?php echo isset($_POST['refl_nombres'])     ? $_POST['refl_nombres']   : '' ?>">
-												<input type="hidden" name="apellidos"  value="<?php echo isset($_POST['refl_apellidos'])   ? $_POST['refl_apellidos'] : '' ?>">
-												<input type="hidden" name="dni"        value="<?php echo isset($_POST['refl_dni'])         ? $_POST['refl_dni']       : '' ?>">
-												<input type="hidden" name="finicio"    value="<?php echo isset($_POST['refl_fechai'])      ? $_POST['refl_fechai']    : '' ?>">
-												<input type="hidden" name="ffinal"     value="<?php echo isset($_POST['refl_fechaf'])      ? $_POST['refl_fechaf']    : '' ?>">
-						
-												<input type="hidden"  name="orci_emprdni"   value="<?php echo isset($_POST['orci_emprdni'])   ? $_POST['orci_emprdni']    : '' ?>">
-												<input type="hidden"  name="orci_empresa"   value="<?php echo isset($_POST['orci_empresa'])   ? $_POST['orci_empresa']    : '' ?>">
-												<input type="hidden"  name="orci_nombres"   value="<?php echo isset($_POST['orci_nombres'])   ? $_POST['orci_nombres']    : '' ?>">
-												<input type="hidden"  name="orci_apellidos" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos']  : '' ?>">
-												<input type="hidden"  name="orci_dni"       value="<?php echo isset($_POST['orci_dni'])       ? $_POST['orci_dni']        : '' ?>">
-												<input type="hidden"  name="orci_fechai"    value="<?php echo isset($_POST['orci_fechai'])    ? $_POST['orci_fechai']     : '' ?>">
-												<input type="hidden"  name="orci_fechaf"    value="<?php echo isset($_POST['orci_fechaf'])    ? $_POST['orci_fechaf']     : '' ?>">
-												<input type="hidden"  name="orci_cargo"     value="<?php echo isset($_POST['orci_cargo'])     ? $_POST['orci_cargo']      : '' ?>">
+									<div id="reflex" class="tab-pane fade <?php echo $tab === 'refl' ? ' show active' : '' ?>">
+										<form id="form_host" action="manual_bono.php" method="post">
+											<div class="text-center fs-4 fw-semibold text-white">REFLEX</div>
+											<div class="row align-items-center mb-1"><label for="refl_emprdni"    class="col-sm-2 col-form-label">R.U.C.:   </label><div class="col-sm-7"><input type="text" id="refl_emprdni"   name="refl_emprdni"   class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['refl_emprdni'])   ? $_POST['refl_emprdni']    : '' ?>"></div><div class="col-sm-3"><button class="btn btn-primary btn-sm" type="button" onclick="obtenerEmpresa('refl')">Buscar</button></div></div>
+											<div class="row align-items-center mb-1"><label for="refl_empresa"    class="col-sm-2 col-form-label">Empresa:  </label><div class="col-sm-10"><input type="text" id="refl_empresa"   name="refl_empresa"   class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['refl_empresa'])   ? $_POST['refl_empresa']    : '' ?>"></div></div>
+											<div class="row align-items-center mb-1"><label for="refl_nombres"    class="col-sm-2 col-form-label">Nombres:  </label><div class="col-sm-10"><input readonly type="text" id="refl_nombres"   name="refl_nombres"   class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['orci_nombres'])   ? $_POST['orci_nombres']    : '' ?>"></div></div>
+											<div class="row align-items-center mb-1"><label for="refl_apellidos"  class="col-sm-2 col-form-label">Apellidos:</label><div class="col-sm-10"><input readonly type="text" id="refl_apellidos" name="refl_apellidos" class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos']  : '' ?>"></div></div>
+											<div class="row align-items-center mb-1"><label for="refl_dni"        class="col-sm-2 col-form-label">D.N.I.:   </label><div class="col-sm-10"><input readonly type="text" id="refl_dni"       name="refl_dni"       class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['orci_dni'])       ? $_POST['orci_dni']        : '' ?>"></div></div>
+											<div class="row align-items-center mb-1">
+												<label for="refl_fechai" class="col-sm-2 col-form-label">Inicio: </label><div class="col-sm-4"><input required type="date" id="refl_fechai" name="refl_fechai" class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['refl_fechai'])   ? $_POST['refl_fechai']    : '' ?>"></div>
+												<label for="refl_fechaf" class="col-sm-2 col-form-label">Final:  </label><div class="col-sm-4"><input required type="date" id="refl_fechaf" name="refl_fechaf" class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['refl_fechaf'])   ? $_POST['refl_fechaf']    : '' ?>" max="1994-12-31"></div>
+											</div>
+											<div class="row justify-content-start align-items-center mb-1 me-1">
+												<label for="refl_cargo"      class="col-sm-2 col-form-label">Cargo:    </label>
+												<div class="col-sm-8"><input type="text" id="refl_cargo"     name="refl_cargo"     class="form-control form-control-sm" placeholder="" value="<?php echo isset($_POST['refl_cargo'])   ? $_POST['refl_cargo']    : '' ?>"></div>
+												<button type="submit" class="col-2 btn btn-light btn-sm">Cargar</button>
+											</div>
+							
+											<input type="hidden"  name="orci_emprdni"   value="<?php echo isset($_POST['orci_emprdni'])   ? $_POST['orci_emprdni']    : '' ?>">
+											<input type="hidden"  name="orci_empresa"   value="<?php echo isset($_POST['orci_empresa'])   ? $_POST['orci_empresa']    : '' ?>">
+											<input type="hidden"  name="orci_nombres"   value="<?php echo isset($_POST['orci_nombres'])   ? $_POST['orci_nombres']    : '' ?>">
+											<input type="hidden"  name="orci_apellidos" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos']  : '' ?>">
+											<input type="hidden"  name="orci_dni"       value="<?php echo isset($_POST['orci_dni'])       ? $_POST['orci_dni']        : '' ?>">
+											<input type="hidden"  name="orci_fechai"    value="<?php echo isset($_POST['orci_fechai'])    ? $_POST['orci_fechai']     : '' ?>">
+											<input type="hidden"  name="orci_fechaf"    value="<?php echo isset($_POST['orci_fechaf'])    ? $_POST['orci_fechaf']     : '' ?>">
+											<input type="hidden"  name="orci_cargo"     value="<?php echo isset($_POST['orci_cargo'])     ? $_POST['orci_cargo']      : '' ?>">
 											
-												<input type="hidden"  name="host_emprdni"   value="<?php echo isset($_POST['host_emprdni'])   ? $_POST['host_emprdni']    : '' ?>">
-												<input type="hidden"  name="host_empresa"   value="<?php echo isset($_POST['host_empresa'])   ? $_POST['host_empresa']    : '' ?>">
-												<input type="hidden"  name="host_nombres"   value="<?php echo isset($_POST['host_nombres'])   ? $_POST['host_nombres']    : '' ?>">
-												<input type="hidden"  name="host_apellidos" value="<?php echo isset($_POST['host_apellidos']) ? $_POST['host_apellidos']  : '' ?>">
-												<input type="hidden"  name="host_dni"       value="<?php echo isset($_POST['host_dni'])       ? $_POST['host_dni']        : '' ?>">
-												<input type="hidden"  name="host_fechai"    value="<?php echo isset($_POST['host_fechai'])    ? $_POST['host_fechai']     : '' ?>">
-												<input type="hidden"  name="host_fechaf"    value="<?php echo isset($_POST['host_fechaf'])    ? $_POST['host_fechaf']     : '' ?>">
-												<input type="hidden"  name="host_cargo"     value="<?php echo isset($_POST['host_cargo'])     ? $_POST['host_cargo']      : '' ?>">
-												
-												<input type="hidden"  name="refl_emprdni"   value="<?php echo isset($_POST['refl_emprdni'])   ? $_POST['refl_emprdni']    : '' ?>">
-												<input type="hidden"  name="refl_empresa"   value="<?php echo isset($_POST['refl_empresa'])   ? $_POST['refl_empresa']    : '' ?>">
-												<input type="hidden"  name="refl_nombres"   value="<?php echo isset($_POST['refl_nombres'])   ? $_POST['refl_nombres']    : '' ?>">
-												<input type="hidden"  name="refl_apellidos" value="<?php echo isset($_POST['refl_apellidos']) ? $_POST['refl_apellidos']  : '' ?>">
-												<input type="hidden"  name="refl_dni"       value="<?php echo isset($_POST['refl_dni'])       ? $_POST['refl_dni']        : '' ?>">
-												<input type="hidden"  name="refl_fechai"    value="<?php echo isset($_POST['refl_fechai'])    ? $_POST['refl_fechai']     : '' ?>">
-												<input type="hidden"  name="refl_fechaf"    value="<?php echo isset($_POST['refl_fechaf'])    ? $_POST['refl_fechaf']     : '' ?>">
-												<input type="hidden"  name="refl_cargo"     value="<?php echo isset($_POST['refl_cargo'])     ? $_POST['refl_cargo']      : '' ?>">
+											<input type="hidden"  name="host_emprdni"   value="<?php echo isset($_POST['host_emprdni'])   ? $_POST['host_emprdni']    : '' ?>">
+											<input type="hidden"  name="host_empresa"   value="<?php echo isset($_POST['host_empresa'])   ? $_POST['host_empresa']    : '' ?>">
+											<input type="hidden"  name="host_fechai"    value="<?php echo isset($_POST['host_fechai'])    ? $_POST['host_fechai']     : '' ?>">
+											<input type="hidden"  name="host_fechaf"    value="<?php echo isset($_POST['host_fechaf'])    ? $_POST['host_fechaf']     : '' ?>">
+											<input type="hidden"  name="host_cargo"     value="<?php echo isset($_POST['host_cargo'])     ? $_POST['host_cargo']      : '' ?>">
 
-												<input type="hidden" name="tab" value="refl">
-												
-												<button type="submit" class="btn btn-light btn-sm">Empresa</button>
-											</form>
-										</div>
-									</div>
-									<!-- inicio BONO -->
-									<?php if ( $anniorp['refl'] >= 1978 ) { ?>
-									<div class="row border-white border-top pt-3 mt-2">
-										<div class="col">
-											<form id="form_refl_bol" action="reportes/boletadepago<?php echo $bo['refl'] ?>.php" method="post" target="_blank" >
-												<input type="hidden" name="empresa" value="<?php echo isset($_POST['refl_empresa']) ? $_POST['refl_empresa'] : '' ?>" />
-												<input type="hidden" name="nombres" value="<?php echo isset($_POST['refl_nombres']) ? $_POST['refl_nombres'] : '' ?>" />
-												<input type="hidden" name="apellidos" value="<?php echo isset($_POST['refl_apellidos']) ? $_POST['refl_apellidos'] : '' ?>" />
-												<input type="hidden" name="dni" value="<?php echo isset($_POST['refl_dni']) ? $_POST['refl_dni'] : '' ?>" />
-					
-												<input type="hidden" name="f_a"           value="<?php echo $fechas['refl']['fa2'];      ?>">
-												<input type="hidden" name="f_a_b"         value="<?php echo $fechas['refl']['fa1'];      ?>">
-												<input type="hidden" name="f_b"           value="<?php echo $fechas['refl']['fb2'];      ?>">
-												<input type="hidden" name="f_b_b"         value="<?php echo $fechas['refl']['fb1'];      ?>">
-												<input type="hidden" name="fecha_emision" value="<?php echo $fechas['refl']['fb1'];      ?>">
-												<input type="hidden" name="emision"       value="<?php echo $fechas['refl']['emision'];  ?>">
-												<input type="hidden" name="fsueldo"       value="<?php echo $fechas['refl']['fb3'];      ?>">
-												
-												<input type="hidden" name="cargo_ac" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
-												<input type="hidden" name="cargo_al" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
-												<input type="hidden" name="cargo_ab" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
-					
-												<div class="row">
-												<div class="col-6">
-													<div class="row mb-1">
-														<label for="sueldo" class="col-5 col-form-label">Fecha:</label>
-														<div class="col-7">
-															<input required type="date" id="fechaboleta" name="fechaboleta" min="1978-08-22" class="form-control form-control-sm" value="<?php echo isset($_POST['fechaboleta']) ? $_POST['fechaboleta'] : '0' ?>">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-5 col-form-label">R. VACACIONAL:</label>
-														<div class="col-7">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="remvacacionales" name="remvacacionales" class="form-control form-control-sm" value="<?php echo isset($_POST['remvacacionales']) ? $_POST['remvacacionales'] : '0' ?>">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-5 col-form-label">Reintegro:</label>
-														<div class="col-7">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="reintegro" name="reintegro" class="form-control form-control-sm" value="<?php echo isset($_POST['reintegro']) ? $_POST['reintegro'] : '0' ?>">
-														</div>
-													</div>
-												</div>
-												<div class="col-6">
-													<div class="row mb-1">
-														<label for="sueldo" class="col-5 col-form-label">H. EXTRAS:</label>
-														<div class="col-7">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="hextras" name="hextras" class="form-control form-control-sm" value="<?php echo isset($_POST['hextras']) ? $_POST['hextras'] : '0' ?>">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-5 col-form-label">Bonificacion:</label>
-														<div class="col-7">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion" name="bonificacion" class="form-control form-control-sm" value="<?php echo isset($_POST['bonificacion']) ? $_POST['bonificacion'] : '0' ?>">
-														</div>
-													</div>
-													<div class="row mb-1">
-															<label for="sueldo" class="col-5 col-form-label">OTROS:</label>
-															<div class="col-7">
-																<input onkeypress="return filterFloat(event,this);" type="text" id="otros_deven" name="otros_deven" class="form-control form-control-sm" value="<?php echo isset($_POST['otros_deven']) ? $_POST['otros_deven'] : '0' ?>">
-															</div>
-													</div>
-												</div>
-												</div>
-					
-												<div class="row justify-content-end ">
-													<button type="submit" class="col-3 btn btn-light btn-sm me-3">Boleta</button>
-												</div>
-											</form>
-										</div>
-									</div>
-									<?php } ?>
-									<!-- fin BONO -->
+											<input type="hidden" name="tab" value="refl">
 
-									<!-- inicio Declaracion Jurada -->
-									<div class="row border-white border-top pt-3 mt-2">
-										<div class="col">
-										<?php $dec = rand(1, 3); ?>
-										<form id="form_orci_bol" action="reportes/declaracionempleador0<?php echo $dec ?>.php" method="post" target="_blank" >
-											<input type="hidden" name="empresa"   value="<?php echo isset($_POST['refl_empresa']) ? $_POST['refl_empresa'] : '' ?>" />
-											<input type="hidden" name="nombres"   value="<?php echo isset($_POST['refl_nombres']) ? $_POST['refl_nombres'] : '' ?>" />
-											<input type="hidden" name="apellidos" value="<?php echo isset($_POST['refl_apellidos']) ? $_POST['refl_apellidos'] : '' ?>" />
-											<input type="hidden" name="dni"       value="<?php echo isset($_POST['refl_dni']) ? $_POST['refl_dni'] : '' ?>" />
-				
-											<input type="hidden" name="f_a"           value="<?php echo $fechas['refl']['fa2'];      ?>">
-											<input type="hidden" name="f_a_b"         value="<?php echo $fechas['refl']['fa1'];      ?>">
-											<input type="hidden" name="f_b"           value="<?php echo $fechas['refl']['fb2'];      ?>">
-											<input type="hidden" name="f_b_b"         value="<?php echo $fechas['refl']['fb1'];      ?>">
-											<input type="hidden" name="fecha_emision" value="<?php echo $fechas['refl']['fb1'];      ?>">
-											<input type="hidden" name="emision"       value="<?php echo $fechas['refl']['emision'];  ?>">
-											<input type="hidden" name="fsueldo"       value="<?php echo $fechas['refl']['fb3'];      ?>">
-
-											<input type="hidden" name="rep_legal" value="<?php echo $empresa['refl']['id']; ?>">
-											<input type="hidden" name="rep_legal" value="<?php echo $empresa['refl']['rep_legal']; ?>">
-											<input type="hidden" name="dni_a"     value="<?php echo $empresa['refl']['dni_a']; ?>">
-											<input type="hidden" name="ruc"       value="<?php echo $empresa['refl']['ruc']; ?>">
-											
-											<input type="hidden" name="cargo_abo" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
-											<input type="hidden" name="cargo_bbo" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
-
-											<div class="row mb-3">
-											<label for="numautog" class="col-7 col-form-label text-end">Número Autogenerado:</label>
-											<div class="col-5">
-												<input type="text" id="numautog" name="numautog" class="form-control form-control-sm" placeholder="Núm. Autogenerado" value="<?php echo isset($_POST['numautog']) ? $_POST['numautog']  : '' ?>" >
-											</div>
-											</div>
-
-											<div class="row">
-												<div class="col-6">
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Diciembre '91:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes12" name="mes12" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Enero '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes01" name="mes01" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Febrero '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes02" name="mes02" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Marzo '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes03" name="mes03" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Abril '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes04" name="mes04" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Mayo '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes05" name="mes05" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
-														</div>
-													</div>
-												</div>
-												<div class="col-6">
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Junio '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes06" name="mes06" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Julio '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes07" name="mes07" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Agosto '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes08" name="mes08" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Septiembre '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes09" name="mes09" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Octubre '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes10" name="mes10" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
-														</div>
-													</div>
-													<div class="row mb-1">
-														<label for="sueldo" class="col-sm-7 col-form-label text-end">Noviembre '92:</label>
-														<div class="col-sm-5">
-															<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes11" name="mes11" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
-														</div>
-													</div>
-												</div>
-											</div>
-
-											<div class="row border-top border-bottom border-warning py-1 mb-1">
-											<div class="col text-end">
-												Cálculo de Bono: <input id="refl_totalbono" value="" />
-											</div>
-											</div>
-
-											<?php
-											$sueldo = obtener_sueldo($fechas['refl']['fb3'])['sueldo_minimo'];
-											$difea  = date_diff(date_create($fechas['refl']['fb3']), date_create($fechas['refl']['fa3']));
-											$mesest  = ($difea->y * 12 )+$difea->m;
-											?>
-											<input type="hidden" id="refl_sueldo" name="sueldo" value="<?php echo nf($sueldo,0); ?>"/>
-											<input type="hidden" id="refl_mesest" name="mesest" value="<?php echo $mesest; ?>"/>
-											
-											<div class="row justify-content-end ">
-												<button type="submit" class="col-3 btn btn-light btn-sm me-3">Declaración</button>
-											</div>
 										</form>
-										</div>
+										<?php if ( isset($anniorp['refl']) && $anniorp['refl'] && $pagerefl) { ?>	
+											<div class="text-center border-top border-bottom border-warning mt-3 mb-1">Último Sueldo: <?php echo nf(obtener_sueldo($_POST['refl_fechaf'])['sueldo_minimo']) ?></div>
+											<div class="row">
+												<div class="col-12">
+													<ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist">
+														<li class="nav-item" role="presentation">
+															<button class="nav-link active" id="refl_cert-tab"  data-bs-toggle="pill"     data-bs-target="#refl_cert" type="button" role="tab" aria-controls="refl_cert" aria-selected="true">CERTIFICADO  </button>
+														</li>
+														<li class="nav-item" role="presentation">
+															<button class="nav-link "       id="refl_liqu-tab"     data-bs-toggle="pill"  data-bs-target="#refl_liqu" type="button" role="tab" aria-controls="refl_liqu" aria-selected="false">LIQUIDACIÓN </button>
+														</li>
+														<li class="nav-item" role="presentation">
+															<button class="nav-link "       id="refl_bole-tab"   data-bs-toggle="pill"    data-bs-target="#refl_bole" type="button" role="tab" aria-controls="refl_bole" aria-selected="false">BOLETA </button>
+														</li>
+														<li class="nav-item" role="presentation">
+															<button class="nav-link "       id="refl_decl-tab"   data-bs-toggle="pill"    data-bs-target="#refl_decl" type="button" role="tab" aria-controls="refl_decl" aria-selected="false">DECLARACIÓN </button>
+														</li>
+														<li class="nav-item" role="presentation">
+															<button class="nav-link "       id="refl_empr-tab"   data-bs-toggle="pill"    data-bs-target="#refl_empr" type="button" role="tab" aria-controls="refl_empr" aria-selected="false">EMPRESA </button>
+														</li>
+													</ul>
+												</div>
+												<div class="col-12">
+													<div class="tab-content">
+														<div id="refl_cert" class="tab-pane fadein show active">
+															<form id="form_refl_cer" action="reportes/certificado<?php echo $rp['refl'] ?>.php" method="post" target="_blank" >
+																<input type="hidden" name="empresa" value="<?php echo isset($_POST['refl_empresa']) ? $_POST['refl_empresa'] : '' ?>" />
+																<input type="hidden" name="nombres" value="<?php echo isset($_POST['refl_nombres']) ? $_POST['refl_nombres'] : '' ?>" />
+																<input type="hidden" name="apellidos" value="<?php echo isset($_POST['refl_apellidos']) ? $_POST['refl_apellidos'] : '' ?>" />
+																<input type="hidden" name="dni" value="<?php echo isset($_POST['refl_dni']) ? $_POST['refl_dni'] : '' ?>" />
+
+																<input type="hidden" name="f_a"           value="<?php echo $fechas['refl']['fa2'];      ?>">
+																<input type="hidden" name="f_a_b"         value="<?php echo $fechas['refl']['fa1'];      ?>">
+																<input type="hidden" name="f_b"           value="<?php echo $fechas['refl']['fb2'];      ?>">
+																<input type="hidden" name="f_b_b"         value="<?php echo $fechas['refl']['fb1'];      ?>">
+																<input type="hidden" name="fecha_emision" value="<?php echo $fechas['refl']['fb1'];      ?>">
+																<input type="hidden" name="emision"       value="<?php echo $fechas['refl']['emision'];  ?>">
+
+																<input type="hidden" name="cargo_ac" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
+																<input type="hidden" name="cargo_al" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
+																<input type="hidden" name="cargo_ab" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
+																<button type="submit" class="btn btn-light btn-sm">Certificado</button>
+															</form>
+														</div>
+														<div id="refl_liqu" class="tab-pane fadein">
+															<form id="form_refl_liq" action="reportes/liquidacion<?php echo $rp['refl'] ?>.php" method="post" target="_blank" >
+																<input type="hidden" name="empresa" value="<?php echo isset($_POST['refl_empresa']) ? $_POST['refl_empresa'] : '' ?>" />
+																<input type="hidden" name="nombres" value="<?php echo isset($_POST['refl_nombres']) ? $_POST['refl_nombres'] : '' ?>" />
+																<input type="hidden" name="apellidos" value="<?php echo isset($_POST['refl_apellidos']) ? $_POST['refl_apellidos'] : '' ?>" />
+																<input type="hidden" name="dni" value="<?php echo isset($_POST['refl_dni']) ? $_POST['refl_dni'] : '' ?>" />
+					
+																<input type="hidden" name="f_a"           value="<?php echo $fechas['refl']['fa2'];      ?>">
+																<input type="hidden" name="f_a_b"         value="<?php echo $fechas['refl']['fa1'];      ?>">
+																<input type="hidden" name="f_b"           value="<?php echo $fechas['refl']['fb2'];      ?>">
+																<input type="hidden" name="f_b_b"         value="<?php echo $fechas['refl']['fb1'];      ?>">
+																<input type="hidden" name="fecha_emision" value="<?php echo $fechas['refl']['fb1'];      ?>">
+																<input type="hidden" name="emision"       value="<?php echo $fechas['refl']['emision'];  ?>">
+																<input type="hidden" name="fsueldo"       value="<?php echo $fechas['refl']['fb3'];      ?>">
+																
+																<input type="hidden" name="cargo_ac" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
+																<input type="hidden" name="cargo_al" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
+																<input type="hidden" name="cargo_ab" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
+
+																<div class="row">
+																	<div class="col-6">
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Adelanto:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);" type="text" id="adelanto" name="adelanto" class="form-control form-control-sm bg-danger bg-gradient bg-opacity-50 text-white" placeholder="Adelanto" value="<?php echo isset($_POST['adelanto']) ? $_POST['adelanto'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Vacaciones:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);" type="text" id="vacaciones" name="vacaciones" class="form-control form-control-sm" placeholder="Vacaciones" value="<?php echo isset($_POST['vacaciones']) ? $_POST['vacaciones'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Gratificaciones:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);" type="text" id="gratificaciones" name="gratificaciones" class="form-control form-control-sm" placeholder="Gratificaciones" value="<?php echo isset($_POST['gratificaciones']) ? $_POST['gratificaciones'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Reintegro:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);" type="text" id="reintegro" name="reintegro" class="form-control form-control-sm" placeholder="Reintegro" value="<?php echo isset($_POST['reintegro']) ? $_POST['reintegro'] : '0' ?>">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-6">
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Incentivo:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);"  type="text" id="incentivo" name="incentivo" class="form-control form-control-sm" placeholder="Incentivo" value="<?php echo isset($_POST['incentivo']) ? $_POST['incentivo'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Bonificacion:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion" name="bonificacion" class="form-control form-control-sm" placeholder="Bonificacion" value="<?php echo isset($_POST['bonificacion']) ? $_POST['bonificacion'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Bonificacion Graciosa:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion_graciosa" name="bonificacion_graciosa" class="form-control form-control-sm" placeholder="Bonificacion Graciosa" value="<?php echo isset($_POST['bonificacion_graciosa']) ? $_POST['bonificacion_graciosa'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label">Bonificacion Extraordinaria:</label>
+																			<div class="col-sm-5">
+																			<input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion_extraordinaria" name="bonificacion_extraordinaria" class="form-control form-control-sm" placeholder="Bonificacion Extraordinaria" value="<?php echo isset($_POST['bonificacion_extraordinaria']) ? $_POST['bonificacion_extraordinaria'] : '0' ?>">
+																			</div>
+																		</div>
+																	</div>
+																</div>
+
+																<div class="row justify-content-end">
+																	<button type="submit" class="col-3 btn btn-light btn-sm me-3">Liquidación</button>
+																</div>
+															</form>
+														</div>
+														<?php if ( $anniorp['refl'] >= 1978 ) { ?>
+															<div id="refl_bole" class="tab-pane fadein">
+																<form id="form_refl_bol" action="reportes/boletadepago<?php echo $bo['refl'] ?>.php" method="post" target="_blank" >
+																	<input type="hidden" name="empresa" value="<?php echo isset($_POST['refl_empresa']) ? $_POST['refl_empresa'] : '' ?>" />
+																	<input type="hidden" name="nombres" value="<?php echo isset($_POST['refl_nombres']) ? $_POST['refl_nombres'] : '' ?>" />
+																	<input type="hidden" name="apellidos" value="<?php echo isset($_POST['refl_apellidos']) ? $_POST['refl_apellidos'] : '' ?>" />
+																	<input type="hidden" name="dni" value="<?php echo isset($_POST['refl_dni']) ? $_POST['refl_dni'] : '' ?>" />
+										
+																	<input type="hidden" name="f_a"           value="<?php echo $fechas['refl']['fa2'];      ?>">
+																	<input type="hidden" name="f_a_b"         value="<?php echo $fechas['refl']['fa1'];      ?>">
+																	<input type="hidden" name="f_b"           value="<?php echo $fechas['refl']['fb2'];      ?>">
+																	<input type="hidden" name="f_b_b"         value="<?php echo $fechas['refl']['fb1'];      ?>">
+																	<input type="hidden" name="fecha_emision" value="<?php echo $fechas['refl']['fb1'];      ?>">
+																	<input type="hidden" name="emision"       value="<?php echo $fechas['refl']['emision'];  ?>">
+																	<input type="hidden" name="fsueldo"       value="<?php echo $fechas['refl']['fb3'];      ?>">
+																	
+																	<input type="hidden" name="cargo_ac" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
+																	<input type="hidden" name="cargo_al" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
+																	<input type="hidden" name="cargo_ab" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
+										
+																	<div class="row">
+																	<div class="col-6">
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-5 col-form-label">Fecha:</label>
+																			<div class="col-7">
+																				<input required type="date" id="fechaboleta" name="fechaboleta" min="1978-08-22" class="form-control form-control-sm" value="<?php echo isset($_POST['fechaboleta']) ? $_POST['fechaboleta'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-5 col-form-label">R. VACACIONAL:</label>
+																			<div class="col-7">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="remvacacionales" name="remvacacionales" class="form-control form-control-sm" value="<?php echo isset($_POST['remvacacionales']) ? $_POST['remvacacionales'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-5 col-form-label">Reintegro:</label>
+																			<div class="col-7">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="reintegro" name="reintegro" class="form-control form-control-sm" value="<?php echo isset($_POST['reintegro']) ? $_POST['reintegro'] : '0' ?>">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-6">
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-5 col-form-label">H. EXTRAS:</label>
+																			<div class="col-7">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="hextras" name="hextras" class="form-control form-control-sm" value="<?php echo isset($_POST['hextras']) ? $_POST['hextras'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-5 col-form-label">Bonificacion:</label>
+																			<div class="col-7">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="bonificacion" name="bonificacion" class="form-control form-control-sm" value="<?php echo isset($_POST['bonificacion']) ? $_POST['bonificacion'] : '0' ?>">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																				<label for="sueldo" class="col-5 col-form-label">OTROS:</label>
+																				<div class="col-7">
+																					<input onkeypress="return filterFloat(event,this);" type="text" id="otros_deven" name="otros_deven" class="form-control form-control-sm" value="<?php echo isset($_POST['otros_deven']) ? $_POST['otros_deven'] : '0' ?>">
+																				</div>
+																		</div>
+																	</div>
+																	</div>
+										
+																	<div class="row justify-content-end ">
+																		<button type="submit" class="col-3 btn btn-light btn-sm me-3">Boleta</button>
+																	</div>
+																</form>
+															</div>
+														<?php } ?>
+														<div id="refl_decl" class="tab-pane fadein">
+															<?php $dec = rand(1, 3); ?>
+															<form id="form_orci_bol" action="reportes/declaracionempleador0<?php echo $dec ?>.php" method="post" target="_blank" >
+																<input type="hidden" name="empresa"   value="<?php echo isset($_POST['refl_empresa']) ? $_POST['refl_empresa'] : '' ?>" />
+																<input type="hidden" name="nombres"   value="<?php echo isset($_POST['refl_nombres']) ? $_POST['refl_nombres'] : '' ?>" />
+																<input type="hidden" name="apellidos" value="<?php echo isset($_POST['refl_apellidos']) ? $_POST['refl_apellidos'] : '' ?>" />
+																<input type="hidden" name="dni"       value="<?php echo isset($_POST['refl_dni']) ? $_POST['refl_dni'] : '' ?>" />
+									
+																<input type="hidden" name="f_a"           value="<?php echo $fechas['refl']['fa2'];      ?>">
+																<input type="hidden" name="f_a_b"         value="<?php echo $fechas['refl']['fa1'];      ?>">
+																<input type="hidden" name="f_b"           value="<?php echo $fechas['refl']['fb2'];      ?>">
+																<input type="hidden" name="f_b_b"         value="<?php echo $fechas['refl']['fb1'];      ?>">
+																<input type="hidden" name="fecha_emision" value="<?php echo $fechas['refl']['fb1'];      ?>">
+																<input type="hidden" name="emision"       value="<?php echo $fechas['refl']['emision'];  ?>">
+																<input type="hidden" name="fsueldo"       value="<?php echo $fechas['refl']['fb3'];      ?>">
+
+																<input type="hidden" name="rep_legal" value="<?php echo $empresa['refl']['id']; ?>">
+																<input type="hidden" name="rep_legal" value="<?php echo $empresa['refl']['rep_legal']; ?>">
+																<input type="hidden" name="dni_a"     value="<?php echo $empresa['refl']['dni_a']; ?>">
+																<input type="hidden" name="ruc"       value="<?php echo $empresa['refl']['ruc']; ?>">
+																
+																<input type="hidden" name="cargo_abo" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
+																<input type="hidden" name="cargo_bbo" value="<?php echo isset($_POST['refl_cargo']) ? $_POST['refl_cargo'] : '' ?>" />
+
+																<div class="row mb-3">
+																	<label for="numautog" class="col-7 col-form-label text-end">Número Autogenerado:</label>
+																	<div class="col-5">
+																		<input type="text" id="numautog" name="numautog" class="form-control form-control-sm" placeholder="Núm. Autogenerado" value="<?php echo isset($_POST['numautog']) ? $_POST['numautog']  : '' ?>" >
+																	</div>
+																</div>
+
+																<div class="row">
+																	<div class="col-6">
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Diciembre '91:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes12" name="mes12" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Enero '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes01" name="mes01" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Febrero '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes02" name="mes02" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Marzo '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes03" name="mes03" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Abril '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes04" name="mes04" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Mayo '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes05" name="mes05" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-6">
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Junio '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes06" name="mes06" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Julio '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes07" name="mes07" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Agosto '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes08" name="mes08" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Septiembre '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes09" name="mes09" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Octubre '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes10" name="mes10" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
+																			</div>
+																		</div>
+																		<div class="row mb-1">
+																			<label for="sueldo" class="col-sm-7 col-form-label text-end">Noviembre '92:</label>
+																			<div class="col-sm-5">
+																				<input onkeypress="return filterFloat(event,this);" type="text" id="refl_mes11" name="mes11" class="form-control form-control-sm" value="" class="text-end" onchange="return calcularBono('refl', 'refl')">
+																			</div>
+																		</div>
+																	</div>
+																</div>
+
+																<div class="row border-top border-bottom border-warning py-1 mb-1">
+																<div class="col text-end">
+																	Cálculo de Bono: <input id="refl_totalbono" value="" />
+																</div>
+																</div>
+
+																<?php
+																$sueldo = obtener_sueldo($fechas['refl']['fb3'])['sueldo_minimo'];
+																$difea  = date_diff(date_create($fechas['refl']['fb3']), date_create($fechas['refl']['fa3']));
+																$mesest  = ($difea->y * 12 )+$difea->m;
+																?>
+																<input type="hidden" id="refl_sueldo" name="sueldo" value="<?php echo nf($sueldo,0); ?>"/>
+																<input type="hidden" id="refl_mesest" name="mesest" value="<?php echo $mesest; ?>"/>
+																
+																<div class="row justify-content-end ">
+																	<button type="submit" class="col-3 btn btn-light btn-sm me-3">Declaración</button>
+																</div>
+															</form>
+														</div>
+														<div id="refl_empr" class="tab-pane fadein">
+															<form action="manual_bono.php" id="frmPersona" method="POST" >
+																<input type="hidden" name="nombres"    value="<?php echo isset($_POST['refl_nombres'])     ? $_POST['refl_nombres']   : '' ?>">
+																<input type="hidden" name="apellidos"  value="<?php echo isset($_POST['refl_apellidos'])   ? $_POST['refl_apellidos'] : '' ?>">
+																<input type="hidden" name="dni"        value="<?php echo isset($_POST['refl_dni'])         ? $_POST['refl_dni']       : '' ?>">
+																<input type="hidden" name="finicio"    value="<?php echo isset($_POST['refl_fechai'])      ? $_POST['refl_fechai']    : '' ?>">
+																<input type="hidden" name="ffinal"     value="<?php echo isset($_POST['refl_fechaf'])      ? $_POST['refl_fechaf']    : '' ?>">
+										
+																<input type="hidden"  name="orci_emprdni"   value="<?php echo isset($_POST['orci_emprdni'])   ? $_POST['orci_emprdni']    : '' ?>">
+																<input type="hidden"  name="orci_empresa"   value="<?php echo isset($_POST['orci_empresa'])   ? $_POST['orci_empresa']    : '' ?>">
+																<input type="hidden"  name="orci_nombres"   value="<?php echo isset($_POST['orci_nombres'])   ? $_POST['orci_nombres']    : '' ?>">
+																<input type="hidden"  name="orci_apellidos" value="<?php echo isset($_POST['orci_apellidos']) ? $_POST['orci_apellidos']  : '' ?>">
+																<input type="hidden"  name="orci_dni"       value="<?php echo isset($_POST['orci_dni'])       ? $_POST['orci_dni']        : '' ?>">
+																<input type="hidden"  name="orci_fechai"    value="<?php echo isset($_POST['orci_fechai'])    ? $_POST['orci_fechai']     : '' ?>">
+																<input type="hidden"  name="orci_fechaf"    value="<?php echo isset($_POST['orci_fechaf'])    ? $_POST['orci_fechaf']     : '' ?>">
+																<input type="hidden"  name="orci_cargo"     value="<?php echo isset($_POST['orci_cargo'])     ? $_POST['orci_cargo']      : '' ?>">
+															
+																<input type="hidden"  name="host_emprdni"   value="<?php echo isset($_POST['host_emprdni'])   ? $_POST['host_emprdni']    : '' ?>">
+																<input type="hidden"  name="host_empresa"   value="<?php echo isset($_POST['host_empresa'])   ? $_POST['host_empresa']    : '' ?>">
+																<input type="hidden"  name="host_fechai"    value="<?php echo isset($_POST['host_fechai'])    ? $_POST['host_fechai']     : '' ?>">
+																<input type="hidden"  name="host_fechaf"    value="<?php echo isset($_POST['host_fechaf'])    ? $_POST['host_fechaf']     : '' ?>">
+																<input type="hidden"  name="host_cargo"     value="<?php echo isset($_POST['host_cargo'])     ? $_POST['host_cargo']      : '' ?>">
+																
+																<input type="hidden"  name="refl_emprdni"   value="<?php echo isset($_POST['refl_emprdni'])   ? $_POST['refl_emprdni']    : '' ?>">
+																<input type="hidden"  name="refl_empresa"   value="<?php echo isset($_POST['refl_empresa'])   ? $_POST['refl_empresa']    : '' ?>">
+																<input type="hidden"  name="refl_fechai"    value="<?php echo isset($_POST['refl_fechai'])    ? $_POST['refl_fechai']     : '' ?>">
+																<input type="hidden"  name="refl_fechaf"    value="<?php echo isset($_POST['refl_fechaf'])    ? $_POST['refl_fechaf']     : '' ?>">
+																<input type="hidden"  name="refl_cargo"     value="<?php echo isset($_POST['refl_cargo'])     ? $_POST['refl_cargo']      : '' ?>">
+
+																<input type="hidden" name="tab" value="refl">
+																
+																<button type="submit" class="btn btn-light btn-sm">Empresa</button>
+															</form>
+														</div>
+													</div>
+												</div>
+											</div>
+										<?php } ?>
 									</div>
-									<!-- fin Declaracion Jurada -->
-									<?php } ?>
-									<!-- </div> -->
-								</div>
 								<!-- fin REFLEX -->
 							</div>
-						</div>
 						<!-- fin tabs -->
+						</div>
 
 						<!-- empresa automatica -->
 						<!-- <div class="col-4"> -->
@@ -1352,17 +1480,25 @@ if (isset($_POST['refl_fechai']) && $_POST['refl_fechai'] !== '' ) {
 							$anniorepb = "";
 							$fecha_anterior = null;
 							$valido = false;
+							
+							$di = date_create($_POST['ffinal']);
+							$ad = 1994 - date_format($di, "Y");
+							
 							do {
 								$aniosa = 10;
-								$aniosb = 10;
+								$aniosb = $ad;
 								// $aniosa = rand(8, 12);
 								// $aniosb = rand(8, 12);
 								$daysint = rand(8, 25);
 								$monthsint = rand(1, 3);
 								$aniosint = rand(0, 2);
-								if ( ( $aniosa + $aniosb ) >= 20 ) $valido = true;
+								//if ( ( $aniosa + $aniosb ) >= 20 ) $valido = true;
+								$valido = true;
 							} while (!$valido);
-							$datosfechas = $bonoactivo ? generar_fechas_trabajo_bono(array($aniosa, $aniosb, $daysint, $monthsint, $aniosint)) : array();
+							$variables = array($aniosa, $aniosb, $daysint, $monthsint, $aniosint);
+							//var_dump($variables);
+							$datosfechas = $bonoactivo ? generar_fechas_trabajo_bono($variables) : array();
+							//var_dump($datosfechas);
 
 							$datos = $datosfechas[2];
 							
@@ -1573,7 +1709,7 @@ if (isset($_POST['refl_fechai']) && $_POST['refl_fechai'] !== '' ) {
 													if ($p === 1) {
 														$rep = "certificado";
 														echo "<div class='tab-pane fade capitalizar show active' id='".$rep."_".$numemp."' role='tabpanel' aria-labelledby='".$rep."_".$numemp."-tab'>";
-															echo "<form action='reportes/".$rep.$rp.".php' method='post' target='_blank'>","\n";
+															echo "<form action='reportesword/".$rep.$rp.".php' method='post' target='_blank'>","\n";
 																if( $numemp === 1 ) echo '<input required type="hidden" name="cargo_ac" id="cargo_ac" value="" />',"\n";
 																if( $numemp === 2 ) echo '<input required type="hidden" name="cargo_al" id="cargo_al" value="" />',"\n";
 																echo $control[0],"\n";
@@ -1596,7 +1732,7 @@ if (isset($_POST['refl_fechai']) && $_POST['refl_fechai'] !== '' ) {
 													if ($p === 2) {
 														$rep = "liquidacion";
 														echo "<div class='tab-pane fade capitalizar' id='".$rep."_".$numemp."' role='tabpanel' aria-labelledby='".$rep."_".$numemp."-tab'>";
-															echo "<form action='reportes/".$rep.$rp.".php' method='post' target='_blank'>","\n";
+															echo "<form action='reportesword/".$rep.$rp.".php' method='post' target='_blank'>","\n";
 																if( $numemp === 1 ) echo '<input required type="hidden" name="cargo_al" id="cargo_al" value="" />',"\n";
 																if( $numemp === 2 ) echo '<input required type="hidden" name="cargo_bl" id="cargo_bl" value="" />',"\n";
 																?>
@@ -1669,7 +1805,7 @@ if (isset($_POST['refl_fechai']) && $_POST['refl_fechai'] !== '' ) {
 													if ($p === 3 ) {
 														$rep = "boletadepago";
 														echo "<div class='tab-pane fade capitalizar' id='".$rep."_".$numemp."' role='tabpanel' aria-labelledby='".$rep."_".$numemp."-tab'>";
-															echo "<form action='reportes/".$rep.$bo.".php' method='post' target='_blank'>","\n";
+															echo "<form action='reportesword/".$rep.$bo.".php' method='post' target='_blank'>","\n";
 																if( $numemp === 1 ) echo '<input required type="hidden" name="cargo_ab" id="cargo_ab" value="" />',"\n";
 																if( $numemp === 2 ) echo '<input required type="hidden" name="cargo_bb" id="cargo_bb" value="" />',"\n";
 																?>
@@ -1735,7 +1871,7 @@ if (isset($_POST['refl_fechai']) && $_POST['refl_fechai'] !== '' ) {
 
 														echo "<div class='tab-pane fade capitalizar' id='".$rep."_".$numemp."' role='tabpanel' aria-labelledby='".$rep."_".$numemp."-tab'>";
 														
-															echo "<form action='reportes/declaracionempleador0$dec.php' method='post' target='_blank'>","\n";
+															echo "<form action='reportesword/declaracionempleador0$dec.php' method='post' target='_blank'>","\n";
 															
 																if( $numemp === 1 ) echo '<input required type="hidden" name="cargo_abo" id="cargo_ab" value="" />',"\n";
 																if( $numemp === 2 ) echo '<input required type="hidden" name="cargo_bbo" id="cargo_bb" value="" />',"\n";
@@ -1907,7 +2043,7 @@ if (isset($_POST['refl_fechai']) && $_POST['refl_fechai'] !== '' ) {
 							}
 						}
 						?>
-					</div>
+					<!-- </div> -->
 					<!-- 
 					<div class="column-reverse">
 						<div class="col">
@@ -1998,6 +2134,22 @@ if (isset($_POST['refl_fechai']) && $_POST['refl_fechai'] !== '' ) {
           $('#cargo_bl').val(valor)
           $('#cargo_bb').val(valor)
         }
+
+		const asignar_nombres = (valor) => {
+			$('#host_nombres').val(valor)
+			$('#refl_nombres').val(valor)
+		}
+
+		const asignar_apellidos = (valor) => {
+			$('#host_apellidos').val(valor)
+			$('#refl_apellidos').val(valor)
+		}
+
+		const asignar_dni = (valor) => {
+			$('#host_dni').val(valor)
+			$('#refl_dni').val(valor)
+		}
+
 
         function filterFloat(evt,input){
           var key = window.Event ? evt.which : evt.keyCode;   

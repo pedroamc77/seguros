@@ -1,4 +1,10 @@
 <?php 
+session_start();
+ 
+if(!isset($_SESSION['usuario_id'])){
+    header('Location: acceso.php');
+    exit;
+}
 
 require_once('./_db/nomina.php');
 
@@ -37,6 +43,11 @@ $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "
             <a href="bono.php"  class="custom-btn btn-13 text-center">Bono</a>
             <a href="manual.php"  class="custom-btn btn-13  text-center">Pensiones Manual</a>
             <a href="manual_bono.php"  class="custom-btn btn-13  text-center">Bono Manual</a>
+            <form action="acceso.php" method="post" >
+              <input type="hidden" name="desloguearse" value="true">
+              <!-- <a href="javascript:void()" class="custom-btn btn-13 text-center" onclick="submit()" >Salir</a> -->
+              <button type="submit" class="btn btn-link text-white" style="font-size: .75em;" >Salir</button>
+            </form>
           </div>
       </div>
       <div class="app_horizontal_contenido">
@@ -308,7 +319,7 @@ $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "
                                                           </div>
                                                         </div>
                                                         
-                                                        <?php
+                                                  <?php
                                                     }
                                                     ?>
                                                     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -343,7 +354,7 @@ $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "
                                                         if ($p === 1) {
                                                           $rep = "certificado";
                                                           echo "<div class='tab-pane fade capitalizar show active' id='".$rep."_".$numemp."' role='tabpanel' aria-labelledby='".$rep."_".$numemp."-tab'>";
-                                                          echo "<form action='reportes/".$rep.$rp.".php' method='post' target='_blank'>","\n";
+                                                          echo "<form action='reportesword/".$rep.$rp.".php' method='post' target='_blank'>","\n";
                                                           if( $numemp === 1 ) echo '<input required type="hidden" name="cargo_ac" id="cargo_ac" value="" />',"\n";
                                                           if( $numemp === 2 ) echo '<input required type="hidden" name="cargo_al" id="cargo_al" value="" />',"\n";
                                                           echo $control[0],"\n";
@@ -373,7 +384,7 @@ $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "
                                                         if ($p === 2) {
                                                           $rep = "liquidacion";
                                                           echo "<div class='tab-pane fade capitalizar' id='".$rep."_".$numemp."' role='tabpanel' aria-labelledby='".$rep."_".$numemp."-tab'>";
-                                                          echo "<form action='reportes/".$rep.$rp.".php' method='post' target='_blank'>","\n";
+                                                          echo "<form action='reportesword/".$rep.$rp.".php' method='post' target='_blank'>","\n";
                                                           if( $numemp === 1 ) echo '<input required type="hidden" name="cargo_al" id="cargo_al" value="" />',"\n";
                                                           if( $numemp === 2 ) echo '<input required type="hidden" name="cargo_bl" id="cargo_bl" value="" />',"\n";
                                                           ?>
@@ -459,7 +470,7 @@ $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "
                                                         if ($p === 3 ) {
                                                           $rep = "boletadepago";
                                                           echo "<div class='tab-pane fade capitalizar' id='".$rep."_".$numemp."' role='tabpanel' aria-labelledby='".$rep."_".$numemp."-tab'>";
-                                                          echo "<form action='reportes/".$rep.$bo.".php' method='post' target='_blank'>","\n";
+                                                          echo "<form action='reportesword/".$rep.$bo.".php' method='post' target='_blank'>","\n";
                                                           if( $numemp === 1 ) echo '<input required type="hidden" name="cargo_ab" id="cargo_ab" value="" />',"\n";
                                                           if( $numemp === 2 ) echo '<input required type="hidden" name="cargo_bb" id="cargo_bb" value="" />',"\n";
                                                           ?>
@@ -529,7 +540,7 @@ $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "
                                                           $dec = rand(1, 3);
                                                           echo "<div class='tab-pane fade capitalizar' id='".$rep."_".$numemp."' role='tabpanel' aria-labelledby='".$rep."_".$numemp."-tab'>";
                                                           // echo "<form action='reportes/".$rep.$bo.".php' method='post' target='_blank'>","\n";
-                                                          echo "<form action='reportes/declaracionempleador0$dec.php' method='post' target='_blank'>","\n";
+                                                          echo "<form action='reportesword/declaracionempleador0$dec.php' method='post' target='_blank'>","\n";
                                                           // echo "<form action='reportes/declaracionempleador03.php' method='post' target='_blank'>","\n";
                                                           if( $numemp === 1 ) echo '<input required type="hidden" name="cargo_abo" id="cargo_ab" value="" />',"\n";
                                                           if( $numemp === 2 ) echo '<input required type="hidden" name="cargo_bbo" id="cargo_bb" value="" />',"\n";

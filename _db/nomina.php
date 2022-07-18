@@ -27,9 +27,11 @@ function obtener_sueldo($fecha) {
 }
 
 // function generar_fechas_trabajo($fnac, $aniosa, $aniosb, $daysint, $monthsint, $ultimafecha, $fecha_anterior) {
-function generar_fechas_trabajo($dF, $ultimafecha, $fecha_anterior) {
+function generar_fechas_trabajo($dF, $ultimafecha = false, $fecha_anterior =  "0000-00-00") {
     $meses = array("", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
     $mes = array("", "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic");
+
+    var_dump($dF);
 
     $fechas = array();
     
@@ -38,50 +40,58 @@ function generar_fechas_trabajo($dF, $ultimafecha, $fecha_anterior) {
         $datea_a = date_add($datea_a, date_interval_create_from_date_string("18 year"));
     } else {
         $datea_a = date_create($fecha_anterior);
-        // $datea_a = date_add($datea_a, date_interval_create_from_date_string($dF[4]." year"));
         $datea_a = date_add($datea_a, date_interval_create_from_date_string($dF[4]." months"));
     }
 
+    $datecomp = date_create("1999-06-30");
+    
     $datea_a = date_add($datea_a, date_interval_create_from_date_string($dF[4]." months"));
-    $datea_a = date_add($datea_a, date_interval_create_from_date_string($dF[5]." days"));
+    $datea_a = date_add($datea_a, date_interval_create_from_date_string($dF[3]." days"));
 
-    $fechas['fa1'] = date_format($datea_a, "j").' de '.$meses[date_format($datea_a , "n")].' de '.date_format($datea_a , "Y"); 
-    $fechas['fa2'] = date_format($datea_a, "d.m.Y"); 
-    $fechas['fa3'] = date_format($datea_a, "Y-m-d");
-    $fechas['fa4'] = date_format($datea_a, "j").'.'.$mes[date_format($datea_a , "n")].'.'.date_format($datea_a , "Y"); 
+    $dateDA = date_diff($datea_a , $datecomp);
+
+    var_dump($dateDA);
+
+    if ($dateDA->invert === 0) {
+
+        $fechas['fa1'] = date_format($datea_a, "j").' de '.$meses[date_format($datea_a , "n")].' de '.date_format($datea_a , "Y"); 
+        $fechas['fa2'] = date_format($datea_a, "d.m.Y"); 
+        $fechas['fa3'] = date_format($datea_a, "Y-m-d");
+        $fechas['fa4'] = date_format($datea_a, "j").'.'.$mes[date_format($datea_a , "n")].'.'.date_format($datea_a , "Y"); 
+        
+        $datea_b = date_add($datea_a, date_interval_create_from_date_string(($dF[4] + 1)." months"));
+        $datea_b = date_add($datea_b, date_interval_create_from_date_string($dF[5]." days"));
+        if (!$ultimafecha) $datea_b = date_add($datea_b, date_interval_create_from_date_string($dF[1]." years"));
+        if ($ultimafecha) $datea_b = date_add($datea_b, date_interval_create_from_date_string($dF[2]." years"));
+    } else {
+        return array();
+    }
     
-    $datea_b = date_add($datea_a, date_interval_create_from_date_string(($dF[4] + 1)." months"));
-    $datea_b = date_add($datea_b, date_interval_create_from_date_string($dF[5]." days"));
-    if (!$ultimafecha) $datea_b = date_add($datea_b, date_interval_create_from_date_string($dF[1]." years"));
-    if ($ultimafecha) $datea_b = date_add($datea_b, date_interval_create_from_date_string($dF[2]." years"));
     $datea_b = date_create(date_format($datea_b, "Y-m-d"));
+    $dateDB = date_diff($datea_b , $datecomp);
 
-    $fechas['fb1'] = date_format($datea_b, 'j').' de '.$meses[date_format($datea_b , "n")].' de '.date_format($datea_b , "Y"); 
-    $fechas['fb2'] = date_format($datea_b, "d.m.Y"); 
-    $fechas['fb3'] = date_format($datea_b, "Y-m-d");
-    $fechas['fb4'] = date_format($datea_b, 'j').'.'.$mes[date_format($datea_b , "n")].'.'.date_format($datea_b , "Y"); 
-    
-    $emisiona_b = date_create(date_format($datea_b, "d.m.Y"));
-    $emisiona_b = date_add($emisiona_b, date_interval_create_from_date_string("7 days"));
-    
-    $fechas['emision'] = date_format($emisiona_b, "d.m.Y"); 
-    $fechas['anniorep'] = date_format($datea_b, "Y");
-
-    if (date_format($datea_b, "Y") > 1999) { 
-        $d = rand(1, 28);
-        $m = rand(1, 12);
-        $datea_b = date_create("1999-$m-$d");
-        // echo "<div style='position: absolute; bottom:0; right:0;'>La fecha es: ".date_format($datea_b, "d-m-Y")."</div>";
+    if ($dateDB->invert === 0) {
         $fechas['fb1'] = date_format($datea_b, 'j').' de '.$meses[date_format($datea_b , "n")].' de '.date_format($datea_b , "Y"); 
         $fechas['fb2'] = date_format($datea_b, "d.m.Y"); 
-        $fechas['fb3'] = date_format($datea_b, "Y-m-d"); 
+        $fechas['fb3'] = date_format($datea_b, "Y-m-d");
         $fechas['fb4'] = date_format($datea_b, 'j').'.'.$mes[date_format($datea_b , "n")].'.'.date_format($datea_b , "Y"); 
         
-        $emisiona_b = date_create(date_format($datea_b, "d.m.Y")); 
-        $emisiona_b = date_add($emisiona_b, date_interval_create_from_date_string("7 days")); 
+        $emisiona_b = date_create(date_format($datea_b, "d.m.Y"));
+        $emisiona_b = date_add($emisiona_b, date_interval_create_from_date_string("7 days"));
         
         $fechas['emision'] = date_format($emisiona_b, "d.m.Y"); 
-        $fechas['anniorep'] = date_format($datea_b, "Y"); 
+        $fechas['anniorep'] = date_format($datea_b, "Y");
+    } else {
+        $fechas['fb1'] = date_format($datecomp, 'j').' de '.$meses[date_format($datecomp , "n")].' de '.date_format($datecomp , "Y"); 
+        $fechas['fb2'] = date_format($datecomp, "d.m.Y"); 
+        $fechas['fb3'] = date_format($datecomp, "Y-m-d");
+        $fechas['fb4'] = date_format($datecomp, 'j').'.'.$mes[date_format($datecomp , "n")].'.'.date_format($datecomp , "Y"); 
+        
+        $emisiona_b = date_create(date_format($datecomp, "d.m.Y"));
+        $emisiona_b = date_add($emisiona_b, date_interval_create_from_date_string("7 days"));
+        
+        $fechas['emision'] = date_format($emisiona_b, "d.m.Y"); 
+        $fechas['anniorep'] = date_format($datecomp, "Y");
     }
 
     return $fechas;
@@ -298,14 +308,18 @@ function generar_fechas_trabajo_bono($dF) {
     return $fechas;
 }
 
-function datos_empresa($empresa, $datosFechas, $ultimafecha, $fecha_anterior) {
+function datos_empresa($empresa, $datosFechas, $ultimafecha = false, $fecha_anterior) {
     $datos = array();
     $datos['fechas'] = generar_fechas_trabajo($datosFechas, $ultimafecha, $fecha_anterior);
     return $datos;
 }
 
 function nf($valor, $dec = 2) {
-    $monto = number_format($valor,$dec,".",",");
+    if ($dec) {
+        $monto = number_format($valor,$dec,".",",");
+    } else {
+        $monto = number_format($valor,$dec,"","");
+    }
     return $monto;
 }
 

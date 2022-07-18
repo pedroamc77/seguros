@@ -1,4 +1,10 @@
 <?php 
+session_start();
+ 
+if(!isset($_SESSION['usuario_id'])){
+    header('Location: acceso.php');
+    exit;
+}
 
 require_once('./_db/funciones.php');
 
